@@ -46,7 +46,7 @@ Estimating storage:
 
 ### Check this concept works at all
 
-- Right now: https://api.carbonintensity.org.uk/regional/intensity/2023-03-09T20:00Z/fw48h
+- Right now: https://api.carbonintensity.org.uk/regional/intensity/2023-03-09T20:01Z/fw48h
 - 
 
 ### Historical Data
