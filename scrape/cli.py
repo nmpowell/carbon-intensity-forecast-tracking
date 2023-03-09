@@ -8,7 +8,7 @@ from scrape import download_data
 log = logging.getLogger(__name__)
 
 
-PIPELINE_FUNCTIONS = {"download": download_data}
+PIPELINE_FUNCTIONS = {"download": download_data.run}
 
 
 def configure_logger(debug: bool = False) -> None:
@@ -25,20 +25,48 @@ def configure_logger(debug: bool = False) -> None:
 def get_parser():
     parser = argparse.ArgumentParser(description="Choose function and get arguments.")
 
-    common_parser = argparse.ArgumentParser(add_help=False)
-    common_parser.add_argument(
+    parser_common = argparse.ArgumentParser(add_help=False)
+    parser_common.add_argument(
         "--debug",
         action="store_true",
         help="Enable debug logging",
     )
 
-    # positional argument for choosing the function to be called
+    # positional argument for choosing the pipeline function to be called
     subparsers = parser.add_subparsers(dest="func")
-    subparsers.add_parser(
-        "download", help="Download JSON files.", parents=[common_parser]
+    parser_download = subparsers.add_parser(
+        "download", help="Download JSON file(s) from the API.", parents=[parser_common]
     )
 
-    
+    parser_download.add_argument(
+        "--output_directory",
+        "-o",
+        default="data",
+        help="Path to output directory",
+        type=str,
+    )
+    parser_download.add_argument(
+        "--now", action="store_true", help="Download current data and nothing else."
+    )
+    parser_download.add_argument(
+        "--num_files",
+        "-n",
+        default=0,
+        type=int,
+        help="Max number of files. All if 0 or not specified.",
+    )
+    parser_download.add_argument(
+        "--start_date",
+        default=download_data.EARLIEST_DATE_STR,
+        type=str,
+        help="Start date in format {}".format(download_data.DATETIME_FMT_STR),
+    )
+    parser_download.add_argument(
+        "--end_date",
+        default=None,
+        type=str,
+        help="End date in format {}".format(download_data.DATETIME_FMT_STR),
+    )
 
     return parser
 
@@ -53,7 +81,7 @@ def main() -> None:
     if fn := PIPELINE_FUNCTIONS.get(args.func):
         fn(**vars(args))
     else:
-        parser.print_help()
+        get_parser().print_help()
 
 
 if __name__ == "__main__":
