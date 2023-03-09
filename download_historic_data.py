@@ -45,11 +45,13 @@ def check_create_directory(directory: str = ""):
 def download_json_to_file(url: str, filepath: str):
     """Download a JSON file from the given URL and save it to the given filepath."""
     response = requests.get(url)
+    # Still get a 200 even if the response JSON is empty (e.g. far in the future)
     if response.status_code == 200:
         with open(filepath, "w") as f:
             f.write(response.text)
     else:
         raise Exception(f"Failed to download {url}")
+    return response.json()
 
 
 def get_json_from_url(url: str):
@@ -88,12 +90,19 @@ def parse_args():
         type=str,
         help="Start date in format {}".format(DATETIME_STRFMT),
     )
+    parser.add_argument(
+        "--end_date",
+        default=None,
+        type=str,
+        help="End date in format {}".format(DATETIME_STRFMT),
+    )
     return parser.parse_args()
 
 
 def main(
     output_directory: str = "data",
     start_date: str = EARLIEST_DATE_STR,
+    end_date: str = None,
     num_files: int = 0,
 ):
 
@@ -103,15 +112,22 @@ def main(
     inspect_datetime = parser.parse(start_date)
     file_count = 0
 
-    max = datetime.utcnow().replace(tzinfo=timezone.utc)
+    try:
+        end_date = parser.parse(end_date)
+    except TypeError:
+        pass
+    end_date = end_date or datetime.utcnow().replace(tzinfo=timezone.utc)
 
-    while inspect_datetime <= max and file_count <= num_files:
+    while inspect_datetime <= end_date and file_count <= num_files:
         inspect_datetime_str = inspect_datetime.strftime(DATETIME_STRFMT)
         print(f"Getting data for {inspect_datetime_str} ...")
 
         url = TEMPLATE_48HR_FORWARD_URL.format(inspect_datetime_str)
         filepath = os.path.join(output_directory, f"{inspect_datetime_str}.json")
-        download_json_to_file(url, filepath)
+
+        if not download_json_to_file(url, filepath):
+            print("No data for this date; stopping.")
+            break
 
         # advance for next iteration
         inspect_datetime += TIME_DELTA
