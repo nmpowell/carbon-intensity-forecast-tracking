@@ -1,4 +1,4 @@
-# Carbon Intensity Forecast Errors
+# Carbon Intensity Forecast Tracking
 
 The difference between the UK National Grid's Carbon Intensity forecast and its eventual recorded value.
 
