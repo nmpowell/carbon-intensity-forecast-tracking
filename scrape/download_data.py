@@ -170,6 +170,8 @@ def main(
             print("No data for this date; stopping.")
             break
 
+        print("Success!")
+
 
 if __name__ == "__main__":
     args = parse_args()

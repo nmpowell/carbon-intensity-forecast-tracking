@@ -1,8 +1,10 @@
 # Carbon Intensity Forecast Tracking
 
-The difference between the UK National Grid's Carbon Intensity forecast and its eventual recorded value.
+Tracking difference between the UK National Grid's Carbon Intensity forecast and its eventual recorded value.
 
-We want to know: how reliable are these forecasts?
+The API itself does not seem to record or expose historical forecasts. We want to know: how reliable are they?
+
+This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/2020/Oct/9/git-scraping/) and is heavily inspired by [food-scraper](https://github.com/codeinthehole/food-scraper).
 
 ## Basic idea
 
