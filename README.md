@@ -105,3 +105,5 @@ Estimating storage:
 
 1. Activate the venv: `source venv/bin/activate`
 2. Download a JSON file: `python3 run.py download --output_dir "data" --now`
+
+To enable GitHub Actions, within the repo `Settings > Actions > General > Workflow permissions > Read and write permissions`.
