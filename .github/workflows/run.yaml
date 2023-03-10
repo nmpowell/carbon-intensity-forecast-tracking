@@ -4,9 +4,8 @@ name: Update local data archive
 on:
   # Manual button in Github.
   workflow_dispatch:
-  # Run on a schedule.
+  # Run on a schedule, minute 11 and 41
   schedule:
-    # at minute 5 and 35
     - cron: '*/11 * * * *'
     - cron: '*/41 * * * *'
 
