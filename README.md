@@ -1,15 +1,14 @@
 # Carbon Intensity Forecast Tracking
 
-Tracking difference between the UK National Grid's Carbon Intensity forecast and its eventual recorded value.
+Tracking differences between the UK National Grid's Carbon Intensity forecast and its eventual recorded value.
 
-The API itself does not seem to record or expose historical forecasts. We want to know: how reliable are they?
+The [API itself](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) does not seem to record or expose historical forecasts. We want to know: how reliable are they?
 
 This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/2020/Oct/9/git-scraping/) and is heavily inspired by [food-scraper](https://github.com/codeinthehole/food-scraper).
 
 ## Basic idea
 
 - Git scrape the National Grid Carbon Intensity API on a half-hourly basis.
-    - Use Github Actions to do this on a schedule
 - Save the data to a local database or spreadsheet, committed to this repo.
 - Show, for a given half-hour window in history:
     - the predicted CI at each of the ~96 half-hourly time points
@@ -26,6 +25,15 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
     - for a region:
 
 1. Scrape the data.
+
+## A little more detail
+
+- Scraping is performed by Github Actions on a schedule.
+- Data is downloaded at 5 and 35 minutes past the hour from the [regional forward-48hr endpoint](https://carbon-intensity.github.io/api-definitions/#get-regional-intensity-from-fw48h).
+- Data is saved to `data/` and, for now, is committed to this repo.
+
+
+https://github.com/carbon-intensity
 
 
 ## Data

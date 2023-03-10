@@ -128,4 +128,6 @@ def run(
             log.warning("No data for this date; stopping.")
             break
 
-        log.info("Success!")
+        print(f"Downloaded: {inspect_datetime_str}")
+
+    log.info("Success!")
