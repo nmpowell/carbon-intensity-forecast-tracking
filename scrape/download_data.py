@@ -23,6 +23,8 @@ from datetime import datetime, timedelta, timezone
 import requests
 from dateutil import parser
 
+from scrape.files import check_create_directory, json_data_filepath
+
 log = logging.getLogger(__name__)
 
 
@@ -33,14 +35,6 @@ TEMPLATE_48HR_FORWARD_URL = BASE_URL + "/regional/intensity/{}/fw48h"
 
 DATETIME_FMT_STR = "%Y-%m-%dT%H:%MZ"
 EARLIEST_DATE_STR = "2018-05-10T23:30Z"
-
-
-def check_create_directory(directory: str = ""):
-    """Recursively create a specified directory tree."""
-    ndir = os.path.realpath(os.path.expanduser(os.path.normpath(directory)))
-    if not os.path.exists(ndir):
-        os.makedirs(ndir, exist_ok=True)
-    return ndir
 
 
 def download_json_to_file(url: str, filepath: str):
@@ -60,6 +54,12 @@ def download_json_to_file(url: str, filepath: str):
     else:
         raise Exception(f"Failed to download {url}")
     return response.json()
+
+
+def get_number_of_time_points(start: str, end: str):
+    """Given strings, return the number of TIME_DELTA time points between them."""
+    start_dt, end_dt = get_datetimes(start, end)
+    return int((end_dt - start_dt) / TIME_DELTA)
 
 
 # round a timezone-aware datetime object down to the nearest multiple of TIME_DELTA
@@ -104,6 +104,10 @@ def run(
 
     inspect_datetime, end_datetime = get_datetimes(start_date, end_date)
 
+    # Add 1 minute so the returned forecast starts with the current half hour at index 0.
+    inspect_datetime += timedelta(minutes=1)
+    end_datetime += timedelta(minutes=1)
+
     file_count = 0
 
     while inspect_datetime <= end_datetime and file_count < num_files:
@@ -111,9 +115,7 @@ def run(
         log.info("Getting data for %s ...", inspect_datetime_str)
 
         url = TEMPLATE_48HR_FORWARD_URL.format(inspect_datetime_str)
-        filepath = os.path.join(
-            output_directory, f"{inspect_datetime_str}.json".replace(":", "")
-        )
+        filepath = json_data_filepath(output_directory, inspect_datetime_str)
 
         # advance for next iteration
         inspect_datetime += TIME_DELTA

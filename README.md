@@ -77,7 +77,7 @@ Estimating storage:
 
 ### Historical Data
 
-Confirm suspicions that historical forecasts are not saved:
+Confirm suspicions that historical forecasts are not saved.
 
 ### API and data notes
 
@@ -148,3 +148,16 @@ The JSON format isn't great for parsing and plotting values. Instead wrangle int
 "The carbon intensity of electricity is a measure of how much CO2 emissions are produced per kilowatt hour of electricity consumed." Units, including forecast values, are usually gCO2/kWh.
 
 Datetimes are all in UTC, in the format 2018-09-17T23:00:00
+
+
+### Number of forecasts
+
+- 48 * 2 = 96, plus the 0th so 97.
+- I think some data is published more than 48 hours in advance. I wonder when values stop being updated?
+
+Q: when do the forecasts _stop_ getting updated?
+A: look at data/2023-03-10T1200Z.json. At position 0, this has:
+    "from": "2023-03-10T11:30Z",
+    "to": "2023-03-10T12:00Z",
+
+I might need to add 1 minute to the inspect datetime before querying the endpoint.
