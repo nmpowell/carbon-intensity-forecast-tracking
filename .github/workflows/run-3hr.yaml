@@ -34,7 +34,7 @@ jobs:
           # Download data
           date_offset=`date -u -d "-3 hours" +"%Y-%m-%dT%H:%MZ"`
           echo "Setting start_date to ${date_offset}"
-          python run.py download --output_directory data-3hr --start_date "${date_offset}" | tee commit_msg.txt
+          python run.py download --output_directory data-3hr --start_date "${date_offset}" -n 1 | tee commit_msg.txt
 
       - name: Commit and push if it changed
         run: |-

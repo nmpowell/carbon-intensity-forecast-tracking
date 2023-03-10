@@ -108,9 +108,15 @@ def run(
     inspect_datetime += timedelta(minutes=1)
     end_datetime += timedelta(minutes=1)
 
+    print(inspect_datetime, end_datetime)
+
     file_count = 0
 
-    while inspect_datetime <= end_datetime and file_count < num_files:
+    while (
+        inspect_datetime <= end_datetime and file_count < num_files
+        if num_files > 0
+        else True
+    ):
         inspect_datetime_str = inspect_datetime.strftime(DATETIME_FMT_STR)
         log.info("Getting data for %s ...", inspect_datetime_str)
 
