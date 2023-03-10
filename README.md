@@ -9,7 +9,7 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
 ## Basic idea
 
 - Git scrape the National Grid Carbon Intensity API ([repo](https://github.com/carbon-intensity)) on a half-hourly basis.
-- Scraping is performed by Github Actions on a [cron schedule](https://crontab.guru/#*/5,*/35_*_*_*_*) at 5 and 35 minutes past the hour.
+- Scraping is performed by Github Actions on a [cron schedule](https://github.com/nmpowell/carbon-intensity-forecast-tracking/blob/main/.github/workflows/run.yaml) twice per hour.
 - Data is downloaded from the [regional forward-48hr endpoint](https://carbon-intensity.github.io/api-definitions/#get-regional-intensity-from-fw48h), saved to `data/` and, for now, is committed to this repo.
 - Save the data to a local database or spreadsheet, committed to this repo.
 - Show, for a given half-hour window in history:
@@ -32,6 +32,8 @@ Test cron 11, 41
 
 
 ## Data
+
+- Because Github's Actions runners are shared (and free), the cron isn't 100% reliable and we can expect some occasional missing data.
 
 - A point in time at the start of a real window: 202303091630 or a UTC datetime
     - the number of half-hours preceding: 1-96, or -96 to -1
