@@ -103,3 +103,9 @@ Estimating storage:
 2. Download a JSON file: `python3 run.py download --output_dir "data" --now`
 
 To enable GitHub Actions, within the repo `Settings > Actions > General > Workflow permissions > Read and write permissions`.
+
+## Storing
+
+The JSON format isn't great for parsing and plotting values. Instead wrangle into a CSV.
+
+1. From the JSON we have downloaded, get the "from" timestamps.
