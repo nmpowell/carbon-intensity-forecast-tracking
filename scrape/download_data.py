@@ -134,6 +134,6 @@ def run(
             log.warning("No data for this date; stopping.")
             break
 
-        print(f"Downloaded: {inspect_datetime_str}")
+        print(f"Downloaded: {filepath} at {datetime.utcnow()}")
 
     log.info("Success!")
