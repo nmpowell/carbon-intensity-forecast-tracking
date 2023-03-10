@@ -8,7 +8,7 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
 
 ## Basic idea
 
-- Git scrape the National Grid Carbon Intensity API on a half-hourly basis.
+- Git scrape the National Grid Carbon Intensity API ([repo](https://github.com/carbon-intensity)) on a half-hourly basis.
 - Save the data to a local database or spreadsheet, committed to this repo.
 - Show, for a given half-hour window in history:
     - the predicted CI at each of the ~96 half-hourly time points
@@ -33,9 +33,6 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
 - Data is saved to `data/` and, for now, is committed to this repo.
 
 
-https://github.com/carbon-intensity
-
-
 ## Data
 
 - A point in time at the start of a real window: 202303091630 or a UTC datetime
@@ -57,7 +54,6 @@ Estimating storage:
 ### Check this concept works at all
 
 - Right now: https://api.carbonintensity.org.uk/regional/intensity/2023-03-09T20:01Z/fw48h
-- 
 
 ### Historical Data
 
