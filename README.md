@@ -26,6 +26,8 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
         - the spread: variance (or mean deviation) about a central point (the actual value; not the mean), stdev, interquartile range -- of the ~96 forecasts.
     - for a region:
 
+Test cron 11, 41
+
 1. Scrape the data.
 
 
