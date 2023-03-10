@@ -80,3 +80,28 @@ Estimating storage:
     - data.95 is the 0-time + 47.5 hours.
 
 - (The "past" 24hr URL is a bit more confusing as https://api.carbonintensity.org.uk/regional/intensity/2018-05-11T01:30Z/pt24h gives you the past 24hrs but the _oldest_ one is still timepoint 0. The "to" field is then the floor of the timepoint you requested in the 47th entry (if it goes back that far - not for this example URL; it's index 3 in this one).)
+
+## Install
+
+1. Clone this repository `git clone git@github.com:nmpowell/carbon-intensity-forecast-tracking.git`
+2. Set up a local virtual environment using Python 3.10+
+    ``` sh
+    cd carbon-intensity-forecast-tracking/
+    python3 -m venv venv                 # use this subdirectory name to piggyback on .gitignore
+    source venv/bin/activate
+    ```
+
+3. You can install the requirements in this virtual environment in a couple of ways:
+    ``` sh
+    python3 -m pip install --upgrade pip
+    python3 -m pip install -r requirements.txt
+    # or
+    make install
+    ```
+    `make` will call `pip-sync` which will use the `requirements.txt` file to install requirements. To regenerate that file, use `pip-compile requirements.in`
+
+
+## Usage
+
+1. Activate the venv: `source venv/bin/activate`
+2. Download a JSON file: `python3 run.py download --output_dir "data" --now`
