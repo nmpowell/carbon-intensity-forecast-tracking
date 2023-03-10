@@ -7,7 +7,7 @@ on:
   # Run on a schedule.
   schedule:
     # at minute 5 and 35
-    - cron: 15,35 * * * *
+    - cron: 05,35 * * * *
 
 jobs:
   scheduled:
