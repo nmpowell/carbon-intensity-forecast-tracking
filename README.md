@@ -28,7 +28,7 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
 
 ## A little more detail
 
-- Scraping is performed by Github Actions on a schedule.
+- Scraping is performed by Github Actions on a [cron schedule](https://crontab.guru/#*/5,*/35_*_*_*_*) at 5 and 35 minutes past the hour.
 - Data is downloaded at 5 and 35 minutes past the hour from the [regional forward-48hr endpoint](https://carbon-intensity.github.io/api-definitions/#get-regional-intensity-from-fw48h).
 - Data is saved to `data/` and, for now, is committed to this repo.
 
