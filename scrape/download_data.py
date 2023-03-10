@@ -108,8 +108,6 @@ def run(
     inspect_datetime += timedelta(minutes=1)
     end_datetime += timedelta(minutes=1)
 
-    print(inspect_datetime, end_datetime)
-
     file_count = 0
 
     while (
