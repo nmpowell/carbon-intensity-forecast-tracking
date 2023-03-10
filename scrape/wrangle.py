@@ -19,8 +19,10 @@ def get_forecast_data_from_json_file(filepath: str) -> dict:
     return load_json_file(filepath).get("data")
 
 
-def get_one_region_intensity_forecasts(data: dict, key: str = "regionid", value: int = 1) -> dict:        
-    return {e.get("from"): e.get("regions")[0].get("intensity").get("forecast") for e in data}
+def get_one_region_intensity_forecasts(data: dict, key: str = "regionid", value: int = 1) -> dict:
+    # we could look up the regionid by key:value pair, but we know it's the n+1th in the list
+    region_elem = 10       # element in the list, not the regionid!
+    return {e.get("from"): e.get("regions")[region_elem].get("intensity").get("forecast") for e in data}
     
     
 def files_to_dataframe(input_directory: str) -> pd.DataFrame:

@@ -165,3 +165,5 @@ A: look at data/2023-03-10T1200Z.json. At position 0, this has:
 - It looks as though you can look a little further ahead than 48 hours - let's not worry about that too much.
 
 - I've disabled the "latest" schedule and added a "t-3hr" schedule which starts the download at now() minus 3 hours. This should give us 5-6 timepoints after the forecasted time, recorded/downloaded 5-6 times, so we can see whether they ever change.
+
+

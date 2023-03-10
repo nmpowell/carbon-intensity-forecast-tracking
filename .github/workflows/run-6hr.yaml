@@ -32,15 +32,15 @@ jobs:
       - name: Fetch latest data
         run: |-
           # Download data
-          date_offset=`date -u -d "-3 hours" +"%Y-%m-%dT%H:%MZ"`
+          date_offset=`date -u -d "-6 hours" +"%Y-%m-%dT%H:%MZ"`
           echo "Setting start_date to ${date_offset}"
-          python run.py download --output_directory data-3hr --start_date "${date_offset}" -n 1 | tee commit_msg.txt
+          python run.py download --output_directory data-6hr --start_date "${date_offset}" -n 1 | tee commit_msg.txt
 
       - name: Commit and push if it changed
         run: |-
           git config user.name "Automated"
           git config user.email "actions@users.noreply.github.com"
-          git add data-3hr/*.json
+          git add data-6hr/*.json
           git commit --file commit_msg.txt || exit 0
           git pull
           git push
