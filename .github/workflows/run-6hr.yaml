@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
   # Run on a schedule
   schedule:
-    - cron: '*/6 * * * *'
-    - cron: '*/36 * * * *'
+    # - cron: '*/6 * * * *'
+    # - cron: '*/36 * * * *'
 
 jobs:
   scheduled:
