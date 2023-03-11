@@ -5,7 +5,7 @@ on:
   # Manual button in Github.
   workflow_dispatch:
   # Run on a schedule
-  # schedule:
+  schedule:
     - cron: '*/5 * * * *'
     - cron: '*/35 * * * *'
 
