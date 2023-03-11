@@ -167,3 +167,8 @@ A: look at data/2023-03-10T1200Z.json. At position 0, this has:
 - I've disabled the "latest" schedule and added a "t-3hr" schedule which starts the download at now() minus 3 hours. This should give us 5-6 timepoints after the forecasted time, recorded/downloaded 5-6 times, so we can see whether they ever change.
 
 
+## Plots
+
+- Want to find the final, settled value, so we can compare with forecasted values.
+
+- Want to show forecasts forward from a given date. It doesn't matter if we collect some past dates if we know which to ignore. If we take the datetime at which we call the API as timepoint 0, it doesn't really matter if the values change after we've stopped looking at past values. The purpose is to discover the reliability 
