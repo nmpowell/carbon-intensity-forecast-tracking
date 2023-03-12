@@ -187,3 +187,10 @@ A: look at data/2023-03-10T1200Z.json. At position 0, this has:
 - Want to find the final, settled value, so we can compare with forecasted values.
 
 - Want to show forecasts forward from a given date. It doesn't matter if we collect some past dates if we know which to ignore. If we take the datetime at which we call the API as timepoint 0, it doesn't really matter if the values change after we've stopped looking at past values. The purpose is to discover the reliability 
+
+
+## Endpoint
+
+- https://api.carbonintensity.org.uk/regional/intensity/2023-03-11T23:31Z/fw48h/regionid/{1-18}
+
+Wrangling data from here is far less complex than the endpoint with all the regions.

@@ -109,3 +109,10 @@ def load_json(filepath: str) -> pd.DataFrame:
 
 def run(*args, **kwargs):
     """Wrangle data from JSON files into CSV files."""
+
+
+
+# This is from the regional data for one region, from e.g. https://api.carbonintensity.org.uk/regional/intensity/2023-03-11T23:31Z/fw48h/regionid/18
+data = get_forecast_data_from_json_file(fp)
+generationmix_df = pd.json_normalize(data, record_path=["data", "generationmix"], meta=[["data", "from"], ["data", "intensity", "forecast"]])
+result = generationmix_df.pivot(index=["data.from", "data.intensity.forecast"], columns="fuel", values="perc")
