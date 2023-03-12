@@ -151,6 +151,8 @@ Confirm suspicions that historical forecasts are not saved.
 
 To enable GitHub Actions, within the repo `Settings > Actions > General > Workflow permissions > Read and write permissions`.
 
+Output JSON files are named `data/<capture-datetime>_<target-datetime>.json`.
+
 ## Storing
 
 The JSON format isn't great for parsing and plotting values. Instead wrangle into a CSV.

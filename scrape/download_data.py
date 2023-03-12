@@ -24,15 +24,12 @@ import requests
 from dateutil import parser
 
 from scrape.files import check_create_directory, json_data_filepath
+from scrape.urls import TEMPLATE_URLS
 
 log = logging.getLogger(__name__)
 
 
 TIME_DELTA = timedelta(minutes=30)
-
-BASE_URL = "https://api.carbonintensity.org.uk"
-TEMPLATE_48HR_FORWARD_URL = BASE_URL + "/regional/intensity/{}/fw48h"
-TEMPLATE_NATIONAL_URL = BASE_URL + "/intensity/{}/fw48h"
 
 DATETIME_FMT_STR = "%Y-%m-%dT%H:%MZ"
 EARLIEST_DATE_STR = "2018-05-10T23:30Z"
@@ -85,6 +82,7 @@ def get_datetimes(start: str, end: str):
 
 def run(
     output_directory: str = "data",
+    endpoint: str = "regional_forward",
     start_date: str = EARLIEST_DATE_STR,
     end_date: str = None,
     num_files: int = 0,
@@ -121,7 +119,7 @@ def run(
         inspect_datetime_str = inspect_datetime.strftime(DATETIME_FMT_STR)
         log.info("Getting data for %s ...", inspect_datetime_str)
 
-        url = TEMPLATE_48HR_FORWARD_URL.format(inspect_datetime_str)
+        url = TEMPLATE_URLS.get(endpoint).format(inspect_datetime_str)
 
         filepath = json_data_filepath(
             output_directory, capture_dt + "_" + inspect_datetime_str

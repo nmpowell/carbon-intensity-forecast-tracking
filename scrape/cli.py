@@ -4,6 +4,7 @@ import logging
 from pythonjsonlogger import jsonlogger
 
 from scrape import download_data
+from scrape.urls import TEMPLATE_URLS
 
 log = logging.getLogger(__name__)
 
@@ -49,6 +50,13 @@ def get_parser():
         type=str,
     )
     parser_download.add_argument(
+        "--endpoint",
+        choices=TEMPLATE_URLS.keys(),
+        default="regional_forward",
+        type=str,
+        help="Endpoint to use. Options: {}".format(TEMPLATE_URLS.keys()),
+    )
+    parser_download.add_argument(
         "--now", action="store_true", help="Download current data and nothing else."
     )
     parser_download.add_argument(
@@ -70,7 +78,6 @@ def get_parser():
         type=str,
         help="End date in format {}".format(download_data.DATETIME_FMT_STR),
     )
-
     return parser
 
 
