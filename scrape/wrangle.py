@@ -1,10 +1,15 @@
 # TODO: use jsonschema to validate the structure
 
+"""
+Functions to extract data from JSON files and save in separate .CSV files.
+
+One .CSV file for each of the regions.
+"""
+
 import json
 import os
 
 import pandas as pd
-
 
 from scrape.files import json_data_filepath
 
@@ -13,18 +18,23 @@ from scrape.files import json_data_filepath
 def load_json_file(filepath: str) -> dict:
     with open(filepath) as f:
         return json.load(f)
-    
+
 
 def get_forecast_data_from_json_file(filepath: str) -> dict:
     return load_json_file(filepath).get("data")
 
 
-def get_one_region_intensity_forecasts(data: dict, key: str = "regionid", value: int = 1) -> dict:
+def get_one_region_intensity_forecasts(
+    data: dict, key: str = "regionid", value: int = 1
+) -> dict:
     # we could look up the regionid by key:value pair, but we know it's the n+1th in the list
-    region_elem = 10       # element in the list, not the regionid!
-    return {e.get("from"): e.get("regions")[region_elem].get("intensity").get("forecast") for e in data}
-    
-    
+    region_elem = 10  # element in the list, not the regionid!
+    return {
+        e.get("from"): e.get("regions")[region_elem].get("intensity").get("forecast")
+        for e in data
+    }
+
+
 def files_to_dataframe(input_directory: str) -> pd.DataFrame:
     # list files in the directory
     files = os.listdir(input_directory)
@@ -34,7 +44,7 @@ def files_to_dataframe(input_directory: str) -> pd.DataFrame:
         results = get_one_region_intensity_forecasts(data)
         results["filename"] = os.path.basename(filepath)
         subset.append(results)
-        
+
     df = pd.DataFrame(subset)
     # sort columns alphabetically
     df = df.reindex(sorted(df.columns), axis=1)
@@ -43,21 +53,23 @@ def files_to_dataframe(input_directory: str) -> pd.DataFrame:
     # sort the index alphabetically
     df.sort_index(inplace=True)
     return df
-    
-
 
 
 # Load the JSON file, normalise, and return a pandas DataFrame
-def load_normalise(filepath: str) -> pd.DataFrame:
-with open(filepath) as f:
-    data = json.load(f)
-df = pd.json_normalize(data)
+# def load_normalise(filepath: str) -> pd.DataFrame:
+# with open(filepath) as f:
+#     data = json.load(f)
+# df = pd.json_normalize(data)
 
-    df = load_json(filepath)
-    df = normalise(df)
-    return df
+#     df = load_json(filepath)
+#     df = normalise(df)
+#     return df
 
 
 # Given a JSON filepath, load and return a pandas DataFrame
 def load_json(filepath: str) -> pd.DataFrame:
     return pd.read_json(filepath, orient="records", lines=True)
+
+
+def run(*args, **kwargs):
+    """Wrangle data from JSON files into CSV files."""

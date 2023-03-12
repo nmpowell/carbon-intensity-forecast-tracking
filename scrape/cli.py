@@ -8,7 +8,10 @@ from scrape import download_data
 log = logging.getLogger(__name__)
 
 
-PIPELINE_FUNCTIONS = {"download": download_data.run}
+PIPELINE_FUNCTIONS = {
+    "download": download_data.run,
+    # "wrangle": wrangle.run,
+}
 
 
 def configure_logger(debug: bool = False) -> None:

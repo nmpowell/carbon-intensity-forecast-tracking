@@ -32,6 +32,7 @@ TIME_DELTA = timedelta(minutes=30)
 
 BASE_URL = "https://api.carbonintensity.org.uk"
 TEMPLATE_48HR_FORWARD_URL = BASE_URL + "/regional/intensity/{}/fw48h"
+TEMPLATE_NATIONAL_URL = BASE_URL + "/intensity/{}/fw48h"
 
 DATETIME_FMT_STR = "%Y-%m-%dT%H:%MZ"
 EARLIEST_DATE_STR = "2018-05-10T23:30Z"
@@ -94,11 +95,13 @@ def run(
 
     output_directory = check_create_directory(output_directory)
 
+    capture_dt = (
+        datetime.utcnow().replace(tzinfo=timezone.utc).strftime(DATETIME_FMT_STR)
+    )
+
     if now:
         # override some inputs
-        start_date = (
-            datetime.utcnow().replace(tzinfo=timezone.utc).strftime(DATETIME_FMT_STR)
-        )
+        start_date = capture_dt
         num_files = 1
         end_date = start_date
 
@@ -119,7 +122,10 @@ def run(
         log.info("Getting data for %s ...", inspect_datetime_str)
 
         url = TEMPLATE_48HR_FORWARD_URL.format(inspect_datetime_str)
-        filepath = json_data_filepath(output_directory, inspect_datetime_str)
+
+        filepath = json_data_filepath(
+            output_directory, capture_dt + "_" + inspect_datetime_str
+        )
 
         # advance for next iteration
         inspect_datetime += TIME_DELTA

@@ -45,6 +45,16 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
 
 - Because Github's Actions runners are shared (and free), the cron isn't 100% reliable. We can expect some occasional missing data.
 
+- Unclear what the difference between the 18th DNO region, "GB", and the "National" forecasts are. National: https://api.carbonintensity.org.uk/intensity/2023-03-11T22:31Z. Regional: https://api.carbonintensity.org.uk/regional/intensity/2023-03-11T22:31Z/fw48h at timepoint 0, regionid 18. Slightly different.
+
+### Actual intensity and generation mix
+
+To measure regional forecast accuracy it would be preferable to have a retrospective `actual` CI value for each region, but the API does not seem to provide this except at the national level: at https://api.carbonintensity.org.uk/intensity for the previous complete half-hour window; https://api.carbonintensity.org.uk/intensity/2023-03-11T12:01Z for a specific window; and https://api.carbonintensity.org.uk/intensity/2023-03-11T12:01Z/fw24h for that window and the next 48 hours' worth. Unfortunately, it seems these can change a little after the fact.
+
+Regional forecasts also seem to be subject to this slight adjustment, although they do seem to settle down after a while.
+
+- The API's forecast and "actual" values seem to vary even after the time window has passed. I've attempted to track this, as well, to give a good anchor against which we can measure forecast accuracy. For the purposes of this project, let us say the "final forecast" for each region is the one accessible 6 hours after the start of the time window. So if we're measuring the accuracy of a half-hour forecasted window beginning 2023-03-11T12:00, 
+
 ## Prior work
 
 I am unsure whether this has been done before. NGESO do not seem to release historic forecasts or figures about their accuracy. If you know more, please let me know!
@@ -63,13 +73,16 @@ Estimating storage:
 - intensity is an int
 - generation perc is a float
 
-- 17 DNO regions including national: https://carbon-intensity.github.io/api-definitions/#region-list
 - ~96 forecasts
 - 1 actual value
 - so intensity approx: 20 * 100 = 2000 measurements per real half-hour window. 4 bytes each so 8 kb.
 - 48 half-hours per day, so * 50 = 100,000 measurements per day, 4 bytes each so 400 kb.
 - 1 year so 150 MB per year
 - Github size limit of about 5GB we should be fine for a while.
+
+#### Regions
+
+- 17 DNO regions including national: https://carbon-intensity.github.io/api-definitions/#region-list and in the 48 hour forecasts, there's an 18th region which is "GB", which approximates the "national" forecast.
 
 ### Check this concept works at all
 
