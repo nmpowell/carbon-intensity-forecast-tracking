@@ -87,6 +87,7 @@ def run(
     end_date: str = None,
     num_files: int = 0,
     now: bool = False,
+    unique_names: bool = False,
     *args,
     **kwargs,
 ):
@@ -121,9 +122,12 @@ def run(
 
         url = TEMPLATE_URLS.get(endpoint).format(inspect_datetime_str)
 
-        filepath = json_data_filepath(
-            output_directory, capture_dt + "_" + inspect_datetime_str
+        filename = (
+            capture_dt + "_" + inspect_datetime_str
+            if unique_names
+            else inspect_datetime_str
         )
+        filepath = json_data_filepath(output_directory, filename)
 
         # advance for next iteration
         inspect_datetime += TIME_DELTA

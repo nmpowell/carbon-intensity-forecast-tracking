@@ -37,7 +37,7 @@ jobs:
           # (temporary) Regional past, from now
           python run.py download --output_directory data_past --now --endpoint regional_past | tee -a commit_msg.txt
           # (temporary) National fixed timepoint to track variation in forecast and actual before/after
-          python run.py download --output_directory data_national_fixed --start_date "2023-03-13T12:01Z" -n 1 --endpoint national | tee -a commit_msg.txt
+          python run.py download --output_directory data_national_fixed --start_date "2023-03-13T12:01Z" -n 1 --endpoint national --unique_names | tee -a commit_msg.txt
 
       - name: Commit and push if it changed
         run: |-

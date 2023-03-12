@@ -78,6 +78,9 @@ def get_parser():
         type=str,
         help="End date in format {}".format(download_data.DATETIME_FMT_STR),
     )
+    parser.add_argument(
+        "--unique_names", action="store_true", help="Use a unique name for each file."
+    )
     return parser
 
 
