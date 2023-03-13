@@ -86,7 +86,7 @@ def get_datetimes(start: str, end: str):
 
 def run(
     output_directory: str = "data",
-    endpoint: str = "regional_forward",
+    endpoint: str = "regional_fw48h",
     start_date: str = EARLIEST_DATE_STR,
     end_date: str = None,
     num_files: int = 0,
@@ -96,7 +96,7 @@ def run(
     **kwargs,
 ):
 
-    output_directory = check_create_directory(output_directory)
+    output_directory = check_create_directory(os.path.join(output_directory, endpoint))
 
     capture_dt = (
         datetime.utcnow().replace(tzinfo=timezone.utc).strftime(DATETIME_FMT_STR)
@@ -153,7 +153,7 @@ def run(
 
 def run_regional(
     output_directory: str = "data",
-    endpoint: str = "one_region_forward",
+    endpoint: str = "one_region_fw48h",
     start_date: str = EARLIEST_DATE_STR,
     end_date: str = None,
     num_files: int = 0,

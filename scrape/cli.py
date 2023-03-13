@@ -57,7 +57,7 @@ def get_parser():
     parser_download.add_argument(
         "--endpoint",
         choices=TEMPLATE_URLS.keys(),
-        default="regional_forward",
+        default="regional_fw48h",
         type=str,
         help="Endpoint to use. Options: {}".format(TEMPLATE_URLS.keys()),
     )
@@ -103,7 +103,7 @@ def get_parser():
     parser_wrangle.add_argument(
         "--output_directory",
         "-o",
-        default="data",
+        default=None,
         help="Path to output directory in which to save CSV files",
         type=str,
     )

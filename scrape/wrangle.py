@@ -122,7 +122,7 @@ def run_wrangle(
 
     for fp in get_json_files(input_directory):
         csv_fp = _wrangle_json_to_csv(fp, output_directory)
-        log.info("Wrote CSV file: %", csv_fp)
+        log.info("Wrote CSV file: %s", csv_fp)
 
         # delete the json file if we have a csv
         if os.path.isfile(csv_fp) and delete_json:

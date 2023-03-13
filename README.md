@@ -147,10 +147,11 @@ Confirm suspicions that historical forecasts are not saved.
 ## Usage
 
 1. Activate the venv: `source venv/bin/activate`
-2. Download a JSON file: `python3 run.py download --output_dir "data" --now`
+2. Download a JSON file:
+    - 48-hour forward forecast `python3 run.py download --output_dir "data" --now` (`--endpoint `)
 
-Download JSON files for individual regions: `python run.py download_regional -o data --start_date "2023-03-13T12:01Z" -n 1 --endpoint one_region_forward`
-`python run.py download_regional -o data --now --endpoint one_region_forward`
+Download JSON files for individual regions: `python run.py download_regional -o data --start_date "2023-03-13T12:01Z" -n 1 --endpoint one_region_fw48h`
+`python run.py download_regional -o data --now --endpoint one_region_fw48h`
 
 To enable GitHub Actions, within the repo `Settings > Actions > General > Workflow permissions > Read and write permissions`.
 
