@@ -40,7 +40,10 @@ def get_parser():
     # positional argument for choosing the pipeline function to be called
     subparsers = parser.add_subparsers(dest="func")
     parser_download = subparsers.add_parser(
-        "download", help="Download JSON file(s) from the API.", parents=[parser_common]
+        "download",
+        aliases=["download_regional"],
+        help="Download JSON file(s) from the API.",
+        parents=[parser_common],
     )
 
     parser_download.add_argument(
@@ -79,9 +82,36 @@ def get_parser():
         type=str,
         help="End date in format {}".format(download_data.DATETIME_FMT_STR),
     )
-    parser.add_argument(
+    parser_download.add_argument(
         "--unique_names", action="store_true", help="Use a unique name for each file."
     )
+
+    parser_wrangle = subparsers.add_parser(
+        "wrangle",
+        help="Save .CSV files from .json files.",
+        parents=[parser_common],
+    )
+
+    parser_download.add_argument(
+        "--input_directory",
+        "-i",
+        default="data",
+        help="Path to input directory containing JSON files",
+        type=str,
+    )
+    parser_download.add_argument(
+        "--output_directory",
+        "-o",
+        default="data",
+        help="Path to output directory in which to save CSV files",
+        type=str,
+    )
+    parser_download.add_argument(
+        "--delete_json",
+        action="store_true",
+        help="Delete source JSON files once CSV is saved.",
+    )
+
     return parser
 
 

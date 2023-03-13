@@ -2,9 +2,9 @@
 
 Tracking differences between the UK National Grid's Carbon Intensity forecast and its eventual recorded value.
 
-The UK's National Grid Electricity System Operator (NGESO) publishes an API showing half-hourly carbon intensity in different GB regions. The data is based upon real, live generation statistics, values describing the relative carbon intensity of different energy sources, and a complex model describing inter-region interaction. It also exposes a 48-hour forecast.
+The UK's National Grid Electricity System Operator (NGESO) publishes an API showing half-hourly carbon intensity in different GB regions. The data is based upon real, live generation statistics, values describing the relative carbon intensity of different energy sources, and a complex model describing inter-region interaction. It also has a 48-hour forecast.
 
-The [API itself](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) does not seem to record or expose historical forecasts. We want to know: how reliable are they?
+For times in the future, forecasts are updated every half hour. But [the API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) does not seem to record historical forecasts. I want to know: how reliable are they?
 
 This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/2020/Oct/9/git-scraping/). It is heavily inspired by [food-scraper](https://github.com/codeinthehole/food-scraper).
 
@@ -12,7 +12,7 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
 
 - Git scrape the National Grid Carbon Intensity API on a half-hourly basis.
 - Scraping is performed by Github Actions on a [cron schedule](https://github.com/nmpowell/carbon-intensity-forecast-tracking/blob/main/.github/workflows/run.yaml) twice per hour (see [docs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)).
-- JSON data is downloaded from the [regional forward-48hr endpoint](https://carbon-intensity.github.io/api-definitions/#get-regional-intensity-from-fw48h), saved to `data/` and, for now, committed to this repo.
+- JSON data is downloaded from the [regional forward-48hr endpoint](https://carbon-intensity.github.io/api-definitions/#get-regional-intensity-from-fw48h) and saved to `data/`. For now, it is converted to a CSV format to save space and committed to this repo.
 
 - On a less regular basis, the data is parsed and summarised.
 
@@ -148,6 +148,9 @@ Confirm suspicions that historical forecasts are not saved.
 
 1. Activate the venv: `source venv/bin/activate`
 2. Download a JSON file: `python3 run.py download --output_dir "data" --now`
+
+Download JSON files for individual regions: `python run.py download_regional -o data --start_date "2023-03-13T12:01Z" -n 1 --endpoint one_region_forward`
+`python run.py download_regional -o data --now --endpoint one_region_forward`
 
 To enable GitHub Actions, within the repo `Settings > Actions > General > Workflow permissions > Read and write permissions`.
 

@@ -190,7 +190,7 @@ def run_regional(
 
             url = TEMPLATE_URLS.get(endpoint).format(inspect_datetime_str, region_id)
 
-            filename = f"{region_id}." + inspect_datetime_str
+            filename = inspect_datetime_str + f".{region_id}"
             filepath = json_data_filepath(output_directory, filename)
 
             # advance for next iteration
