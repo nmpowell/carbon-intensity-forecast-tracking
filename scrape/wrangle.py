@@ -50,13 +50,20 @@ def calculate_time_difference(datetime_str: str, dt2: datetime) -> str:
 
 
 # Read CSVs and collate into a forecast summary
-def summary(input_directory: str, summary_directory: str) -> None:
+def summary(input_directory: str, summary_directory: str = "") -> None:
     """Read CSVs from input_directory. Collate forecasts per-region and per-fuel."""
 
     # The idea is to learn about new future datetimes from each CSV and add them to a list.
     # To normalise datetimes, I calculate the difference between the "now" datetime, from the filepath, and each forecasted datetime (the "from" column in each CSV).
 
-    # summary_df = pd.read_csv(os.path.join(summary_directory, "summary.csv"))
+    # get existing summary, or start from scratch
+    summary_fp = os.path.join(summary_directory, "summary.csv")
+    if os.path.exists(summary_fp):
+        summary = pd.read_csv(summary_fp, header=[0, 1, 2], index_col=0)
+    else:
+        summary = pd.DataFrame()
+
+    i = 0
 
     forecast_files = get_data_files(input_directory, extension=".csv")
     for fp in forecast_files:
@@ -75,14 +82,13 @@ def summary(input_directory: str, summary_directory: str) -> None:
             / 3600
         )
 
-        # Need to convert a couple of columns to strings, otherwise we struggle to convert to the correct dtypes when loading from CSV.
+        # Convert a couple of columns to strings, otherwise we struggle to convert to the correct dtypes when loading from CSV.
         df[["time_difference", "regions.regionid"]] = df[
             ["time_difference", "regions.regionid"]
         ].astype(str)
 
         # The pivot will create a Pandas MultiIndex, the result of which is _almost_ small enough to load into Excel (but not quite).
-        # Only practical if you can load it correctly from .CSV format, which you can do with:
-        # loaded = pd.read_csv("filename.csv", header=[0,1,2], index_col=0)
+        # Only practical if you can load it correctly from .CSV, which you can do as above for the summary_df.
 
         df_p = df.pivot(
             index="from",
@@ -101,32 +107,47 @@ def summary(input_directory: str, summary_directory: str) -> None:
             ],
         )
 
-        # # Get one dataframe per region
-        # region_groups = df.groupby("regions.regionid")
-        # for df_rg in [region_groups.get_group(g) for g in region_groups.groups]:
-        #     df_rg.pivot(
-        #         index="from",
-        #         columns="time_difference",
-        #         values=[
-        #             "regions.intensity.forecast",
-        #             "biomass",
-        #             "coal",
-        #             "gas",
-        #             "hydro",
-        #             "imports",
-        #             "nuclear",
-        #             "other",
-        #             "solar",
-        #             "wind",
-        #         ],
-        #     )
+        # df_p.to_csv(f"{i}.csv")
+        i += 1
 
-        # # We will fill the "from" row at the "time_difference" column
+        # df1.update(df2) is very fast and overwrites NaNs as we want, but it requires the index of df1 to be exhaustive i.e. includes all the indices in df2.
+        # It does not appear to require the indices to be identical (columns will be identical), but the index of df2 must be a subset of df1, or values will be lost from df2.
 
-        # # df = df.set_index("time_difference")
+        union_index = summary.index.union(df_p.index)
+        if summary.empty:
+            summary = df_p.reindex(union_index)
+        else:
+            summary = summary.reindex(union_index)
+            summary.update(df_p)
 
-        # region_groups = df.groupby("regions.regionid")
-        # dfs = [region_groups.get_group(g) for g in region_groups.groups]
+    summary.to_csv(summary_fp)
+
+    # # Get one dataframe per region
+    # region_groups = df.groupby("regions.regionid")
+    # for df_rg in [region_groups.get_group(g) for g in region_groups.groups]:
+    #     df_rg.pivot(
+    #         index="from",
+    #         columns="time_difference",
+    #         values=[
+    #             "regions.intensity.forecast",
+    #             "biomass",
+    #             "coal",
+    #             "gas",
+    #             "hydro",
+    #             "imports",
+    #             "nuclear",
+    #             "other",
+    #             "solar",
+    #             "wind",
+    #         ],
+    #     )
+
+    # # We will fill the "from" row at the "time_difference" column
+
+    # # df = df.set_index("time_difference")
+
+    # region_groups = df.groupby("regions.regionid")
+    # dfs = [region_groups.get_group(g) for g in region_groups.groups]
 
 
 # Below commented code used to construct some summary CSVs; will be removed.
