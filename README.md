@@ -14,7 +14,14 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
 - Scraping is performed by Github Actions on a [cron schedule](https://github.com/nmpowell/carbon-intensity-forecast-tracking/blob/main/.github/workflows/run.yaml) twice per hour (see [docs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)).
 - JSON data is downloaded from the [regional forward-48hr endpoint](https://carbon-intensity.github.io/api-definitions/#get-regional-intensity-from-fw48h) and saved to `data/`. It is converted to a CSV format to save space, and committed to this repo.
 
-- On a less regular basis, the data is parsed and summarised.
+- Then parse the data into something we can track statistically
+    - the timepoint, "from"
+    - the number of hours in the future the recording was taken from the API (including negative, so, past) (0.5 increments)
+- Matplotlib is used to generate plots from this data
+- Estimate the accuracy
+
+- Future
+    - track regions' performance i.e. lower CI
 
 ### Assessing forecasts
 
@@ -79,6 +86,14 @@ Estimating storage:
 - 48 half-hours per day, so * 50 = 100,000 measurements per day, 4 bytes each so 400 kb.
 - 1 year so 150 MB per year
 - Github size limit of about 5GB we should be fine for a while.
+
+#### Dates and times
+
+Throughout, I represent the 30-minute time window defined by a "from" and "to" timestamp in the API using just the "from" datetime. Thus a forecasted datetime given here represents a 30-minute window beginning at that time.
+
+All times are UTC.
+
+If we query the 48h forecast API at a given time X, the earliest time window (the 0th entry in the data) begins at the current time rounded down to the nearest half hour, i.e. "from" timepoint 0 represents the window covering the time requested.
 
 #### Regions
 

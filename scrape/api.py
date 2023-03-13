@@ -20,3 +20,5 @@ TEMPLATE_URLS = {
 }
 
 REGION_IDS = range(1, 18 + 1)
+
+DATETIME_FMT_STR = "%Y-%m-%dT%H:%MZ"

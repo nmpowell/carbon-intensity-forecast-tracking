@@ -25,6 +25,7 @@ from datetime import timezone
 import requests
 from dateutil import parser
 
+from scrape.api import DATETIME_FMT_STR
 from scrape.api import REGION_IDS
 from scrape.api import TEMPLATE_URLS
 from scrape.files import check_create_directory
@@ -35,7 +36,6 @@ log = logging.getLogger(__name__)
 
 TIME_DELTA = timedelta(minutes=30)
 
-DATETIME_FMT_STR = "%Y-%m-%dT%H:%MZ"
 EARLIEST_DATE_STR = "2018-05-10T23:30Z"
 
 

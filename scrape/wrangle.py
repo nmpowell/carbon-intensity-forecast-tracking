@@ -6,13 +6,18 @@ Functions to extract data from JSON files and save in separate .CSV files.
 One .CSV file for each of the regions.
 """
 
+
 import json
 import logging
 import os
+from datetime import datetime
+from datetime import timezone
 
 import pandas as pd
 
-from scrape.files import get_json_files
+from scrape.api import DATETIME_FMT_STR
+from scrape.download_data import round_down_datetime
+from scrape.files import get_data_files
 
 log = logging.getLogger(__name__)
 
@@ -25,6 +30,103 @@ def load_json_file(filepath: str) -> dict:
 
 def get_forecast_data_from_json_file(filepath: str) -> dict:
     return load_json_file(filepath).get("data")
+
+
+def datetime_from_filepath(filepath: str) -> str:
+    name, _ = os.path.splitext(os.path.basename(filepath))
+    dt = datetime.strptime(name, DATETIME_FMT_STR.replace(":", "")).replace(
+        tzinfo=timezone.utc
+    )
+    # datetime_str = datetime.strftime(dt, DATETIME_FMT_STR)
+    return dt
+
+
+def calculate_time_difference(datetime_str: str, dt2: datetime) -> str:
+    """Calculate the time difference between two datetimes, the first represented as a string.
+    Returns the timedelta.
+    """
+    dt = datetime.strptime(datetime_str, DATETIME_FMT_STR).replace(tzinfo=timezone.utc)
+    return dt - dt2
+
+
+# Read CSVs and collate into a forecast summary
+def summary(input_directory: str, summary_directory: str) -> None:
+    """Read CSVs from input_directory. Collate forecasts per-region and per-fuel."""
+
+    # The idea is to learn about new future datetimes from each CSV and add them to a list.
+    # To normalise datetimes, I calculate the difference between the "now" datetime, from the filepath, and each forecasted datetime (the "from" column in each CSV).
+
+    # summary_df = pd.read_csv(os.path.join(summary_directory, "summary.csv"))
+
+    forecast_files = get_data_files(input_directory, extension=".csv")
+    for fp in forecast_files:
+
+        # The datetime of the filepath is the approximate time the forecast was made
+        fp_dt = round_down_datetime(datetime_from_filepath(fp))
+
+        df = pd.read_csv(fp)
+        # For each date in the "from" column, get the time difference from the forecast time
+        # Forecasts give positive time differences; past times give negative
+        # This is recorded in hours.
+        df["time_difference"] = df["from"].apply(
+            lambda forecast_dt: calculate_time_difference(
+                forecast_dt, fp_dt
+            ).total_seconds()
+            / 3600
+        )
+
+        # Need to convert a couple of columns to strings, otherwise we struggle to convert to the correct dtypes when loading from CSV.
+        df[["time_difference", "regions.regionid"]] = df[
+            ["time_difference", "regions.regionid"]
+        ].astype(str)
+
+        # The pivot will create a Pandas MultiIndex, the result of which is _almost_ small enough to load into Excel (but not quite).
+        # Only practical if you can load it correctly from .CSV format, which you can do with:
+        # loaded = pd.read_csv("filename.csv", header=[0,1,2], index_col=0)
+
+        df_p = df.pivot(
+            index="from",
+            columns=["regions.regionid", "time_difference"],
+            values=[
+                "regions.intensity.forecast",
+                "biomass",
+                "coal",
+                "gas",
+                "hydro",
+                "imports",
+                "nuclear",
+                "other",
+                "solar",
+                "wind",
+            ],
+        )
+
+        # # Get one dataframe per region
+        # region_groups = df.groupby("regions.regionid")
+        # for df_rg in [region_groups.get_group(g) for g in region_groups.groups]:
+        #     df_rg.pivot(
+        #         index="from",
+        #         columns="time_difference",
+        #         values=[
+        #             "regions.intensity.forecast",
+        #             "biomass",
+        #             "coal",
+        #             "gas",
+        #             "hydro",
+        #             "imports",
+        #             "nuclear",
+        #             "other",
+        #             "solar",
+        #             "wind",
+        #         ],
+        #     )
+
+        # # We will fill the "from" row at the "time_difference" column
+
+        # # df = df.set_index("time_difference")
+
+        # region_groups = df.groupby("regions.regionid")
+        # dfs = [region_groups.get_group(g) for g in region_groups.groups]
 
 
 # Below commented code used to construct some summary CSVs; will be removed.
@@ -120,7 +222,7 @@ def run_wrangle(
     if delete_json:
         log.warning("JSON files will be deleted after conversion to CSV.")
 
-    for fp in get_json_files(input_directory):
+    for fp in get_data_files(input_directory, ".json"):
         csv_fp = _wrangle_json_to_csv(fp, output_directory)
         log.info("Wrote CSV file: %s", csv_fp)
 
@@ -173,7 +275,7 @@ def run_wrangle_regional(
 ):
     """Wrangle data from JSON files into CSV files."""
 
-    for fp in get_json_files(input_directory):
+    for fp in get_data_files(input_directory, ".json"):
         csv_fp = _wrangle_regional_json_to_csv(fp, output_directory)
         log.info("Wrote CSV file: %", csv_fp)
 

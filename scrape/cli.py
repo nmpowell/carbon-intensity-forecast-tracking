@@ -5,6 +5,7 @@ from pythonjsonlogger import jsonlogger
 
 from scrape import download_data
 from scrape import wrangle
+from scrape.api import DATETIME_FMT_STR
 from scrape.api import TEMPLATE_URLS
 
 log = logging.getLogger(__name__)
@@ -75,13 +76,13 @@ def get_parser():
         "--start_date",
         default=download_data.EARLIEST_DATE_STR,
         type=str,
-        help="Start date in format {}".format(download_data.DATETIME_FMT_STR),
+        help="Start date in format {}".format(DATETIME_FMT_STR),
     )
     parser_download.add_argument(
         "--end_date",
         default=None,
         type=str,
-        help="End date in format {}".format(download_data.DATETIME_FMT_STR),
+        help="End date in format {}".format(DATETIME_FMT_STR),
     )
     parser_download.add_argument(
         "--unique_names", action="store_true", help="Use a unique name for each file."
