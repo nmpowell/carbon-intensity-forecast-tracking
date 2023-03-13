@@ -92,21 +92,21 @@ def get_parser():
         parents=[parser_common],
     )
 
-    parser_download.add_argument(
+    parser_wrangle.add_argument(
         "--input_directory",
         "-i",
         default="data",
         help="Path to input directory containing JSON files",
         type=str,
     )
-    parser_download.add_argument(
+    parser_wrangle.add_argument(
         "--output_directory",
         "-o",
         default="data",
         help="Path to output directory in which to save CSV files",
         type=str,
     )
-    parser_download.add_argument(
+    parser_wrangle.add_argument(
         "--delete_json",
         action="store_true",
         help="Delete source JSON files once CSV is saved.",

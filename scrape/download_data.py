@@ -18,13 +18,17 @@ Example usage:
 import json
 import logging
 import os
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
+from datetime import timedelta
+from datetime import timezone
 
 import requests
 from dateutil import parser
 
-from scrape.api import REGION_IDS, TEMPLATE_URLS
-from scrape.files import check_create_directory, json_data_filepath
+from scrape.api import REGION_IDS
+from scrape.api import TEMPLATE_URLS
+from scrape.files import check_create_directory
+from scrape.files import data_filepath
 
 log = logging.getLogger(__name__)
 
@@ -127,7 +131,7 @@ def run(
             if unique_names
             else inspect_datetime_str
         )
-        filepath = json_data_filepath(output_directory, filename)
+        filepath = data_filepath(output_directory, filename)
 
         # advance for next iteration
         inspect_datetime += TIME_DELTA
@@ -191,7 +195,7 @@ def run_regional(
             url = TEMPLATE_URLS.get(endpoint).format(inspect_datetime_str, region_id)
 
             filename = inspect_datetime_str + f".{region_id}"
-            filepath = json_data_filepath(output_directory, filename)
+            filepath = data_filepath(output_directory, filename)
 
             # advance for next iteration
             inspect_datetime += TIME_DELTA
