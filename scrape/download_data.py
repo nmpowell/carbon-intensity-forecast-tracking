@@ -23,8 +23,8 @@ from datetime import datetime, timedelta, timezone
 import requests
 from dateutil import parser
 
+from scrape.api import REGION_IDS, TEMPLATE_URLS
 from scrape.files import check_create_directory, json_data_filepath
-from scrape.urls import TEMPLATE_URLS
 
 log = logging.getLogger(__name__)
 
@@ -143,5 +143,69 @@ def run(
             break
 
         print(f"Downloaded: {filepath} at {datetime.utcnow()}")
+
+    log.info("Success!")
+
+
+def run_regional(
+    output_directory: str = "data",
+    endpoint: str = "one_region_forward",
+    start_date: str = EARLIEST_DATE_STR,
+    end_date: str = None,
+    num_files: int = 0,
+    now: bool = False,
+    *args,
+    **kwargs,
+):
+
+    output_directory = check_create_directory(output_directory)
+
+    capture_dt = (
+        datetime.utcnow().replace(tzinfo=timezone.utc).strftime(DATETIME_FMT_STR)
+    )
+
+    if now:
+        # override some inputs
+        start_date = capture_dt
+        num_files = 1
+        end_date = start_date
+
+    inspect_datetime, end_datetime = get_datetimes(start_date, end_date)
+
+    # Add 1 minute so the returned forecast starts with the current half hour at index 0.
+    inspect_datetime += timedelta(minutes=1)
+    end_datetime += timedelta(minutes=1)
+
+    file_count = 0
+
+    while (
+        inspect_datetime <= end_datetime and file_count < num_files
+        if num_files > 0
+        else True
+    ):
+        inspect_datetime_str = inspect_datetime.strftime(DATETIME_FMT_STR)
+        log.info("Getting data for %s ...", inspect_datetime_str)
+
+        for region_id in REGION_IDS:
+
+            url = TEMPLATE_URLS.get(endpoint).format(inspect_datetime_str, region_id)
+
+            filename = f"{region_id}." + inspect_datetime_str
+            filepath = json_data_filepath(output_directory, filename)
+
+            # advance for next iteration
+            inspect_datetime += TIME_DELTA
+            file_count += 1
+
+            if os.path.exists(filepath):
+                # Ensure we won't overwrite files as the API doesn't seem to save old forecasts
+                log.info("File already exists; skipping: %s", filepath)
+                continue
+
+            if not download_json_to_file(url, filepath):
+                log.warning("No data for this date; stopping.")
+                break
+
+            print(f"Downloaded: {filepath} at {datetime.utcnow()}")
 
     log.info("Success!")

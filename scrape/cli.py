@@ -4,13 +4,14 @@ import logging
 from pythonjsonlogger import jsonlogger
 
 from scrape import download_data
-from scrape.urls import TEMPLATE_URLS
+from scrape.api import TEMPLATE_URLS
 
 log = logging.getLogger(__name__)
 
 
 PIPELINE_FUNCTIONS = {
     "download": download_data.run,
+    "download_regional": download_data.run_regional,
     # "wrangle": wrangle.run,
 }
 
