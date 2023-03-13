@@ -21,8 +21,12 @@ def check_create_directory(directory: str = ""):
 
 def get_json_files(directory: str) -> list:
     """Get a list of complete filepaths to JSON files in the given directory."""
-    return [
-        os.path.join(directory, fn)
-        for fn in os.listdir(directory)
-        if fn.lower().endswith(".json")
-    ]
+    try:
+        return [
+            os.path.join(directory, fn)
+            for fn in os.listdir(directory)
+            if fn.lower().endswith(".json")
+        ]
+    except FileNotFoundError:
+        log.error("Directory %s does not exist", directory)
+        return []

@@ -116,6 +116,10 @@ def run_wrangle(
     Returns:
         _type_: _description_
     """
+    log.info(f"JSON files in {input_directory} will be converted to CSV...")
+    if delete_json:
+        log.warning("JSON files will be deleted after conversion to CSV.")
+
     for fp in get_json_files(input_directory):
         csv_fp = _wrangle_json_to_csv(fp, output_directory)
         log.info("Wrote CSV file: %", csv_fp)
