@@ -2,17 +2,17 @@
 
 Tracking differences between the UK National Grid's Carbon Intensity forecast and its eventual recorded value.
 
-The UK's National Grid Electricity System Operator (NGESO) publishes an API showing half-hourly carbon intensity in different GB regions. The data is based upon real, live generation statistics, values describing the relative carbon intensity of different energy sources, and a complex model describing inter-region interaction. It also has a 48-hour forecast.
+The UK's National Grid Electricity System Operator (NGESO) publishes an API showing half-hourly carbon intensity in different GB regions, together with a 48-hour forecast. The national data is based upon real metered generation statistics and values describing the relative carbon intensity of different energy sources (how much CO2 is released when generating the electricity). Regional data is based upon generation, forecast consumption, and a complex model describing inter-region interaction.
 
-For times in the future, forecasts are updated every half hour. But [the API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) does not seem to record historical forecasts. I want to know: how reliable are they?
+Forecasts are updated every half hour. But [the API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) does not seem to record historical forecasts. I want to know: how reliable are they?
 
 This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/2020/Oct/9/git-scraping/). It is heavily inspired by [food-scraper](https://github.com/codeinthehole/food-scraper).
 
 ## Basic idea
 
-- Git scrape the National Grid Carbon Intensity API on a half-hourly basis.
+- Git scrape forecasts from the National Grid Carbon Intensity API on a half-hourly basis.
 - Scraping is performed by Github Actions on a [cron schedule](https://github.com/nmpowell/carbon-intensity-forecast-tracking/blob/main/.github/workflows/run.yaml) twice per hour (see [docs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)).
-- JSON data is downloaded from the [regional forward-48hr endpoint](https://carbon-intensity.github.io/api-definitions/#get-regional-intensity-from-fw48h) and saved to `data/`. For now, it is converted to a CSV format to save space and committed to this repo.
+- JSON data is downloaded from the [regional forward-48hr endpoint](https://carbon-intensity.github.io/api-definitions/#get-regional-intensity-from-fw48h) and saved to `data/`. It is converted to a CSV format to save space, and committed to this repo.
 
 - On a less regular basis, the data is parsed and summarised.
 
@@ -61,7 +61,7 @@ I am unsure whether this has been done before. NGESO do not seem to release hist
 
 ## Data
 
-You can plot something similar using the datasets here: https://data.nationalgrideso.com/data-groups/carbon-intensity1: go to "Regional Carbon Intensity Forecast" (or "National"); click "Explore", choose "Chart", deselect "datetime" and add the regions. The "National" dataset includes the "actual" CI, so you can plot forecast alongside "actual".
+You can plot something similar using the datasets here: https://data.nationalgrideso.com/data-groups/carbon-intensity1: go to "Regional Carbon Intensity Forecast" (or "National"); click "Explore", choose "Chart", deselect "datetime" and add the regions. The "National" dataset includes the "actual" CI, so you can plot forecast alongside "actual". This is also shown here: https://carbonintensity.org.uk/#graphs
 
 But a forecast is published every 30 minutes for 48 hours ahead. How accurate are those numbers? How much do they change?
 
