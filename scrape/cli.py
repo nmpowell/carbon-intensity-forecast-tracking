@@ -13,7 +13,6 @@ log = logging.getLogger(__name__)
 
 PIPELINE_FUNCTIONS = {
     "download": download_data.run,
-    # "download_regional": download_data.run_regional,
     "wrangle": wrangle.run_wrangle,
 }
 

@@ -48,6 +48,8 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
         - the spread: variance (or mean deviation) about a central point (the actual value; not the mean), stdev, interquartile range -- of the ~96 forecasts.
     - for a region:
 
+- [ ] get National data from API endpoint
+
 ## Limitations
 
 - Because Github's Actions runners are shared (and free), the cron isn't 100% reliable. We can expect some occasional missing data.

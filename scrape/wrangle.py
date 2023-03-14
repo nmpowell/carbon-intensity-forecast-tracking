@@ -17,6 +17,7 @@ import pandas as pd
 
 from scrape.api import DATETIME_FMT_STR
 from scrape.download_data import round_down_datetime
+from scrape.files import check_create_directory
 from scrape.files import get_data_files
 
 log = logging.getLogger(__name__)
@@ -50,20 +51,22 @@ def calculate_time_difference(datetime_str: str, dt2: datetime) -> str:
 
 
 # Read CSVs and collate into a forecast summary
-def summary(input_directory: str, summary_directory: str = "") -> None:
+def summary(
+    input_directory: str, summary_directory: str = "", summary_name: str = "summary.csv"
+) -> None:
     """Read CSVs from input_directory. Collate forecasts per-region and per-fuel."""
 
     # The idea is to learn about new future datetimes from each CSV and add them to a list.
     # To normalise datetimes, I calculate the difference between the "now" datetime, from the filepath, and each forecasted datetime (the "from" column in each CSV).
 
+    summary_directory = check_create_directory(summary_directory)
+
     # get existing summary, or start from scratch
-    summary_fp = os.path.join(summary_directory, "summary.csv")
+    summary_fp = os.path.join(summary_directory, summary_name)
     if os.path.exists(summary_fp):
         summary = pd.read_csv(summary_fp, header=[0, 1, 2], index_col=0)
     else:
         summary = pd.DataFrame()
-
-    i = 0
 
     forecast_files = get_data_files(input_directory, extension=".csv")
     for fp in forecast_files:
@@ -87,9 +90,8 @@ def summary(input_directory: str, summary_directory: str = "") -> None:
             ["time_difference", "regions.regionid"]
         ].astype(str)
 
-        # The pivot will create a Pandas MultiIndex, the result of which is _almost_ small enough to load into Excel (but not quite).
+        # The pivot creates a Pandas MultiIndex, the result of which is _almost_ small enough to load into Excel (but not quite).
         # Only practical if you can load it correctly from .CSV, which you can do as above for the summary_df.
-
         df_p = df.pivot(
             index="from",
             columns=["regions.regionid", "time_difference"],
@@ -107,12 +109,8 @@ def summary(input_directory: str, summary_directory: str = "") -> None:
             ],
         )
 
-        # df_p.to_csv(f"{i}.csv")
-        i += 1
-
-        # df1.update(df2) is very fast and overwrites NaNs as we want, but it requires the index of df1 to be exhaustive i.e. includes all the indices in df2.
-        # It does not appear to require the indices to be identical (columns will be identical), but the index of df2 must be a subset of df1, or values will be lost from df2.
-
+        # .update is reasonably fast and overwrites NaNs as we want. Columns will be identical.
+        # It doesn't appear to require identical indices, but it requires the index of df1 to be exhaustive i.e. includes all the indices in df2 (a superset); df2 must be a subset of df1, or values will be lost from df2.
         union_index = summary.index.union(df_p.index)
         if summary.empty:
             summary = df_p.reindex(union_index)
