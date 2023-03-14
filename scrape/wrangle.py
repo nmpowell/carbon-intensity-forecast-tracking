@@ -214,7 +214,7 @@ def files_to_dataframe_national(input_directory: str) -> pd.DataFrame:
 #     except:
 #         print(f"No {i} file!")
 
-files_to_dataframe_national("data_national_fixed").to_csv(f"_test_national.csv")
+# files_to_dataframe_national("data_national_fixed").to_csv(f"_test_national.csv")
 
 
 def run_wrangle(
