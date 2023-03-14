@@ -26,7 +26,7 @@ import requests
 from dateutil import parser
 
 from scrape.api import DATETIME_FMT_STR
-from scrape.api import REGION_IDS
+from scrape.api import EARLIEST_DATE_STR
 from scrape.api import TEMPLATE_URLS
 from scrape.files import check_create_directory
 from scrape.files import data_filepath
@@ -35,8 +35,6 @@ log = logging.getLogger(__name__)
 
 
 TIME_DELTA = timedelta(minutes=30)
-
-EARLIEST_DATE_STR = "2018-05-10T23:30Z"
 
 
 def download_json_to_file(url: str, filepath: str):

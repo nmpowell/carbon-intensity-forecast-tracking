@@ -158,14 +158,14 @@ def summary(
 #     }
 
 
-# def get_national_intensity_forecasts(
-#     data: dict,
-# ) -> dict:
-#     return dict(
-#         pd.json_normalize(data)[
-#             ["from", "intensity.forecast", "intensity.actual"]
-#         ].iloc[0]
-#     )
+def get_national_intensity_forecasts(
+    data: dict,
+) -> dict:
+    return dict(
+        pd.json_normalize(data)[
+            ["from", "intensity.forecast", "intensity.actual"]
+        ].iloc[0]
+    )
 
 
 # def files_to_dataframe(input_directory: str, region_id: int = 0) -> pd.DataFrame:
@@ -187,23 +187,23 @@ def summary(
 #     return df
 
 
-# def files_to_dataframe_national(input_directory: str) -> pd.DataFrame:
-#     # list files in the directory
-#     files = os.listdir(input_directory)
-#     subset = []
-#     for filepath in files:
-#         data = get_forecast_data_from_json_file(os.path.join(input_directory, filepath))
-#         results = get_national_intensity_forecasts(data)
-#         results["filename"] = os.path.basename(filepath)
-#         subset.append(results)
-#     df = pd.DataFrame(subset)
-#     # sort columns alphabetically
-#     df = df.reindex(sorted(df.columns), axis=1)
-#     # use "filename" as the index
-#     df.set_index("filename", inplace=True)
-#     # sort the index alphabetically
-#     df.sort_index(inplace=True)
-#     return df
+def files_to_dataframe_national(input_directory: str) -> pd.DataFrame:
+    # list files in the directory
+    files = os.listdir(input_directory)
+    subset = []
+    for filepath in files:
+        data = get_forecast_data_from_json_file(os.path.join(input_directory, filepath))
+        results = get_national_intensity_forecasts(data)
+        results["filename"] = os.path.basename(filepath)
+        subset.append(results)
+    df = pd.DataFrame(subset)
+    # sort columns alphabetically
+    df = df.reindex(sorted(df.columns), axis=1)
+    # use "filename" as the index
+    df.set_index("filename", inplace=True)
+    # sort the index alphabetically
+    df.sort_index(inplace=True)
+    return df
 
 
 # for i in range(20):
@@ -214,7 +214,7 @@ def summary(
 #     except:
 #         print(f"No {i} file!")
 
-# files_to_dataframe_national("data_national_fixed").to_csv(f"_test_national.csv")
+files_to_dataframe_national("data_national_fixed").to_csv(f"_test_national.csv")
 
 
 def run_wrangle(
