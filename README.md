@@ -175,6 +175,9 @@ To enable GitHub Actions, within the repo `Settings > Actions > General > Workfl
 
 Output JSON files are named for the `{from}` time given: `data/<endpoint>/<from-datetime>.json`.
 
+3. Parse the data and produce CSV files. Example:
+    - `python3 run.py wrangle --input_directory "data/national_fw48h" --output_dir "test"`
+
 ## Data storage
 
 The JSON format isn't great for parsing and plotting, and the files are huge. So here they're wrangled (`wrangle.py`) into CSV.

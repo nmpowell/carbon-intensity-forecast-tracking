@@ -112,6 +112,13 @@ def get_parser():
         action="store_true",
         help="Delete source JSON files once CSV is saved.",
     )
+    parser_wrangle.add_argument(
+        "--endpoint",
+        choices=TEMPLATE_URLS.keys(),
+        default="regional_fw48h",
+        type=str,
+        help="Endpoint to use. Options: {}".format(TEMPLATE_URLS.keys()),
+    )
 
     return parser
 

@@ -206,21 +206,37 @@ def files_to_dataframe_national(input_directory: str) -> pd.DataFrame:
     return df
 
 
-# for i in range(20):
-#     try:
-#         files_to_dataframe("data_forecasts", region_id=i).to_csv(
-#             f"_test_region_{i}.csv"
-#         )
-#     except:
-#         print(f"No {i} file!")
+def _regional_json_to_csv(data) -> pd.DataFrame:
+    df = pd.json_normalize(
+        data,
+        record_path=["regions", "generationmix"],
+        meta=["from", ["regions", "regionid"], ["regions", "intensity", "forecast"]],
+    )
+    return df.pivot(
+        index=["from", "regions.regionid", "regions.intensity.forecast"],
+        columns="fuel",
+        values="perc",
+    )
 
-# files_to_dataframe_national("data_national_fixed").to_csv(f"_test_national.csv")
+
+def _national_generation_json_to_csv(data) -> pd.DataFrame:
+    df = pd.json_normalize(data, record_path=["generationmix"], meta=["from"])
+    return df.pivot(index="from", columns="fuel", values="perc")
+
+
+# Select wrangling function based upon the endpoint (thus, the JSON format)
+WRANGLE_SELECT = {
+    "national_generation_pt24h": _national_generation_json_to_csv,
+    "regional_pt24h": _regional_json_to_csv,
+    "regional_fw48h": _regional_json_to_csv,
+}
 
 
 def run_wrangle(
     input_directory: str = "data",
     output_directory: str = None,
     delete_json: bool = False,
+    endpoint: str = "",
     *args,
     **kwargs,
 ):
@@ -241,8 +257,10 @@ def run_wrangle(
     if delete_json:
         log.warning("JSON files will be deleted after conversion to CSV.")
 
+    output_directory = check_create_directory(output_directory)
+
     for fp in get_data_files(input_directory, ".json"):
-        csv_fp = _wrangle_json_to_csv(fp, output_directory)
+        csv_fp = _wrangle_json_to_csv(fp, endpoint, output_directory)
         log.info("Wrote CSV file: %s", csv_fp)
 
         # delete the json file if we have a csv
@@ -251,7 +269,9 @@ def run_wrangle(
             log.debug("Deleted JSON file: %s", fp)
 
 
-def _wrangle_json_to_csv(filepath: str, output_directory: str = None) -> str:
+def _wrangle_json_to_csv(
+    filepath: str, endpoint: str, output_directory: str = None
+) -> str:
     """Wrangle a single JSON file to a CSV file.
 
     Args:
@@ -264,16 +284,7 @@ def _wrangle_json_to_csv(filepath: str, output_directory: str = None) -> str:
     # Load the JSON file, normalise, and return a pandas DataFrame
     data = get_forecast_data_from_json_file(filepath)
 
-    df = pd.json_normalize(
-        data,
-        record_path=["regions", "generationmix"],
-        meta=["from", ["regions", "regionid"], ["regions", "intensity", "forecast"]],
-    )
-    df = df.pivot(
-        index=["from", "regions.regionid", "regions.intensity.forecast"],
-        columns="fuel",
-        values="perc",
-    )
+    df = WRANGLE_SELECT.get(endpoint)(data)
 
     output_fp = os.path.join(
         output_directory or os.path.dirname(filepath),
