@@ -58,11 +58,13 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
 
 ### Actual intensity and generation mix
 
-To measure regional forecast accuracy it would be preferable to have a retrospective `actual` CI value for each region, but the API does not seem to provide this except at the national level: at https://api.carbonintensity.org.uk/intensity for the previous complete half-hour window; https://api.carbonintensity.org.uk/intensity/2023-03-11T12:01Z for a specific window; and https://api.carbonintensity.org.uk/intensity/2023-03-11T12:01Z/fw24h for that window and the next 48 hours' worth. Unfortunately, it seems these can change a little after the fact.
+To measure regional forecast accuracy it would be preferable to have a retrospective `actual` CI value for each region, but the API does not seem to provide this except at the national level: https://api.carbonintensity.org.uk/intensity for the previous complete half-hour window; https://api.carbonintensity.org.uk/intensity/2023-03-11T12:01Z for a specific window; https://api.carbonintensity.org.uk/intensity/2023-03-11T12:01Z/fw24h for that window and the next 48 hours' worth (etc.).
 
-Regional forecasts also seem to be subject to this slight adjustment, although they do seem to settle down after a while.
+From tracking the `pt24h` data, it seems these "actual" values, as well as forecasts, can change slightly after the fact, i.e. after the relevant time window has passed.
 
-- The API's forecast and "actual" values seem to vary even after the time window has passed. I've attempted to track this, as well, to give a good anchor against which we can measure forecast accuracy. For the purposes of this project, let us say the "final forecast" for each region is the one accessible 6 hours after the start of the time window. So if we're measuring the accuracy of a half-hour forecasted window beginning 2023-03-11T12:00, 
+although they do seem to settle down after a while
+
+I've attempted to track this, as well, to give a good anchor against which we can measure forecast accuracy. For the purposes of this project, let us say the "final forecast" is the one accessible 6 hours after the start of the time window. So if we're measuring the accuracy of a half-hour window beginning 2023-03-11T12:00Z, we'll use the "final forecast" and "actual" intensity values from 2023-03-11T18:00Z.
 
 ## Prior work
 
@@ -72,7 +74,7 @@ I am unsure whether this has been done before. NGESO do not seem to release hist
 
 You can plot something similar using the datasets here: https://data.nationalgrideso.com/data-groups/carbon-intensity1: go to "Regional Carbon Intensity Forecast" (or "National"); click "Explore", choose "Chart", deselect "datetime" and add the regions. The "National" dataset includes the "actual" CI, so you can plot forecast alongside "actual". This is also shown here: https://carbonintensity.org.uk/#graphs
 
-But a forecast is published every 30 minutes for 48 hours ahead. How accurate are those numbers? How much do they change?
+A forecast is published every 30 minutes for 48 hours ahead. How accurate are those numbers? How much do they change with each new forecast?
 
 - A point in time at the start of a real window: 202303091630 or a UTC datetime
     - the number of half-hours preceding: 1-96, or -96 to -1
@@ -164,8 +166,9 @@ Confirm suspicions that historical forecasts are not saved.
 ## Usage
 
 1. Activate the venv: `source venv/bin/activate`
-2. Download a JSON file:
-    - 48-hour forward forecast from the current window: `python3 run.py download --output_dir "data" --now`
+2. Download a JSON file. Examples:
+    - 48-hour forward forecast from the current window: `python3 run.py download --output_dir "data" --now` (default endpoint)
+    - 24-hour past "forecasts" from the current window: `python3 run.py download --output_dir "data" --now --endpoint regional_pt24h`
     - national intensity for a given date: `python run.py download --start_date "2023-03-13T12:01Z" -n 1 --endpoint national --unique_names`
 
 Download JSON files for individual regions: `python run.py download_regional -o data --start_date "2023-03-13T12:01Z" -n 1 --endpoint one_region_fw48h`
@@ -175,9 +178,9 @@ To enable GitHub Actions, within the repo `Settings > Actions > General > Workfl
 
 Output JSON files are named `data/<capture-datetime>_<target-datetime>.json`.
 
-## Storing
+## Data storage
 
-The JSON format isn't great for parsing and plotting values. Instead wrangle into a CSV.
+The JSON format isn't great for parsing and plotting, and the files are huge. So here they're wrangled (`wrangle.py`) into CSV.
 
 1. From the JSON we have downloaded, get the "from" timestamps.
 
