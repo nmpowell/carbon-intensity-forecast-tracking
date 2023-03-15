@@ -244,8 +244,9 @@ def run_wrangle(
 
     Args:
         input_directory (str, optional): _description_. Defaults to "data".
-        output_directory (str, optional): _description_. Defaults to None.
+        output_directory (str, optional): _description_. Defaults to None (same as input).
         delete_json (bool, optional): _description_. Defaults to False.
+        endpoint (str, optional): _description_. Must be a valid endpoint from WRANGLE_SELECT.
 
     Raises:
         ValueError: _description_
@@ -256,8 +257,6 @@ def run_wrangle(
     log.info(f"JSON files in {input_directory} will be converted to CSV...")
     if delete_json:
         log.warning("JSON files will be deleted after conversion to CSV.")
-
-    output_directory = check_create_directory(output_directory)
 
     for fp in get_data_files(input_directory, ".json"):
         csv_fp = _wrangle_json_to_csv(fp, endpoint, output_directory)
@@ -286,8 +285,11 @@ def _wrangle_json_to_csv(
 
     df = WRANGLE_SELECT.get(endpoint)(data)
 
+    output_directory = check_create_directory(
+        output_directory or os.path.dirname(filepath)
+    )
     output_fp = os.path.join(
-        output_directory or os.path.dirname(filepath),
+        output_directory,
         os.path.basename(filepath.replace(".json", ".csv")),
     )
     df.to_csv(output_fp)
