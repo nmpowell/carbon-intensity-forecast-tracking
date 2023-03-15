@@ -12,16 +12,14 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
 
 - Git scrape forecasts from the National Grid Carbon Intensity API on a half-hourly basis.
 - Scraping is performed by Github Actions on a [cron schedule](https://github.com/nmpowell/carbon-intensity-forecast-tracking/blob/main/.github/workflows/run.yaml) twice per hour (see [docs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)).
-- JSON data is downloaded from the [regional forward-48hr endpoint](https://carbon-intensity.github.io/api-definitions/#get-regional-intensity-from-fw48h) and saved to `data/`. It is converted to a CSV format to save space, and committed to this repo.
+- JSON data is downloaded from the [regional forward-48hr endpoint](https://carbon-intensity.github.io/api-definitions/#get-regional-intensity-from-fw48h), and others, and saved to `data/`. It is converted to a CSV format to save space, and committed to this repo.
+- Then it is parsed into something more easily tracked with graphs and statistics
+- Finally, we summarise with statistics and plots, and attempt to estimate the accuracy of the forecasts.
 
-- Then parse the data into something we can track statistically
     - the timepoint, "from"
     - the number of hours in the future the recording was taken from the API (including negative, so, past) (0.5 increments)
 - Matplotlib is used to generate plots from this data
 - Estimate the accuracy
-
-- Future
-    - track regions' performance i.e. lower CI
 
 ### Assessing forecasts
 
@@ -219,3 +217,7 @@ A: look at data/2023-03-10T1200Z.json. At position 0, this has:
 - https://api.carbonintensity.org.uk/regional/intensity/2023-03-11T23:31Z/fw48h/regionid/{1-18}
 
 Wrangling data from here is far less complex than the endpoint with all the regions.
+
+## Future work
+
+- track regions' performance i.e. lower CI
