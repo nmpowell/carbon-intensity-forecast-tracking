@@ -29,7 +29,8 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
 - We can do this for each of the published regions and the National data.
 
 
-- TODO:
+## TODO
+
 - Save the data to a local database or spreadsheet, in a format more suited to graphing, also committed to this repo.
 - Generate graphs
 - Display, for a given half-hour window in history:
@@ -47,6 +48,9 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
     - for a region:
 
 - [ ] get National data from API endpoint
+- [ ] investigate the data from BMRS: actual? total? https://www.bmreports.com/bmrs/?q=help/about-us
+
+- Canonincal great design for this is https://grid.iamkate.com/
 
 ## Limitations
 
