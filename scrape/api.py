@@ -10,6 +10,7 @@ TEMPLATE_URLS = {
     "national": BASE_URL + "/intensity/{}",
     "national_fw48h": BASE_URL + "/intensity/{}/fw48h",
     "national_pt24h": BASE_URL + "/intensity/{}/pt24h",
+    "national_generation_pt24h": BASE_URL + "/generation/{}/pt24h",
 }
 
 REGION_IDS = range(1, 18 + 1)

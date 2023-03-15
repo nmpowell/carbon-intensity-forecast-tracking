@@ -6,7 +6,7 @@ The UK's National Grid Electricity System Operator (NGESO) publishes an API show
 
 Forecasts are updated every half hour. But [the API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) does not seem to record historical forecasts. I want to know: how reliable are they?
 
-This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/2020/Oct/9/git-scraping/). It is heavily inspired by [food-scraper](https://github.com/codeinthehole/food-scraper).
+This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/2020/Oct/9/git-scraping/). It is inspired by [food-scraper](https://github.com/codeinthehole/food-scraper).
 
 ## Basic idea
 
@@ -23,10 +23,10 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
 
 ### Assessing forecasts
 
-- For each actual 30-minute period defined by its "from" datetime, we will capture published forecasts for that period.
-- Forecasts are published up to 48 hours ahead, so we should capture 96 forecasts for one real period.
-- We'll also capture the actual recorded CI value.
-- We can do this for each of the 17 published regions, as well as the National data.
+- For each actual 30-minute period defined by its "from" datetime, capture published forecasts for that period.
+- Forecasts are published up to 48 hours ahead, so we should expect about 96 future forecasts for one real period, and 48 more from the "past" 24 hours.
+- Also capture the "actual" values by choosing a stable point about 6 hours after the window has passed.
+- We can do this for each of the published regions and the National data.
 
 
 - TODO:
@@ -105,20 +105,16 @@ If we query the 48h forecast API at a given time X, the earliest time window (th
 
 - Right now: https://api.carbonintensity.org.uk/regional/intensity/2023-03-09T20:01Z/fw48h
 
-### Historical Data
-
-Confirm suspicions that historical forecasts are not saved.
-
 ### API and data notes
 
 - The national data and forecasts are different from the regional (national != GB).
 
-- This will give you the current CI and the final forecast for this period: https://api.carbonintensity.org.uk/intensity
-- A little counter-intuitively, datetimes given to https://api.carbonintensity.org.uk/intensity/ ...
+- This will give you the CI and forecast for the current period: https://api.carbonintensity.org.uk/intensity
+- Datetimes given to https://api.carbonintensity.org.uk/intensity/ ...
     1. with `{from}` like https://api.carbonintensity.org.uk/intensity/2023-03-10T16:00Z
     2. with `{from}/{to}` like https://api.carbonintensity.org.uk/intensity/2023-03-10T16:00Z/2023-03-10T16:59Z
-    ... are all floored to give data from the _prior_ 30 minute window, so the syntax is up to _and including_ the `:00` and `:30` timestamps. This means (1) will give the window `(2023-03-10T15:30Z, 2023-03-10T16:00Z]` and (2) will give two results, with the window `(2023-03-10T15:30Z, 2023-03-10T16:30Z]`. This might not be what you expect, given the schema says `{from}`. If you request +1 minute, `2023-03-10T16:01Z`, you'll get the "expected" window. Seconds are ingored.
-- This endpoint includes a `forecast` alongside the `actual` CI value. This forecast appears to be the last forecast for that datetime. The 95-odd prior forecasts are discarded/lost/overwritten (hence, this project to scrape them).
+    ... are all floored to give data from the _prior_ 30 minute window, so the syntax is up to _and including_ the `:00` and `:30` timestamps. (1) will give the window `(2023-03-10T15:30Z, 2023-03-10T16:00Z]`. (2) will give two results, with the window `(2023-03-10T15:30Z, 2023-03-10T16:30Z]`. If you request +1 minute, `2023-03-10T16:01Z`, you'll get the "expected" window. Seconds are ignored.
+- This endpoint includes a `forecast` alongside the `actual` CI value. This forecast appears to be the last forecast for that datetime. The 95-odd prior forecasts are unavailable (hence, this project to scrape them).
 - Regional forecast data does not appear to exist before https://api.carbonintensity.org.uk/regional/intensity/2018-05-10T23:30Z/fw48h
 
 - They seem to have saved forecasts historically. The earliet seems to be "2018-05-10T23:30Z"
@@ -170,11 +166,10 @@ Confirm suspicions that historical forecasts are not saved.
     - national intensity for a given date: `python run.py download --start_date "2023-03-13T12:01Z" -n 1 --endpoint national --unique_names`
 
 Download JSON files for individual regions: `python run.py download_regional -o data --start_date "2023-03-13T12:01Z" -n 1 --endpoint one_region_fw48h`
-`python run.py download_regional -o data --now --endpoint one_region_fw48h`
 
 To enable GitHub Actions, within the repo `Settings > Actions > General > Workflow permissions > Read and write permissions`.
 
-Output JSON files are named `data/<capture-datetime>_<target-datetime>.json`.
+Output JSON files are named for the `{from}` time given: `data/<endpoint>/<from-datetime>.json`.
 
 ## Data storage
 
