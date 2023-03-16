@@ -272,8 +272,7 @@ def run_wrangle(
             log.info("CSV file already exists: %s", csv_fp)
             continue
 
-        _wrangle_json_to_csv(fp, endpoint, output_directory)
-        log.info("Wrote CSV file: %s", csv_fp)
+        _wrangle_json_to_csv(fp, csv_fp, endpoint, output_directory)
 
         # delete the json file if we have a csv
         if os.path.isfile(csv_fp) and delete_json:
@@ -282,7 +281,7 @@ def run_wrangle(
 
 
 def _wrangle_json_to_csv(
-    filepath: str, endpoint: str, output_directory: str = None
+    filepath: str, csv_fp: str, endpoint: str, output_directory: str = None
 ) -> str:
     """Wrangle a single JSON file to a CSV file.
 
@@ -296,5 +295,6 @@ def _wrangle_json_to_csv(
 
     df = WRANGLE_SELECT.get(endpoint)(data)
 
-    df.to_csv(filepath)
+    df.to_csv(csv_fp)
+    log.info("Wrote CSV file: %s", csv_fp)
     return
