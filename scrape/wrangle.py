@@ -258,8 +258,21 @@ def run_wrangle(
     if delete_json:
         log.warning("JSON files will be deleted after conversion to CSV.")
 
+    # We don't need to get the output directory from each file if we have input_directory
+    output_directory = check_create_directory(
+        output_directory or os.path.normpath(input_directory)
+    )
+
     for fp in get_data_files(input_directory, ".json"):
-        csv_fp = _wrangle_json_to_csv(fp, endpoint, output_directory)
+        csv_fp = os.path.join(
+            output_directory,
+            os.path.basename(fp.replace(".json", ".csv")),
+        )
+        if os.path.isfile(csv_fp):
+            log.info("CSV file already exists: %s", csv_fp)
+            continue
+
+        _wrangle_json_to_csv(fp, endpoint, output_directory)
         log.info("Wrote CSV file: %s", csv_fp)
 
         # delete the json file if we have a csv
@@ -274,23 +287,14 @@ def _wrangle_json_to_csv(
     """Wrangle a single JSON file to a CSV file.
 
     Args:
-        filepath (str): _description_
+        filepath (str): Input JSON file path.
         output_directory (str, optional): _description_. Defaults to None.
-
-    Returns:
-        str: _description_
     """
+
     # Load the JSON file, normalise, and return a pandas DataFrame
     data = get_forecast_data_from_json_file(filepath)
 
     df = WRANGLE_SELECT.get(endpoint)(data)
 
-    output_directory = check_create_directory(
-        output_directory or os.path.dirname(filepath)
-    )
-    output_fp = os.path.join(
-        output_directory,
-        os.path.basename(filepath.replace(".json", ".csv")),
-    )
-    df.to_csv(output_fp)
-    return output_fp
+    df.to_csv(filepath)
+    return
