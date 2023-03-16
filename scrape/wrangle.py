@@ -232,6 +232,30 @@ WRANGLE_SELECT = {
 }
 
 
+def _wrangle_json_to_csv(
+    filepath: str, csv_fp: str, endpoint: str, output_directory: str = None
+) -> str:
+    """Wrangle a single JSON file to a CSV file.
+
+    Args:
+        filepath (str): Input JSON file path.
+        output_directory (str, optional): _description_. Defaults to None.
+    """
+
+    # Load the JSON file, normalise, and return a pandas DataFrame
+    try:
+        data = get_forecast_data_from_json_file(filepath)
+    except json.decoder.JSONDecodeError as e:
+        log.error("File skipped; JSONDecodeError: %s", e)
+        return
+
+    df = WRANGLE_SELECT.get(endpoint)(data)
+
+    df.to_csv(csv_fp)
+    log.info("Wrote CSV file: %s", csv_fp)
+    return
+
+
 def run_wrangle(
     input_directory: str = "data",
     output_directory: str = None,
@@ -278,23 +302,3 @@ def run_wrangle(
         if os.path.isfile(csv_fp) and delete_json:
             os.remove(fp)
             log.debug("Deleted JSON file: %s", fp)
-
-
-def _wrangle_json_to_csv(
-    filepath: str, csv_fp: str, endpoint: str, output_directory: str = None
-) -> str:
-    """Wrangle a single JSON file to a CSV file.
-
-    Args:
-        filepath (str): Input JSON file path.
-        output_directory (str, optional): _description_. Defaults to None.
-    """
-
-    # Load the JSON file, normalise, and return a pandas DataFrame
-    data = get_forecast_data_from_json_file(filepath)
-
-    df = WRANGLE_SELECT.get(endpoint)(data)
-
-    df.to_csv(csv_fp)
-    log.info("Wrote CSV file: %s", csv_fp)
-    return

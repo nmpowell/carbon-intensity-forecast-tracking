@@ -2,9 +2,9 @@
 
 Tracking differences between the UK National Grid's Carbon Intensity forecast and its eventual recorded value.
 
-The UK's National Grid Electricity System Operator (NGESO) publishes an API showing half-hourly carbon intensity in different GB regions, together with a 48-hour forecast. The national data is based upon real metered generation statistics and values describing the relative carbon intensity of different energy sources (how much CO2 is released when generating the electricity). Regional data is based upon generation, forecast consumption, and a complex model describing inter-region interaction.
+The UK's National Grid Electricity System Operator (NGESO) publishes an API showing half-hourly carbon intensity in different GB regions, together with a 48-hour forecast. The national data is based upon real metered generation statistics and values describing the relative carbon intensity of different energy sources (how much CO2 is released when generating the electricity). Regional data is based upon forecasted generation, consumption, and a complex model describing inter-region interaction.
 
-Forecasts are updated every half hour. But [the API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) does not seem to record historical forecasts. I want to know: how reliable are they?
+Forecasts are updated every half hour. But [the API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) does not seem to record historical forecasts. How reliable are they?
 
 This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/2020/Oct/9/git-scraping/). It is inspired by [food-scraper](https://github.com/codeinthehole/food-scraper).
 
