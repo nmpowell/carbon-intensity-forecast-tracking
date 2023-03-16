@@ -223,3 +223,6 @@ Wrangling data from here is far less complex than the endpoint with all the regi
 ## Future work
 
 - track regions' performance i.e. lower CI
+
+- Tests
+    - check saving valid json and csv
