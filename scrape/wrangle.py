@@ -292,11 +292,10 @@ def run_wrangle(
             output_directory,
             os.path.basename(fp.replace(".json", ".csv")),
         )
-        if os.path.isfile(csv_fp):
+        if not os.path.isfile(csv_fp):
+            _wrangle_json_to_csv(fp, csv_fp, endpoint, output_directory)
+        else:
             log.info("CSV file already exists: %s", csv_fp)
-            continue
-
-        _wrangle_json_to_csv(fp, csv_fp, endpoint, output_directory)
 
         # delete the json file if we have a csv
         if os.path.isfile(csv_fp) and delete_json:
