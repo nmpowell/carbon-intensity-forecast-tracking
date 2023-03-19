@@ -18,6 +18,7 @@ import pandas as pd
 from scrape.api import DATETIME_FMT_STR
 from scrape.download_data import round_down_datetime
 from scrape.files import check_create_directory
+from scrape.files import get_csv_path
 from scrape.files import get_data_files
 
 log = logging.getLogger(__name__)
@@ -288,10 +289,7 @@ def run_wrangle(
     )
 
     for fp in get_data_files(input_directory, ".json"):
-        csv_fp = os.path.join(
-            output_directory,
-            os.path.basename(fp.replace(".json", ".csv")),
-        )
+        csv_fp = get_csv_path(output_directory, fp)
         if not os.path.isfile(csv_fp):
             _wrangle_json_to_csv(fp, csv_fp, endpoint, output_directory)
         else:

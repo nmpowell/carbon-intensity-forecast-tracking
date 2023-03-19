@@ -30,6 +30,7 @@ from scrape.api import EARLIEST_DATE_STR
 from scrape.api import TEMPLATE_URLS
 from scrape.files import check_create_directory
 from scrape.files import data_filepath
+from scrape.files import get_csv_path
 
 log = logging.getLogger(__name__)
 
@@ -135,7 +136,12 @@ def run(
         inspect_datetime += TIME_DELTA
         file_count += 1
 
-        if os.path.exists(filepath):
+        if any(
+            [
+                os.path.exists(filepath),
+                os.path.exists(get_csv_path(output_directory, filepath)),
+            ]
+        ):
             # Ensure we won't overwrite files as the API doesn't seem to save old forecasts
             log.info("File already exists; skipping: %s", filepath)
             continue

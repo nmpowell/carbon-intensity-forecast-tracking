@@ -11,6 +11,14 @@ def data_filepath(
     return os.path.join(output_directory, datetime_str.replace(":", "") + extension)
 
 
+def get_csv_path(output_directory: str, filepath: str) -> str:
+    """Given a JSON filepath, return the CSV filepath."""
+    return os.path.join(
+        output_directory,
+        os.path.basename(filepath.replace(".json", ".csv")),
+    )
+
+
 def check_create_directory(directory: str = ""):
     """Recursively create a specified directory tree."""
     ndir = os.path.realpath(os.path.expanduser(os.path.normpath(directory)))
