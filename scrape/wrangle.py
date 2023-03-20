@@ -225,8 +225,15 @@ def _national_generation_json_to_csv(data) -> pd.DataFrame:
     return df.pivot(index="from", columns="fuel", values="perc")
 
 
+def _national_json_to_csv(data) -> pd.DataFrame:
+    df = pd.json_normalize(data)
+    return df.set_index("from").drop(columns=["to", "intensity.index"])
+
+
 # Select wrangling function based upon the endpoint (thus, the JSON format)
 WRANGLE_SELECT = {
+    "national_fw48h": _national_json_to_csv,
+    "national_pt24h": _national_json_to_csv,
     "national_generation_pt24h": _national_generation_json_to_csv,
     "regional_pt24h": _regional_json_to_csv,
     "regional_fw48h": _regional_json_to_csv,

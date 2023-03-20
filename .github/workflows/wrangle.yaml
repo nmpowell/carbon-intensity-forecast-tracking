@@ -35,6 +35,7 @@ jobs:
           python run.py wrangle --input_directory data/regional_fw48h --delete_json | tee -a commit_msg.txt
           python run.py wrangle --input_directory data/regional_pt24h --delete_json | tee -a commit_msg.txt
           python3 run.py wrangle --input_directory "data/national_generation_pt24h" --endpoint "national_generation_pt24h" --delete_json | tee -a commit_msg.txt
+          python3 run.py wrangle --input_directory "data/national_fw48h" --endpoint "national_fw48h"
 
       - name: Commit and push new data
         run: |-
