@@ -21,10 +21,11 @@ from scrape.files import get_data_files
 log = logging.getLogger(__name__)
 
 
-SUMMARY_COLUMNS = {
+SUMMARY_FORMATS = {
     "national": {
         "columns": ["time_difference"],
         "values": ["intensity.forecast", "intensity.actual"],
+        "header_rows": [0, 1],
     },
     "regional": {
         "columns": ["regions.regionid", "time_difference"],
@@ -40,6 +41,7 @@ SUMMARY_COLUMNS = {
             "solar",
             "wind",
         ],
+        "header_rows": [0, 1, 2],
     },
 }
 
@@ -61,7 +63,7 @@ def calculate_time_difference(datetime_str: str, dt2: datetime) -> str:
 
 
 # Read CSVs and collate into a forecast summary
-def summary(
+def run(
     input_directory: str,
     output_directory: str = None,
     endpoint: "str" = "regional",
@@ -87,12 +89,16 @@ def summary(
     summary_name = summary_name or "summary_{}.csv".format(abbreviated_endpoint)
     summary_fp = os.path.join(summary_directory, summary_name)
     if os.path.exists(summary_fp):
-        summary = pd.read_csv(summary_fp, header=[0, 1, 2], index_col=0)
+        summary = pd.read_csv(
+            summary_fp,
+            header=SUMMARY_FORMATS[abbreviated_endpoint].get("header_rows"),
+            index_col=0,
+        )
     else:
         summary = pd.DataFrame()
 
-    group_column_names = SUMMARY_COLUMNS[abbreviated_endpoint].get("columns")
-    value_column_names = SUMMARY_COLUMNS[abbreviated_endpoint].get("values")
+    group_column_names = SUMMARY_FORMATS[abbreviated_endpoint].get("columns")
+    value_column_names = SUMMARY_FORMATS[abbreviated_endpoint].get("values")
 
     forecast_files = get_data_files(input_directory, extension=".csv")
     for fp in forecast_files:

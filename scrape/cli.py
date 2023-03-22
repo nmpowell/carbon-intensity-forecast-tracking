@@ -4,6 +4,7 @@ import logging
 from pythonjsonlogger import jsonlogger
 
 from scrape import download_data
+from scrape import summary
 from scrape import wrangle
 from scrape.api import DATETIME_FMT_STR
 from scrape.api import TEMPLATE_URLS
@@ -14,6 +15,7 @@ log = logging.getLogger(__name__)
 PIPELINE_FUNCTIONS = {
     "download": download_data.run,
     "wrangle": wrangle.run_wrangle,
+    "summary": summary.run,
 }
 
 
@@ -37,6 +39,20 @@ def get_parser():
         action="store_true",
         help="Enable debug logging",
     )
+    parser_common.add_argument(
+        "--output_directory",
+        "-o",
+        default=None,
+        help="Path to output directory",
+        type=str,
+    )
+    parser_common.add_argument(
+        "--endpoint",
+        choices=TEMPLATE_URLS.keys(),
+        default="regional_fw48h",
+        type=str,
+        help="Endpoint to use. Options: {}".format(TEMPLATE_URLS.keys()),
+    )
 
     # positional argument for choosing the pipeline function to be called
     subparsers = parser.add_subparsers(dest="func")
@@ -45,21 +61,6 @@ def get_parser():
         aliases=["download_regional"],
         help="Download JSON file(s) from the API.",
         parents=[parser_common],
-    )
-
-    parser_download.add_argument(
-        "--output_directory",
-        "-o",
-        default="data",
-        help="Path to output directory",
-        type=str,
-    )
-    parser_download.add_argument(
-        "--endpoint",
-        choices=TEMPLATE_URLS.keys(),
-        default="regional_fw48h",
-        type=str,
-        help="Endpoint to use. Options: {}".format(TEMPLATE_URLS.keys()),
     )
     parser_download.add_argument(
         "--now", action="store_true", help="Download current data and nothing else."
@@ -101,23 +102,23 @@ def get_parser():
         type=str,
     )
     parser_wrangle.add_argument(
-        "--output_directory",
-        "-o",
-        default=None,
-        help="Path to output directory in which to save CSV files",
-        type=str,
-    )
-    parser_wrangle.add_argument(
         "--delete_json",
         action="store_true",
         help="Delete source JSON files once CSV is saved.",
     )
-    parser_wrangle.add_argument(
-        "--endpoint",
-        choices=TEMPLATE_URLS.keys(),
-        default="regional_fw48h",
+
+    parser_summary = subparsers.add_parser(
+        "summary",
+        help="Generate a summary of CSV files.",
+        parents=[parser_common],
+    )
+
+    parser_summary.add_argument(
+        "--input_directory",
+        "-i",
+        default="data",
+        help="Path to input directory containing CSV files",
         type=str,
-        help="Endpoint to use. Options: {}".format(TEMPLATE_URLS.keys()),
     )
 
     return parser

@@ -10,13 +10,9 @@ One .CSV file for each of the regions.
 import json
 import logging
 import os
-from datetime import datetime
-from datetime import timezone
 
 import pandas as pd
 
-from scrape.api import DATETIME_FMT_STR
-from scrape.download_data import round_down_datetime
 from scrape.files import check_create_directory
 from scrape.files import get_csv_path
 from scrape.files import get_data_files
@@ -44,14 +40,14 @@ def get_forecast_data_from_json_file(filepath: str) -> dict:
 #     }
 
 
-def get_national_intensity_forecasts(
-    data: dict,
-) -> dict:
-    return dict(
-        pd.json_normalize(data)[
-            ["from", "intensity.forecast", "intensity.actual"]
-        ].iloc[0]
-    )
+# def get_national_intensity_forecasts(
+#     data: dict,
+# ) -> dict:
+#     return dict(
+#         pd.json_normalize(data)[
+#             ["from", "intensity.forecast", "intensity.actual"]
+#         ].iloc[0]
+#     )
 
 
 # def files_to_dataframe(input_directory: str, region_id: int = 0) -> pd.DataFrame:
@@ -73,23 +69,23 @@ def get_national_intensity_forecasts(
 #     return df
 
 
-def files_to_dataframe_national(input_directory: str) -> pd.DataFrame:
-    # list files in the directory
-    files = os.listdir(input_directory)
-    subset = []
-    for filepath in files:
-        data = get_forecast_data_from_json_file(os.path.join(input_directory, filepath))
-        results = get_national_intensity_forecasts(data)
-        results["filename"] = os.path.basename(filepath)
-        subset.append(results)
-    df = pd.DataFrame(subset)
-    # sort columns alphabetically
-    df = df.reindex(sorted(df.columns), axis=1)
-    # use "filename" as the index
-    df.set_index("filename", inplace=True)
-    # sort the index alphabetically
-    df.sort_index(inplace=True)
-    return df
+# def files_to_dataframe_national(input_directory: str) -> pd.DataFrame:
+#     # list files in the directory
+#     files = os.listdir(input_directory)
+#     subset = []
+#     for filepath in files:
+#         data = get_forecast_data_from_json_file(os.path.join(input_directory, filepath))
+#         results = get_national_intensity_forecasts(data)
+#         results["filename"] = os.path.basename(filepath)
+#         subset.append(results)
+#     df = pd.DataFrame(subset)
+#     # sort columns alphabetically
+#     df = df.reindex(sorted(df.columns), axis=1)
+#     # use "filename" as the index
+#     df.set_index("filename", inplace=True)
+#     # sort the index alphabetically
+#     df.sort_index(inplace=True)
+#     return df
 
 
 def _regional_json_to_csv(data) -> pd.DataFrame:

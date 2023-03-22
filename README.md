@@ -31,6 +31,8 @@ This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/202
 
 ## TODO
 
+- The post-hoc forecast seems to be constant while the "actual" value changes. Unless I'm doing something wrong, as is very likely.
+- Allow combining summary dataframes; currently stuck on update because columns are different between endpoints.
 - Save the data to a local database or spreadsheet, in a format more suited to graphing, also committed to this repo.
 - Generate graphs
 - Display, for a given half-hour window in history:
