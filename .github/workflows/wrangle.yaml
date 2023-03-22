@@ -1,5 +1,5 @@
 ---
-name: Update local data archive
+name: Wrangle data from JSON to CSV
 
 on:
   # Manual button in Github.
@@ -29,7 +29,7 @@ jobs:
         run: |-
           make install
 
-      - name: Fetch latest data and save as CSV
+      - name: Wrangle all JSON files to CSV
         run: |-
           # Wrangle data to CSV
           python run.py wrangle --input_directory data/regional_fw48h --delete_json | tee -a commit_msg.txt
