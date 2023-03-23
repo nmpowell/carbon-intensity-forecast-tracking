@@ -229,3 +229,7 @@ Wrangling data from here is far less complex than the endpoint with all the regi
 
 - Tests
     - check saving valid json and csv
+
+## Testing
+
+Run `make test` or `pytest -v tests`

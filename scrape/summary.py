@@ -62,6 +62,21 @@ def calculate_time_difference(datetime_str: str, dt2: datetime) -> str:
     return dt - dt2
 
 
+def _update_summary_dataframe(summary: pd.DataFrame, df: pd.DataFrame) -> pd.DataFrame:
+    """Add the new data to the summary dataframe, combine indices, and return the updated summary."""
+
+    # .update is reasonably fast and overwrites NaNs as we want. Columns will be identical.
+    # It doesn't appear to require identical indices, but it requires the index of df1 to be exhaustive i.e. includes all the indices in df2 (a superset); df2 must be a subset of df1, or values will be lost from df2.
+
+    union_index = summary.index.union(df.index)
+    if summary.empty:
+        summary = df.reindex(union_index)
+    else:
+        summary = summary.reindex(union_index)
+        summary.update(df)
+    return summary
+
+
 # Read CSVs and collate into a forecast summary
 def run(
     input_directory: str,
@@ -135,13 +150,6 @@ def run(
             values=value_column_names,
         )
 
-        # .update is reasonably fast and overwrites NaNs as we want. Columns will be identical.
-        # It doesn't appear to require identical indices, but it requires the index of df1 to be exhaustive i.e. includes all the indices in df2 (a superset); df2 must be a subset of df1, or values will be lost from df2.
-        union_index = summary.index.union(df_p.index)
-        if summary.empty:
-            summary = df_p.reindex(union_index)
-        else:
-            summary = summary.reindex(union_index)
-            summary.update(df_p)
+        summary = _update_summary_dataframe(summary, df_p)
 
     summary.to_csv(summary_fp)

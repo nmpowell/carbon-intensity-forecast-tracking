@@ -19,3 +19,8 @@ isort:
 
 flake8:
 	flake8
+
+# Testing
+
+test:
+	pytest -v tests
