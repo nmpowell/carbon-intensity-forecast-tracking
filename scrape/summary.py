@@ -139,7 +139,7 @@ def run(
         # It doesn't appear to require identical indices, but it requires the index of df1 to be exhaustive i.e. includes all the indices in df2 (a superset); df2 must be a subset of df1, or values will be lost from df2.
         union_index = summary.index.union(df_p.index)
         if summary.empty:
-                 = df_p.reindex(union_index)
+            summary = df_p.reindex(union_index)
         else:
             summary = summary.reindex(union_index)
             summary.update(df_p)
