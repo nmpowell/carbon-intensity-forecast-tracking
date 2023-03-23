@@ -81,7 +81,7 @@ def _update_summary_dataframe(summary: pd.DataFrame, df: pd.DataFrame) -> pd.Dat
 def run(
     input_directory: str,
     output_directory: str = None,
-    endpoint: "str" = "regional",
+    endpoint: "str" = "regional_fw48h",
     summary_name: str = None,
     *args,
     **kwargs,
@@ -101,7 +101,7 @@ def run(
     )
 
     # get existing summary, or start from scratch
-    summary_name = summary_name or "summary_{}.csv".format(abbreviated_endpoint)
+    summary_name = summary_name or "summary_{}.csv".format(endpoint)
     summary_fp = os.path.join(summary_directory, summary_name)
     if os.path.exists(summary_fp):
         summary = pd.read_csv(
