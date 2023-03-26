@@ -109,8 +109,11 @@ def run(
             header=SUMMARY_FORMATS[abbreviated_endpoint].get("header_rows"),
             index_col=0,
         )
+        log.info("Read existing summary file: {}".format(summary_fp))
     else:
         summary = pd.DataFrame()
+
+    return
 
     group_column_names = SUMMARY_FORMATS[abbreviated_endpoint].get("columns")
     value_column_names = SUMMARY_FORMATS[abbreviated_endpoint].get("values")
