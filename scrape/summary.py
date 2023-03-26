@@ -113,8 +113,6 @@ def run(
     else:
         summary = pd.DataFrame()
 
-    return
-
     group_column_names = SUMMARY_FORMATS[abbreviated_endpoint].get("columns")
     value_column_names = SUMMARY_FORMATS[abbreviated_endpoint].get("values")
 
