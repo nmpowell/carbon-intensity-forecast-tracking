@@ -6,8 +6,9 @@ on:
   workflow_dispatch:
   # Run on a schedule
   schedule:
+    # 5 and 35 past the hour except at 1:35AM
     - cron: '5 * * * *'
-    - cron: '35 * * * *'
+    - cron: '35 0,2-23 * * *'
 
 jobs:
   scheduled:
