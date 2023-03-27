@@ -154,3 +154,20 @@ def run(
         summary = _update_summary_dataframe(summary, df_p)
 
     summary.to_csv(summary_fp)
+
+
+# Pandas function to
+def get_rows_on_date(dataframe, target_dt):
+    """
+    Get all rows of a pandas DataFrame whose datetimes are on a specific date.
+    """
+    # Convert target_datetime to a date
+    target_date = target_dt.date()
+
+    filtered_df = dataframe.copy()
+
+    # Extract the date part of the datetime values in the specified date_column
+    filtered_df.index = filtered_df.index.date
+
+    # Filter rows where the date_column values match the target_date
+    return filtered_df[filtered_df.index == target_date]
