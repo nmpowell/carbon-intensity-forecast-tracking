@@ -17,6 +17,7 @@ from scrape.api import DATETIME_FMT_STR
 from scrape.download_data import round_down_datetime
 from scrape.files import check_create_directory
 from scrape.files import get_data_files
+from scrape.files import move_to_subdirectory
 
 log = logging.getLogger(__name__)
 
@@ -164,6 +165,9 @@ def run(
         )
 
         summary = _update_summary_dataframe(summary, df_p)
+
+        # Archive the CSV to speed up future runs
+        move_to_subdirectory(fp, "_archive")
 
     summary.to_csv(summary_fp)
 

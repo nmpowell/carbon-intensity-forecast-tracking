@@ -1,5 +1,6 @@
 import logging
 import os
+import shutil
 
 log = logging.getLogger(__name__)
 
@@ -17,6 +18,12 @@ def get_csv_path(output_directory: str, filepath: str) -> str:
         output_directory,
         os.path.basename(filepath.replace(".json", ".csv")),
     )
+
+
+def move_to_subdirectory(filepath: str, subdirectory_name: str = "_archive") -> None:
+    target_directory = os.path.join(os.path.dirname(filepath), subdirectory_name)
+    _ = check_create_directory(target_directory)
+    shutil.move(filepath, target_directory)
 
 
 def check_create_directory(directory: str = ""):
