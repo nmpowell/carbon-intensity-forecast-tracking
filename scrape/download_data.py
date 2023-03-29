@@ -150,7 +150,7 @@ def run(
             log.warning("No data for this date; stopping.")
             break
 
-        print(f"Downloaded: {filepath} at {datetime.utcnow()}")
+        log.debug("Downloaded: %s at %s", filepath, datetime.utcnow())
 
     log.info("Success!")
 
