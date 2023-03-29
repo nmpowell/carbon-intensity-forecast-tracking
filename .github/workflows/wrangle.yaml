@@ -13,6 +13,11 @@ jobs:
   call-scrape-workflow:
     uses: ./github/workflows/scrape_data.yaml
   scheduled:
+    name: Wrangle data
+    # always run
+    if: ${{ always() }}
+    # run sequentially after this job
+    needs: call-scrape-workflow
     runs-on: ubuntu-latest
     steps:
       - name: Check out this repo
