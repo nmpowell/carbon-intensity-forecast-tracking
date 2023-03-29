@@ -87,10 +87,10 @@ def _update_summary_dataframe(summary: pd.DataFrame, df: pd.DataFrame) -> pd.Dat
 
 def get_summary_filepath(directory: str, name: str) -> str:
     """Get the filepath for the summary file."""
-    summary_directory = check_create_directory(directory or os.path.normpath(directory))
+    summary_directory = check_create_directory(os.path.normpath(directory))
 
     # get existing summary, or start from scratch
-    summary_name = summary_name or "summary_{}.csv".format(name)
+    summary_name = "summary_{}.csv".format(name)
     return os.path.join(summary_directory, summary_name)
 
 
