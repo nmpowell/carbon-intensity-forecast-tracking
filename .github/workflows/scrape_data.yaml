@@ -49,7 +49,7 @@ jobs:
         run: |-
           git config user.name "Automated"
           git config user.email "actions@users.noreply.github.com"
-          git add data\*/*.csv data\*/*.json
+          git add -A
           git commit --file commit_msg.txt || exit 0
           git pull
           git push
