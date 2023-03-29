@@ -8,6 +8,8 @@ Forecasts are updated every half hour. But [the API](https://carbon-intensity.gi
 
 This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/2020/Oct/9/git-scraping/). It is inspired by [food-scraper](https://github.com/codeinthehole/food-scraper).
 
+![Published CI values](./data/ci_lines.png)
+
 ## Basic idea
 
 - Git scrape forecasts from the National Grid Carbon Intensity API on a half-hourly basis.

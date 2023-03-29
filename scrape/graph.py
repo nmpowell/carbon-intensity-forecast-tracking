@@ -192,14 +192,9 @@ def generate_boxplot_ci_error(
         merged_df["intensity.actual"].ffill(axis=1).iloc[:, -1]
     )
 
-    # Get the earliest time from the day a week ago
-    now = datetime.utcnow().astimezone(timezone.utc)
-    dt = now - timedelta(days=7)
-    dt = datetime(dt.year, dt.month, dt.day, 0, 0, 0).astimezone(timezone.utc)
-
-    dff = merged_df.loc[dt:now][["intensity.forecast", "intensity.actual.final"]].copy()
-
     dates = get_dates(merged_df, HOURS_OF_DATA * 2)
+
+    dff = merged_df.loc[dates][["intensity.forecast", "intensity.actual.final"]].copy()
 
     # Percentage error
     dfferr = 100.0 * (
@@ -212,6 +207,68 @@ def generate_boxplot_ci_error(
     fig, ax = plt.subplots(1, 1)
     dfferr.loc[dates].T.boxplot(rot=90, sym="r.")
     ax.set_title("Percentage forecast error from final recorded actual intensity")
+    ax.set_ylabel("forecast % error")
+    ax.grid("on", linestyle="--", alpha=0.33)
+
+    return fig
+
+
+def generate_boxplot_ci_error_for_days(input_directory: str):
+    """Generate boxplot summaries for entire days.
+    Combine all forecasts for each day; don't worry about the number of hours before the window they came from.
+    """
+
+    plt.rcParams["figure.figsize"] = [12, 6]
+    plt.rcParams["figure.dpi"] = DPI
+
+    days = 7
+
+    summaries = load_summaries(input_directory)
+    merged_df = pd.merge(*summaries, left_index=True, right_index=True, how="outer")
+    merged_df = format_dataframe(merged_df)
+
+    # Get the final (rightmost, assuming we have -24.0 as the rightmost) non-NaN value in each row
+    merged_df["intensity.actual.final"] = (
+        merged_df["intensity.actual"].ffill(axis=1).iloc[:, -1]
+    )
+
+    # Get the earliest time from the day a week ago
+    now = datetime.utcnow().astimezone(timezone.utc)
+    dt = now - timedelta(days=days)
+    dt = datetime(dt.year, dt.month, dt.day, 0, 0, 0).astimezone(timezone.utc)
+
+    dff = merged_df.loc[dt:now][["intensity.forecast", "intensity.actual.final"]].copy()
+
+    # Percentage err
+    dfferr = 100.0 * (
+        dff["intensity.forecast"].sub(dff["intensity.actual.final"], axis=0)
+    ).div(dff["intensity.actual.final"], axis=0)
+    # only pre-timepoint forecasts
+    dfferr = dfferr[[c for c in dfferr.columns if float(c) >= 0.0]]
+
+    # All days from then to now
+    dff = dfferr.loc[dt:now].copy()
+    dff.index = dff.index.date
+
+    forecast_cols = dff.columns
+
+    # Add a helper column to count occurrences of each label
+    dff["count_per_day"] = dff.groupby(dff.index).cumcount()
+
+    # pivot into a multiindex
+    result = dff.pivot_table(
+        index=dff.index,
+        columns="count_per_day",
+        values=list(forecast_cols),
+        aggfunc="first",
+    )
+
+    # flatten
+    result.columns = [f"{level1}_{level2+1}" for level1, level2 in result.columns]
+
+    fig, ax = plt.subplots(1, 1)
+    result.T.boxplot(sym="r.")
+    ax.set_title(f"Percentage error from last {days} days' forecasts")
     ax.set_ylabel("forecast % error")
     ax.grid("on", linestyle="--", alpha=0.33)
 
@@ -236,3 +293,6 @@ def create_graph_images(
 
     fig = generate_boxplot_ci_error(input_directory)
     save_figure(fig, output_directory or input_directory, "ci_error_boxplot.png")
+
+    fig = generate_boxplot_ci_error_for_days(input_directory)
+    save_figure(fig, output_directory or input_directory, "ci_error_boxplot_days.png")
