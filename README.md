@@ -218,6 +218,19 @@ A: look at data/2023-03-10T1200Z.json. At position 0, this has:
 - Want to show forecasts forward from a given date. It doesn't matter if we collect some past dates if we know which to ignore. If we take the datetime at which we call the API as timepoint 0, it doesn't really matter if the values change after we've stopped looking at past values. The purpose is to discover the reliability 
 
 
+Note that there could be many contributing factors to a broad error range, including missing data (not scraped successfully by this project).
+
+This plot shows all the forecasted intensity values for a given half-hour window starting at the time indicated by the vertical dashed line at t=0. Forecasts are published half-hourly at the `fw48h` endpoint, up to 48 hours before a window, and 24 hours after, at the `pt24h` endpoint. Therefore we have up to 96 forecasts (left of the dashed line) and 48 post-hoc "forecasts" (right). Forecast and "actual" values are published post-hoc.
+
+This box plot shows the the spread of percentage error for all intensity forecasts for 12 hours prior to the given time. The error is based upon the final recorded "actual" intensity value (i.e. `actual - forecast`).
+
+This box plot shows the the spread of percentage error for all intensity forecasts for the past 7 days.
+
+This box plot shows the spread of all the intensity forecasts (their actual intensity values) for 12 hours prior to the given time.
+
+Because solar and wind generation data are estimates, their values can change even post-hoc (i.e. after the time window has passed). This can be seen from the orange line in <the plot>, tracking the `pt24h` endpoint, which varies slightly over time. Therefore, I compare forecast accuracy against the last available "actual" value, which is at most 24h after the window. (Instead of the last forecast value, which is fixed, or the first available "actual" value, which is recorded just after the window has passed.)
+
+
 ## Endpoint
 
 - https://api.carbonintensity.org.uk/regional/intensity/2023-03-11T23:31Z/fw48h/regionid/{1-18}
