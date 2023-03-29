@@ -178,7 +178,7 @@ def run_wrangle(
         output_directory or os.path.normpath(input_directory)
     )
 
-    for fp in get_data_files(input_directory, ".json"):
+    for fp in get_data_files(input_directory, extension=".json"):
         csv_fp = get_csv_path(output_directory, fp)
         if not os.path.isfile(csv_fp):
             _wrangle_json_to_csv(fp, csv_fp, endpoint, output_directory)

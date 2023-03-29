@@ -34,13 +34,13 @@ def check_create_directory(directory: str = ""):
     return ndir
 
 
-def get_data_files(directory: str, extension: str = ".json") -> list:
-    """Get a list of complete filepaths to JSON files in the given directory."""
+def get_data_files(directory: str, extension: str = ".json", filter: str = "") -> list:
+    """Get a list of complete filepaths to data files in the given directory."""
     try:
         return [
             os.path.join(directory, fn)
             for fn in os.listdir(directory)
-            if fn.lower().endswith(extension)
+            if fn.lower().endswith(extension.lower()) and filter.lower() in fn.lower()
         ]
     except FileNotFoundError:
         log.error("Directory %s does not exist", directory)
