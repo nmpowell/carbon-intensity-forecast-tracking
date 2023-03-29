@@ -143,7 +143,7 @@ def run(
             ]
         ):
             # Ensure we won't overwrite files as the API doesn't seem to save old forecasts
-            log.info("File already exists; skipping: %s", filepath)
+            log.debug("File already exists; skipping: %s", filepath)
             continue
 
         if not download_json_to_file(url, filepath):

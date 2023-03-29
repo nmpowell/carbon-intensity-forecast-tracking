@@ -10,6 +10,8 @@ on:
     - cron: '33 1 * * *'
 
 jobs:
+  call-scrape-workflow:
+    uses: ./github/workflows/scrape_data.yaml
   scheduled:
     runs-on: ubuntu-latest
     steps:
