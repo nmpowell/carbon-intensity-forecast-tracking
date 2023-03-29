@@ -142,7 +142,8 @@ def _wrangle_json_to_csv(
     df = WRANGLE_SELECT.get(endpoint)(data)
 
     df.to_csv(csv_fp)
-    log.info("Wrote CSV file: %s", csv_fp)
+    # Print for commit message
+    print(f"Wrote CSV file: {csv_fp}")
     return
 
 

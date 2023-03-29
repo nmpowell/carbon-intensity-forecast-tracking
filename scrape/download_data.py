@@ -150,7 +150,8 @@ def run(
             log.warning("No data for this date; stopping.")
             break
 
-        log.debug("Downloaded: %s at %s", filepath, datetime.utcnow())
+        # Print for commit message
+        print(f"Downloaded: {filepath} at {datetime.utcnow()}")
 
     log.info("Success!")
 
