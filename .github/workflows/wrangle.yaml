@@ -11,7 +11,7 @@ on:
 
 jobs:
   call-scrape-workflow:
-    uses: ./github/workflows/scrape_data.yaml
+    uses: ./.github/workflows/scrape_data.yaml
   scheduled:
     name: Wrangle data
     # always run
