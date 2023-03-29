@@ -54,12 +54,19 @@ def datetime_from_filepath(filepath: str) -> str:
     return dt
 
 
-def calculate_time_difference(datetime_str: str, dt2: datetime) -> str:
+def _calculate_time_difference(datetime_str: str, dt2: datetime) -> str:
     """Calculate the time difference between two datetimes, the first represented as a string.
     Returns the timedelta.
     """
     dt = datetime.strptime(datetime_str, DATETIME_FMT_STR).replace(tzinfo=timezone.utc)
     return dt - dt2
+
+
+def get_hours_between(datetime_str: str, dt2: datetime) -> float:
+    """Calculate the time difference between two datetimes, the first represented as a string.
+    Returns the timedelta in hours.
+    """
+    return _calculate_time_difference(datetime_str, dt2).total_seconds() / 3600
 
 
 def _update_summary_dataframe(summary: pd.DataFrame, df: pd.DataFrame) -> pd.DataFrame:
@@ -74,6 +81,28 @@ def _update_summary_dataframe(summary: pd.DataFrame, df: pd.DataFrame) -> pd.Dat
     else:
         summary = summary.reindex(union_index)
         summary.update(df)
+    return summary
+
+
+def get_summary_filepath(directory: str, name: str) -> str:
+    """Get the filepath for the summary file."""
+    summary_directory = check_create_directory(directory or os.path.normpath(directory))
+
+    # get existing summary, or start from scratch
+    summary_name = summary_name or "summary_{}.csv".format(name)
+    return os.path.join(summary_directory, summary_name)
+
+
+def load_summary(filepath: str, format: str) -> pd.DataFrame:
+    if os.path.exists(filepath):
+        summary = pd.read_csv(
+            filepath,
+            header=SUMMARY_FORMATS[format].get("header_rows"),
+            index_col=0,
+        )
+        log.info("Read existing summary file: {}".format(filepath))
+    else:
+        summary = pd.DataFrame()
     return summary
 
 
@@ -96,22 +125,8 @@ def run(
 
     abbreviated_endpoint = endpoint.split("_")[0]
 
-    summary_directory = check_create_directory(
-        output_directory or os.path.normpath(input_directory)
-    )
-
-    # get existing summary, or start from scratch
-    summary_name = summary_name or "summary_{}.csv".format(endpoint)
-    summary_fp = os.path.join(summary_directory, summary_name)
-    if os.path.exists(summary_fp):
-        summary = pd.read_csv(
-            summary_fp,
-            header=SUMMARY_FORMATS[abbreviated_endpoint].get("header_rows"),
-            index_col=0,
-        )
-        log.info("Read existing summary file: {}".format(summary_fp))
-    else:
-        summary = pd.DataFrame()
+    summary_fp = get_summary_filepath(output_directory, endpoint)
+    summary = load_summary(summary_fp, abbreviated_endpoint)
 
     group_column_names = SUMMARY_FORMATS[abbreviated_endpoint].get("columns")
     value_column_names = SUMMARY_FORMATS[abbreviated_endpoint].get("values")
@@ -127,10 +142,7 @@ def run(
         # Forecasts give positive time differences; past times give negative
         # This is returned in hours
         df["time_difference"] = df["from"].apply(
-            lambda forecast_dt: calculate_time_difference(
-                forecast_dt, fp_dt
-            ).total_seconds()
-            / 3600
+            lambda forecast_dt: get_hours_between(forecast_dt, fp_dt)
         )
         # Format as a string with a leading 0 for visual sorting. Use .zfill(5) to ensure the leading 0 is always present even with a '-'.
         df["time_difference"] = df["time_difference"].apply(lambda x: str(x).zfill(5))
