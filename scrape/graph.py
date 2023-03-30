@@ -9,7 +9,6 @@ from itertools import cycle
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from matplotlib.dates import DateFormatter
 
 from scrape.files import get_data_files
 
@@ -23,6 +22,8 @@ DPI = 250
 HOURS_OF_DATA = 12
 
 NOW = datetime.utcnow().replace(tzinfo=timezone.utc)
+
+PLOT_DT_FORMAT = "%Y %b %-d %H:%M"
 
 
 def save_figure(fig, output_directory, filename):
@@ -42,8 +43,8 @@ def format_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     return new_df
 
 
-def load_summaries(directory: str) -> list:
-    files = get_data_files(directory, extension=".csv", filter="summary_national")
+def load_summaries(directory: str, filter: str = "summary_national") -> list:
+    files = get_data_files(directory, extension=".csv", filter=filter)
     return [pd.read_csv(f, index_col=0, header=[0, 1]) for f in files]
 
 
@@ -57,16 +58,44 @@ def load_past_summary(directory: str) -> pd.DataFrame:
     return pd.read_csv(files[0], index_col=0, header=[0, 1])
 
 
+def get_merged_summaries_with_final_actual_intensities(
+    directory: str, filter: str = "summary_national"
+) -> pd.DataFrame:
+    summaries = load_summaries(directory, filter=filter)
+    merged_df = pd.merge(*summaries, left_index=True, right_index=True, how="outer")
+    merged_df = format_dataframe(merged_df)
+
+    # Get the final (rightmost, assuming we have -24.0 as the rightmost) non-NaN value in each row
+    merged_df["intensity.actual.final"] = (
+        merged_df["intensity.actual"].ffill(axis=1).iloc[:, -1]
+    )
+    return merged_df
+
+
 def _ftime(dt):
     """Format datetimes for graphs."""
-    return datetime.strftime(dt, "%Y-%m-%d %H:%M")
+    return datetime.strftime(dt, PLOT_DT_FORMAT)
 
 
-def _format_boxplot_axes(ax):
-    ax.grid("on", linestyle="--", alpha=0.33)
-    ax.legend()
-    date_form = DateFormatter("%Y-%m-%d %H:%M")
-    ax.xaxis.set_major_formatter(date_form)
+def fancy_xaxis_dateformats(df: pd.DataFrame) -> None:
+    """Formats the input dataframe index for plotting.
+    For each day, the first hour is shown as a full date, and the rest are shown as hours only.
+    A fancier version of df.index = df.index.strftime(PLOT_DT_FORMAT)
+    """
+
+    def _special_fmt(dt):
+        # if it's the 1st of the month, print %Y-%m-%d %H:%M
+        if dt.day == 1:
+            return _ftime(dt)
+        if dt.hour == 0 and dt.minute == 0:
+            return datetime.strftime(dt, "%b %-d %H:%M")
+        return datetime.strftime(dt, "%H:%M")
+
+    for ix, dt in enumerate(df.index):
+        if ix == 0:
+            df.rename(index={dt: _ftime(dt)}, inplace=True)
+            continue
+        df.rename(index={dt: _special_fmt(dt)}, inplace=True)
 
 
 def get_dates(df: pd.DataFrame, num_plots: int) -> list:
@@ -90,6 +119,7 @@ def get_dates(df: pd.DataFrame, num_plots: int) -> list:
 
 def generate_plot_ci_lines(
     input_directory: str,
+    hours_of_data: int = HOURS_OF_DATA,
 ):
     """Generate plots from summaries.
 
@@ -102,7 +132,7 @@ def generate_plot_ci_lines(
     merged_df = pd.merge(*summaries, left_index=True, right_index=True, how="outer")
     merged_df = format_dataframe(merged_df)
 
-    dates = get_dates(merged_df, HOURS_OF_DATA * 2)
+    dates = get_dates(merged_df, hours_of_data * 2)
 
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
@@ -146,7 +176,7 @@ def generate_plot_ci_lines(
     ax.set_xlabel("hours before forecasted window")
     ax.set_ylabel("carbon intensity")
     ax.set_title(
-        f"Published CI forecast values, {len(dates)} time windows {_ftime(dates[0])} - {_ftime(dates[-1])} UTC"
+        f"Published CI forecast values, {len(dates)} half-hour windows {_ftime(dates[0])} - {_ftime(dates[-1])} UTC"
     )
 
     return fig
@@ -154,6 +184,7 @@ def generate_plot_ci_lines(
 
 def generate_boxplot_ci(
     input_directory: str,
+    hours_of_data: int = HOURS_OF_DATA,
 ):
     """Generate boxplot of CI values.
     Boxplots for all of the forecasts for a list of given windows
@@ -164,48 +195,58 @@ def generate_boxplot_ci(
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
 
-    dffw = load_forward_summary(input_directory)
-    dfpt = load_past_summary(input_directory)
+    merged_df = get_merged_summaries_with_final_actual_intensities(input_directory)
 
-    # Get the final (rightmost, assuming we have -24.0 as the rightmost) non-NaN value in each row
-    dfpt["intensity.actual.final"] = dfpt["intensity.actual"].ffill(axis=1).iloc[:, -1]
-    dfpt = dfpt[["intensity.actual.final"]]
-    dfpt.index = pd.to_datetime(dfpt.index)
+    # dffw = load_forward_summary(input_directory)
+    # dfpt = load_past_summary(input_directory)
+
+    # # Get the final (rightmost, assuming we have -24.0 as the rightmost) non-NaN value in each row
+    # dfpt["intensity.actual.final"] = dfpt["intensity.actual"].ffill(axis=1).iloc[:, -1]
+    # dfpt = dfpt[["intensity.actual.final"]]
+    # dfpt.index = pd.to_datetime(dfpt.index)
 
     # We don't get "actual" intensity from the fw48h endpoint
-    dffw = dffw.drop("intensity.actual", level=0, axis=1)
+    # dffw = dffw.drop("intensity.actual", level=0, axis=1)
+    merged_df = merged_df.drop("intensity.actual", level=0, axis=1)
 
     # Use only forecasts for measuring prediction quality
-    forecast_df = format_dataframe(dffw)
+    # forecast_df = format_dataframe(dffw)
+    forecast_df = merged_df
 
-    dates = get_dates(forecast_df, HOURS_OF_DATA * 2)
+    dates = get_dates(merged_df, hours_of_data * 2)
+
+    # reformat x-axis for display
+    df = forecast_df["intensity.forecast"].loc[dates]
+    fancy_xaxis_dateformats(df)
 
     fig, ax = plt.subplots(1, 1)
-    _ = forecast_df["intensity.forecast"].loc[dates].T.boxplot(rot=90, sym="r.", ax=ax)
+    _ = df.T.boxplot(rot=90, sym="r.", ax=ax)
 
     # Boxplots have weird positioning so we can't plot a line directly over them using the same axes; instead use this hackery.
     x_locs = ax.get_xticks()
     ax.plot(
         x_locs,
-        dfpt["intensity.actual.final"].loc[dates],
-        "k.",
+        merged_df["intensity.actual.final"].loc[dates],
+        "tab:orange",
         linestyle="-",
         linewidth=0.5,
         label="actual",
     )
 
     ax.set_title(
-        f"Carbon intensity forecast ranges, {len(dates)} half-hour windows {_ftime(dates[0])} - {_ftime(dates[-1])}"
+        f"Carbon intensity forecast ranges, {len(dates)} half-hour windows {_ftime(dates[0])} - {_ftime(dates[-1])} UTC"
     )
     ax.set_ylabel("carbon intensity")
 
-    _format_boxplot_axes(ax)
+    ax.grid("on", linestyle="--", alpha=0.33)
+    ax.legend()
 
     return fig
 
 
 def generate_boxplot_ci_error(
     input_directory: str,
+    hours_of_data: int = HOURS_OF_DATA,
 ):
     """Generate boxplot of CI error values.
     Boxplots for each of the forecasts for a list of given windows.
@@ -216,16 +257,9 @@ def generate_boxplot_ci_error(
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
 
-    summaries = load_summaries(input_directory)
-    merged_df = pd.merge(*summaries, left_index=True, right_index=True, how="outer")
-    merged_df = format_dataframe(merged_df)
+    merged_df = get_merged_summaries_with_final_actual_intensities(input_directory)
 
-    # Get the final (rightmost, assuming we have -24.0 as the rightmost) non-NaN value in each row
-    merged_df["intensity.actual.final"] = (
-        merged_df["intensity.actual"].ffill(axis=1).iloc[:, -1]
-    )
-
-    dates = get_dates(merged_df, HOURS_OF_DATA * 2)
+    dates = get_dates(merged_df, hours_of_data * 2)
 
     dff = merged_df.loc[dates][["intensity.forecast", "intensity.actual.final"]].copy()
 
@@ -237,18 +271,32 @@ def generate_boxplot_ci_error(
     # only pre-timepoint forecasts
     dfferr = dfferr[[c for c in dfferr.columns if float(c) >= 0.0]]
 
+    # reformat x-axis for display
+    df = dfferr.loc[dates]
+    fancy_xaxis_dateformats(df)
+
     fig, ax = plt.subplots(1, 1)
-    _ = dfferr.loc[dates].T.boxplot(rot=90, sym="r.")
+    _ = df.T.boxplot(rot=90, sym="r.")
     ax.set_title(
-        f"Percentage forecast error, {len(dates)} half-hour windows {_ftime(dates[0])} - {_ftime(dates[-1])}"
+        f"Percentage forecast error, {len(dates)} half-hour windows {_ftime(dates[0])} - {_ftime(dates[-1])} UTC"
     )
     ax.set_ylabel("forecast % error")
-    _format_boxplot_axes(ax)
+    ax.grid("on", linestyle="--", alpha=0.33)
+    ax.hlines(
+        0.0,
+        ax.get_xlim()[0],
+        ax.get_xlim()[-1],
+        color="k",
+        linestyle="--",
+        linewidth=0.5,
+    )
 
     return fig
 
 
-def generate_boxplot_ci_error_for_days(input_directory: str):
+def generate_boxplot_ci_error_for_days(
+    input_directory: str,
+):
     """Generate boxplot summaries for entire days.
     Combine all forecasts for each day; don't worry about the number of hours before the window they came from.
     """
@@ -258,14 +306,7 @@ def generate_boxplot_ci_error_for_days(input_directory: str):
 
     days = 7
 
-    summaries = load_summaries(input_directory)
-    merged_df = pd.merge(*summaries, left_index=True, right_index=True, how="outer")
-    merged_df = format_dataframe(merged_df)
-
-    # Get the final (rightmost, assuming we have -24.0 as the rightmost) non-NaN value in each row
-    merged_df["intensity.actual.final"] = (
-        merged_df["intensity.actual"].ffill(axis=1).iloc[:, -1]
-    )
+    merged_df = get_merged_summaries_with_final_actual_intensities(input_directory)
 
     # Get the earliest time from the day a week ago
     now = datetime.utcnow().astimezone(timezone.utc)
@@ -303,7 +344,7 @@ def generate_boxplot_ci_error_for_days(input_directory: str):
 
     fig, ax = plt.subplots(1, 1)
     _ = result.T.boxplot(sym="r.")
-    ax.set_title(f"Percentage forecast error, past {days} days")
+    ax.set_title(f"Percentage forecast error, past {days+1} days")
     ax.set_ylabel("forecast % error")
     ax.grid("on", linestyle="--", alpha=0.33)
 
@@ -311,7 +352,11 @@ def generate_boxplot_ci_error_for_days(input_directory: str):
 
 
 def create_graph_images(
-    input_directory: str, output_directory: str = None, *args, **kwargs
+    input_directory: str,
+    output_directory: str = None,
+    hours_of_data: int = HOURS_OF_DATA,
+    *args,
+    **kwargs,
 ) -> None:
     """Create graphs from summaries, and save.
 
@@ -320,13 +365,13 @@ def create_graph_images(
         output_directory (str): Directory to save figures
     """
 
-    fig = generate_plot_ci_lines(input_directory)
+    fig = generate_plot_ci_lines(input_directory, hours_of_data)
     save_figure(fig, output_directory or input_directory, "ci_lines.png")
 
-    fig = generate_boxplot_ci(input_directory)
+    fig = generate_boxplot_ci(input_directory, hours_of_data)
     save_figure(fig, output_directory or input_directory, "ci_boxplot.png")
 
-    fig = generate_boxplot_ci_error(input_directory)
+    fig = generate_boxplot_ci_error(input_directory, hours_of_data)
     save_figure(fig, output_directory or input_directory, "ci_error_boxplot.png")
 
     fig = generate_boxplot_ci_error_for_days(input_directory)
