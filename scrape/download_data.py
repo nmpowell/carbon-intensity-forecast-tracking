@@ -79,7 +79,7 @@ def get_datetimes(start: str, end: str):
         end_dt = None
         pass
 
-    end_dt = end_dt or max(start_dt, datetime.utcnow().replace(tzinfo=timezone.utc))
+    end_dt = end_dt or max(start_dt, datetime.now(tz=timezone.utc))
     return round_down_datetime(start_dt), round_down_datetime(end_dt)
 
 
@@ -97,9 +97,7 @@ def run(
 
     output_directory = check_create_directory(os.path.join(output_directory, endpoint))
 
-    capture_dt = (
-        datetime.utcnow().replace(tzinfo=timezone.utc).strftime(DATETIME_FMT_STR)
-    )
+    capture_dt = datetime.now(tz=timezone.utc).strftime(DATETIME_FMT_STR)
 
     if now:
         # override some inputs
@@ -151,7 +149,7 @@ def run(
             break
 
         # Print for commit message
-        print(f"Downloaded: {filepath} at {datetime.utcnow()}")
+        print(f"Downloaded: {filepath} at {datetime.now(tz=timezone.utc}")
 
     log.info("Success!")
 

@@ -21,7 +21,7 @@ DPI = 250
 
 HOURS_OF_DATA = 12
 
-NOW = datetime.utcnow().replace(tzinfo=timezone.utc)
+NOW = datetime.now(tz=timezone.utc)
 
 PLOT_DT_FORMAT = "%Y %b %-d %H:%M"
 
@@ -285,6 +285,7 @@ def generate_boxplot_ci_error(
 
 def generate_boxplot_ci_error_for_days(
     input_directory: str,
+    days: int = 7,
 ):
     """Generate boxplot summaries for entire days.
     Combine all forecasts for each day; don't worry about the number of hours before the window they came from.
@@ -293,16 +294,13 @@ def generate_boxplot_ci_error_for_days(
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
 
-    days = 7
-
     merged_df = get_merged_summaries_with_final_actual_intensities(input_directory)
 
     # Get the earliest time from the day a week ago
-    now = datetime.utcnow().astimezone(timezone.utc)
-    dt = now - timedelta(days=days)
+    dt = NOW - timedelta(days=days)
     dt = datetime(dt.year, dt.month, dt.day, 0, 0, 0).astimezone(timezone.utc)
 
-    dff = merged_df.loc[dt:now][["intensity.forecast", "intensity.actual.final"]].copy()
+    dff = merged_df.loc[dt:NOW][["intensity.forecast", "intensity.actual.final"]].copy()
 
     # Percentage err
     dfferr = 100.0 * (
@@ -312,7 +310,7 @@ def generate_boxplot_ci_error_for_days(
     dfferr = dfferr[[c for c in dfferr.columns if float(c) >= 0.0]]
 
     # All days from then to now
-    dff = dfferr.loc[dt:now].copy()
+    dff = dfferr.loc[dt:NOW].copy()
     dff.index = dff.index.date
 
     forecast_cols = dff.columns
@@ -338,6 +336,18 @@ def generate_boxplot_ci_error_for_days(
     ax.grid("on", linestyle="--", alpha=0.33)
 
     return fig
+
+
+def generate_boxplot_ci_error_per_hour(
+    input_directory: str,
+    past_days: int = None,
+):
+    """_summary_
+
+    Args:
+        input_directory (str): Directory containing summary CSVs.
+        past_days (int, optional): Number of past days' data to include. Defaults to None, for all available data.
+    """
 
 
 def create_graph_images(
