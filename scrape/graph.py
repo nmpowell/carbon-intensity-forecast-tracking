@@ -161,7 +161,7 @@ def generate_boxplot_ci(
     dates = get_dates(forecast_df, HOURS_OF_DATA * 2)
 
     fig, ax = plt.subplots(1, 1)
-    forecast_df["intensity.forecast"].loc[dates].T.boxplot(rot=90, sym="r.", ax=ax)
+    _ = forecast_df["intensity.forecast"].loc[dates].T.boxplot(rot=90, sym="r.", ax=ax)
     ax.set_title(
         f"Carbon intensity forecast ranges, {len(dates)} half-hour windows {_ftime(dates[0])} - {_ftime(dates[-1])}"
     )
@@ -205,8 +205,10 @@ def generate_boxplot_ci_error(
     dfferr = dfferr[[c for c in dfferr.columns if float(c) >= 0.0]]
 
     fig, ax = plt.subplots(1, 1)
-    dfferr.loc[dates].T.boxplot(rot=90, sym="r.")
-    ax.set_title("Percentage forecast error from final recorded actual intensity")
+    _ = dfferr.loc[dates].T.boxplot(rot=90, sym="r.")
+    ax.set_title(
+        f"Percentage forecast error, {len(dates)} half-hour windows {_ftime(dates[0])} - {_ftime(dates[-1])}"
+    )
     ax.set_ylabel("forecast % error")
     ax.grid("on", linestyle="--", alpha=0.33)
 
@@ -267,8 +269,8 @@ def generate_boxplot_ci_error_for_days(input_directory: str):
     result.columns = [f"{level1}_{level2+1}" for level1, level2 in result.columns]
 
     fig, ax = plt.subplots(1, 1)
-    result.T.boxplot(sym="r.")
-    ax.set_title(f"Percentage error from last {days} days' forecasts")
+    _ = result.T.boxplot(sym="r.")
+    ax.set_title(f"Percentage forecast error, past {days} days")
     ax.set_ylabel("forecast % error")
     ax.grid("on", linestyle="--", alpha=0.33)
 

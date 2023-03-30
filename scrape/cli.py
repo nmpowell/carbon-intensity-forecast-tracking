@@ -4,6 +4,7 @@ import logging
 from pythonjsonlogger import jsonlogger
 
 from scrape import download_data
+from scrape import graph
 from scrape import summary
 from scrape import wrangle
 from scrape.api import DATETIME_FMT_STR
@@ -16,6 +17,7 @@ PIPELINE_FUNCTIONS = {
     "download": download_data.run,
     "wrangle": wrangle.run_wrangle,
     "summary": summary.run,
+    "graph": graph.create_graph_images,
 }
 
 
@@ -118,6 +120,20 @@ def get_parser():
         "-i",
         default="data",
         help="Path to input directory containing CSV files",
+        type=str,
+    )
+
+    parser_graph = subparsers.add_parser(
+        "graph",
+        help="Generate graph images from summary CSV files.",
+        parents=[parser_common],
+    )
+
+    parser_graph.add_argument(
+        "--input_directory",
+        "-i",
+        default="data",
+        help="Path to input directory containing summary CSV files",
         type=str,
     )
 

@@ -2,61 +2,28 @@
 
 Tracking differences between the UK National Grid's Carbon Intensity forecast and its eventual recorded value.
 
-The UK's National Grid Electricity System Operator (NGESO) publishes an API showing half-hourly carbon intensity in different GB regions, together with a 48-hour forecast. The national data is based upon real metered generation statistics and values describing the relative carbon intensity of different energy sources (how much CO2 is released when generating the electricity). Regional data is based upon forecasted generation, consumption, and a complex model describing inter-region interaction.
+The UK's National Grid Electricity System Operator (NGESO) publishes [an API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) showing half-hourly carbon intensity (gCO2/kWh) in different GB regions, together with a 48-hour forecast. The national data is based upon real and estimated metered generation statistics and values describing the relative carbon intensity of different energy sources (how much CO2 is released when generating the electricity). Regional data is based upon forecasted generation, consumption, and a complex model describing inter-region interaction.
 
-Forecasts are updated every half hour. But [the API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) does not seem to record historical forecasts. How reliable are they?
-
-This repo uses GitHub Actions to do [git scraping](https://simonwillison.net/2020/Oct/9/git-scraping/). It is inspired by [food-scraper](https://github.com/codeinthehole/food-scraper).
+Forecasts are updated every half hour, but the API does not keep historical forecasts. How reliable are they?
 
 ![Published CI values](./data/ci_lines.png)
 
 ## Basic idea
 
-- Git scrape forecasts from the National Grid Carbon Intensity API on a half-hourly basis.
-- Scraping is performed by Github Actions on a [cron schedule](https://github.com/nmpowell/carbon-intensity-forecast-tracking/blob/main/.github/workflows/run.yaml) twice per hour (see [docs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)).
-- JSON data is downloaded from the [regional forward-48hr endpoint](https://carbon-intensity.github.io/api-definitions/#get-regional-intensity-from-fw48h), and others, and saved to `data/`. It is converted to a CSV format to save space, and committed to this repo.
-- Then it is parsed into something more easily tracked with graphs and statistics
-- Finally, we summarise with statistics and plots, and attempt to estimate the accuracy of the forecasts.
+- Use GitHub Actions to [git scrape](https://simonwillison.net/2020/Oct/9/git-scraping/), the National Grid Carbon Intensity API. This method was inspired by [food-scraper](https://github.com/codeinthehole/food-scraper).
+- Scraping occurs twice per hour on a [cron schedule](https://github.com/nmpowell/carbon-intensity-forecast-tracking/blob/main/.github/workflows/scrape_data.yaml) ([docs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)).
+- Download JSON data from the [various endpoints](https://carbon-intensity.github.io/api-definitions/#intensity), and save to `data/`.
+- Once per day, data is converted to CSV to save space.
+- It is then parsed into a Pandas dataframe for plotting and analysis.
+- With summary statistics and plots, we can attempt to estimate the accuracy of the forecasts.
 
-    - the timepoint, "from"
-    - the number of hours in the future the recording was taken from the API (including negative, so, past) (0.5 increments)
-- Matplotlib is used to generate plots from this data
-- Estimate the accuracy
-
-### Assessing forecasts
+## Forecast Accuracy
 
 - For each actual 30-minute period defined by its "from" datetime, capture published forecasts for that period.
 - Forecasts are published up to 48 hours ahead, so we should expect about 96 future forecasts for one real period, and 48 more from the "past" 24 hours.
 - Also capture the "actual" values by choosing a stable point about 6 hours after the window has passed.
 - We can do this for each of the published regions and the National data.
 
-
-## TODO
-
-- Check running summary is idempotent.
-- The post-hoc forecast seems to be constant while the "actual" value changes. Unless I'm doing something wrong, as is very likely.
-- break up summary function to visualise steps in a notebook
-- Allow combining summary dataframes; currently stuck on update because columns are different between endpoints.
-- Save the data to a local database or spreadsheet, in a format more suited to graphing, also committed to this repo.
-- Generate graphs
-- Display, for a given half-hour window in history:
-    - the predicted CI at each of the ~96 half-hourly time points
-    - the "actual" CI recorded
-    - the error in these predictions at each of the ~96 preceding time points (+/-)
-        - in CI units ("absolute error")
-        - as a % of the actual CI ("proportional error")
-    - (hopefully there is some convergence as the forecast improves and the present time approaches the window)
-- For each region and DNO region that the National Grid
-
-- Some summary measures:
-    - for a given half-hour window, in a given region, with a known actual CI:
-        - the spread: variance (or mean deviation) about a central point (the actual value; not the mean), stdev, interquartile range -- of the ~96 forecasts.
-    - for a region:
-
-- [ ] get National data from API endpoint
-- [ ] investigate the data from BMRS: actual? total? https://www.bmreports.com/bmrs/?q=help/about-us
-
-- Canonincal great design for this is https://grid.iamkate.com/
 
 ## Limitations
 
@@ -76,7 +43,11 @@ I've attempted to track this, as well, to give a good anchor against which we ca
 
 ## Prior work
 
-I am unsure whether this has been done before. NGESO do not seem to release historic forecasts or figures about their accuracy. If you know more, please let me know!
+I am unsure whether this has been done before. NGESO do not seem to release historic forecasts or figures about their accuracy.
+
+Kate Rose Morley [created the canonincal great design](https://grid.iamkate.com/) for tracking the UK's carbon intensity.
+
+If you know more, please let me know!
 
 ## Data
 
@@ -147,7 +118,9 @@ If we query the 48h forecast API at a given time X, the earliest time window (th
 
 - (The "past" 24hr URL is a bit more confusing as https://api.carbonintensity.org.uk/regional/intensity/2018-05-11T01:30Z/pt24h gives you the past 24hrs but the _oldest_ one is still timepoint 0. The "to" field is then the floor of the timepoint you requested in the 47th entry (if it goes back that far - not for this example URL; it's index 3 in this one).)
 
-## Install
+## Usage
+
+### Install
 
 1. Clone this repository `git clone git@github.com:nmpowell/carbon-intensity-forecast-tracking.git`
 2. Set up a local virtual environment using Python 3.10+
@@ -167,7 +140,7 @@ If we query the 48h forecast API at a given time X, the earliest time window (th
     `make` will call `pip-sync` which will use the `requirements.txt` file to install requirements. To regenerate that file, use `pip-compile requirements.in`
 
 
-## Usage
+### Run
 
 1. Activate the venv: `source venv/bin/activate`
 2. Download a JSON file. Examples:
@@ -232,19 +205,19 @@ This box plot shows the spread of all the intensity forecasts (their actual inte
 
 Because solar and wind generation data are estimates, their values can change even post-hoc (i.e. after the time window has passed). This can be seen from the orange line in <the plot>, tracking the `pt24h` endpoint, which varies slightly over time. Therefore, I compare forecast accuracy against the last available "actual" value, which is at most 24h after the window. (Instead of the last forecast value, which is fixed, or the first available "actual" value, which is recorded just after the window has passed.)
 
+## TODOs & future work
 
-## Endpoint
-
-- https://api.carbonintensity.org.uk/regional/intensity/2023-03-11T23:31Z/fw48h/regionid/{1-18}
-
-Wrangling data from here is far less complex than the endpoint with all the regions.
-
-## Future work
-
+- Summaries and plots for each region and DNO region
 - track regions' performance i.e. lower CI
+- investigate BMRS data: actual? total? https://www.bmreports.com/bmrs/?q=help/about-us
 
 - Tests
-    - check saving valid json and csv
+    - saving valid json and csv
+    - summary generation is idempotent
+
+- Some summary measures:
+    - for a given half-hour window, in a given region, with a known actual CI:
+        - the spread: variance (or mean deviation) about a central point (the actual value; not the mean), stdev, interquartile range -- of the ~96 forecasts.
 
 ## Testing
 

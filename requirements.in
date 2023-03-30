@@ -1,4 +1,6 @@
 # Application
+matplotlib
+numpy
 pandas
 python-dateutil
 python-json-logger
