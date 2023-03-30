@@ -10,12 +10,16 @@ Forecasts are updated every half hour, but the API does not keep historical fore
 
 ## Basic idea
 
-- Use GitHub Actions to [git scrape](https://simonwillison.net/2020/Oct/9/git-scraping/), the National Grid Carbon Intensity API. This method was inspired by [food-scraper](https://github.com/codeinthehole/food-scraper).
+- Use GitHub Actions to [git scrape](https://simonwillison.net/2020/Oct/9/git-scraping/) the National Grid Carbon Intensity API. This method was inspired by [food-scraper](https://github.com/codeinthehole/food-scraper).
 - Scraping occurs twice per hour on a [cron schedule](https://github.com/nmpowell/carbon-intensity-forecast-tracking/blob/main/.github/workflows/scrape_data.yaml) ([docs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)).
 - Download JSON data from the [various endpoints](https://carbon-intensity.github.io/api-definitions/#intensity), and save to `data/`.
-- Once per day, data is converted to CSV to save space.
+- Once per day, data is converted to CSV, summarised, and plots are generated.
 - It is then parsed into a Pandas dataframe for plotting and analysis.
 - With summary statistics and plots, we can attempt to estimate the accuracy of the forecasts.
+
+The plots in this README.md are updated daily from
+To follow the plot generation, see the `notebook.ipynb`.
+To run yourself, see **Usage** below.
 
 ## Forecast Accuracy
 
@@ -215,9 +219,11 @@ Because solar and wind generation data are estimates, their values can change ev
     - saving valid json and csv
     - summary generation is idempotent
 
-- Some summary measures:
+- summary measures:
     - for a given half-hour window, in a given region, with a known actual CI:
         - the spread: variance (or mean deviation) about a central point (the actual value; not the mean), stdev, interquartile range -- of the ~96 forecasts.
+
+- make Github actions more efficient by reusing some steps
 
 ## Testing
 

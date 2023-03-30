@@ -9,6 +9,7 @@ from itertools import cycle
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib.dates import DateFormatter
 
 from scrape.files import get_data_files
 
@@ -51,8 +52,21 @@ def load_forward_summary(directory: str) -> pd.DataFrame:
     return pd.read_csv(files[0], index_col=0, header=[0, 1])
 
 
+def load_past_summary(directory: str) -> pd.DataFrame:
+    files = get_data_files(directory, extension=".csv", filter="summary_national_pt24h")
+    return pd.read_csv(files[0], index_col=0, header=[0, 1])
+
+
 def _ftime(dt):
+    """Format datetimes for graphs."""
     return datetime.strftime(dt, "%Y-%m-%d %H:%M")
+
+
+def _format_boxplot_axes(ax):
+    ax.grid("on", linestyle="--", alpha=0.33)
+    ax.legend()
+    date_form = DateFormatter("%Y-%m-%d %H:%M")
+    ax.xaxis.set_major_formatter(date_form)
 
 
 def get_dates(df: pd.DataFrame, num_plots: int) -> list:
@@ -132,7 +146,7 @@ def generate_plot_ci_lines(
     ax.set_xlabel("hours before forecasted window")
     ax.set_ylabel("carbon intensity")
     ax.set_title(
-        f"Published CI values, {len(dates)} time windows {_ftime(dates[0])} - {_ftime(dates[-1])} UTC"
+        f"Published CI forecast values, {len(dates)} time windows {_ftime(dates[0])} - {_ftime(dates[-1])} UTC"
     )
 
     return fig
@@ -151,6 +165,12 @@ def generate_boxplot_ci(
     plt.rcParams["figure.dpi"] = DPI
 
     dffw = load_forward_summary(input_directory)
+    dfpt = load_past_summary(input_directory)
+
+    # Get the final (rightmost, assuming we have -24.0 as the rightmost) non-NaN value in each row
+    dfpt["intensity.actual.final"] = dfpt["intensity.actual"].ffill(axis=1).iloc[:, -1]
+    dfpt = dfpt[["intensity.actual.final"]]
+    dfpt.index = pd.to_datetime(dfpt.index)
 
     # We don't get "actual" intensity from the fw48h endpoint
     dffw = dffw.drop("intensity.actual", level=0, axis=1)
@@ -162,11 +182,24 @@ def generate_boxplot_ci(
 
     fig, ax = plt.subplots(1, 1)
     _ = forecast_df["intensity.forecast"].loc[dates].T.boxplot(rot=90, sym="r.", ax=ax)
+
+    # Boxplots have weird positioning so we can't plot a line directly over them using the same axes; instead use this hackery.
+    x_locs = ax.get_xticks()
+    ax.plot(
+        x_locs,
+        dfpt["intensity.actual.final"].loc[dates],
+        "k.",
+        linestyle="-",
+        linewidth=0.5,
+        label="actual",
+    )
+
     ax.set_title(
         f"Carbon intensity forecast ranges, {len(dates)} half-hour windows {_ftime(dates[0])} - {_ftime(dates[-1])}"
     )
     ax.set_ylabel("carbon intensity")
-    ax.grid("on", linestyle="--", alpha=0.33)
+
+    _format_boxplot_axes(ax)
 
     return fig
 
@@ -210,7 +243,7 @@ def generate_boxplot_ci_error(
         f"Percentage forecast error, {len(dates)} half-hour windows {_ftime(dates[0])} - {_ftime(dates[-1])}"
     )
     ax.set_ylabel("forecast % error")
-    ax.grid("on", linestyle="--", alpha=0.33)
+    _format_boxplot_axes(ax)
 
     return fig
 
