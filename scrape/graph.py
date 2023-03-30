@@ -197,26 +197,15 @@ def generate_boxplot_ci(
 
     merged_df = get_merged_summaries_with_final_actual_intensities(input_directory)
 
-    # dffw = load_forward_summary(input_directory)
-    # dfpt = load_past_summary(input_directory)
-
-    # # Get the final (rightmost, assuming we have -24.0 as the rightmost) non-NaN value in each row
-    # dfpt["intensity.actual.final"] = dfpt["intensity.actual"].ffill(axis=1).iloc[:, -1]
-    # dfpt = dfpt[["intensity.actual.final"]]
-    # dfpt.index = pd.to_datetime(dfpt.index)
-
     # We don't get "actual" intensity from the fw48h endpoint
-    # dffw = dffw.drop("intensity.actual", level=0, axis=1)
     merged_df = merged_df.drop("intensity.actual", level=0, axis=1)
 
     # Use only forecasts for measuring prediction quality
-    # forecast_df = format_dataframe(dffw)
-    forecast_df = merged_df
 
     dates = get_dates(merged_df, hours_of_data * 2)
 
     # reformat x-axis for display
-    df = forecast_df["intensity.forecast"].loc[dates]
+    df = merged_df["intensity.forecast"].loc[dates]
     fancy_xaxis_dateformats(df)
 
     fig, ax = plt.subplots(1, 1)
