@@ -19,7 +19,7 @@ from scrape.files import get_data_files
 
 DPI = 250
 
-HOURS_OF_DATA = 12
+HOURS_OF_DATA = 24
 
 NOW = datetime.now(tz=timezone.utc)
 
@@ -233,6 +233,17 @@ def generate_boxplot_ci(
     return fig
 
 
+def generate_boxplot_ci_future(
+    input_directory: str, hours_of_data: int = HOURS_OF_DATA
+):
+    """Generate boxplot of future CI forecasts. This data will be less complete than the past data."""
+
+    plt.rcParams["figure.figsize"] = [12, 6]
+    plt.rcParams["figure.dpi"] = DPI
+
+    df = load_forward_summary(input_directory)
+
+
 def generate_boxplot_ci_error(
     input_directory: str,
     hours_of_data: int = HOURS_OF_DATA,
@@ -300,6 +311,7 @@ def generate_boxplot_ci_error_for_days(
     dt = NOW - timedelta(days=days)
     dt = datetime(dt.year, dt.month, dt.day, 0, 0, 0).astimezone(timezone.utc)
 
+    # All days from then to now
     dff = merged_df.loc[dt:NOW][["intensity.forecast", "intensity.actual.final"]].copy()
 
     # Percentage err
@@ -309,8 +321,7 @@ def generate_boxplot_ci_error_for_days(
     # only pre-timepoint forecasts
     dfferr = dfferr[[c for c in dfferr.columns if float(c) >= 0.0]]
 
-    # All days from then to now
-    dff = dfferr.loc[dt:NOW].copy()
+    dff = dfferr.copy()
     dff.index = dff.index.date
 
     forecast_cols = dff.columns
@@ -340,14 +351,54 @@ def generate_boxplot_ci_error_for_days(
 
 def generate_boxplot_ci_error_per_hour(
     input_directory: str,
-    past_days: int = None,
+    days: int = 7,
 ):
     """_summary_
 
     Args:
         input_directory (str): Directory containing summary CSVs.
-        past_days (int, optional): Number of past days' data to include. Defaults to None, for all available data.
+        days (int, optional): Number of past days' data to include. Defaults to None, for all available data.
     """
+
+    plt.rcParams["figure.figsize"] = [12, 6]
+    plt.rcParams["figure.dpi"] = DPI
+
+    merged_df = get_merged_summaries_with_final_actual_intensities(input_directory)
+
+    if days:
+        # Get the earliest time from the day a week ago
+        dt = NOW - timedelta(days=days)
+        dt = datetime(dt.year, dt.month, dt.day, 0, 0, 0).astimezone(timezone.utc)
+        merged_df = merged_df.loc[dt:NOW].copy()
+
+    dff = merged_df[["intensity.forecast", "intensity.actual.final"]]
+
+    # Percentage err
+    dfferr = 100.0 * (
+        dff["intensity.forecast"].sub(dff["intensity.actual.final"], axis=0)
+    ).div(dff["intensity.actual.final"], axis=0)
+    # only pre-timepoint forecasts
+    dfferr = dfferr[[c for c in dfferr.columns if float(c) >= 0.0]]
+
+    dates = dfferr.index
+
+    fig, ax = plt.subplots(1, 1)
+    _ = dfferr.boxplot(rot=90, sym="r.")
+    ax.set_title(
+        f"Percentage forecast error per half-hour before forecasted window, {_ftime(dates[0])} - {_ftime(dates[-1])} UTC"
+    )
+    ax.set_ylabel("forecast % error")
+    ax.grid("on", linestyle="--", alpha=0.33)
+    ax.hlines(
+        0.0,
+        ax.get_xlim()[0],
+        ax.get_xlim()[-1],
+        color="k",
+        linestyle="--",
+        linewidth=0.5,
+    )
+
+    return fig
 
 
 def create_graph_images(
@@ -375,3 +426,8 @@ def create_graph_images(
 
     fig = generate_boxplot_ci_error_for_days(input_directory)
     save_figure(fig, output_directory or input_directory, "ci_error_boxplot_days.png")
+
+    fig = generate_boxplot_ci_error_per_hour(input_directory)
+    save_figure(
+        fig, output_directory or input_directory, "ci_error_boxplot_per_hour.png"
+    )

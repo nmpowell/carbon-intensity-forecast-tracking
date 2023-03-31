@@ -149,7 +149,7 @@ def run(
             break
 
         # Print for commit message
-        print(f"Downloaded: {filepath} at {datetime.now(tz=timezone.utc}")
+        print(f"Downloaded: {filepath} at {datetime.now(tz=timezone.utc)}")
 
     log.info("Success!")
 

@@ -17,7 +17,7 @@ Forecasts are updated every half hour, but the API does not keep historical fore
 - It is then parsed into a Pandas dataframe for plotting and analysis.
 - With summary statistics and plots, we can attempt to estimate the accuracy of the forecasts.
 
-The plots in this README.md are updated daily from
+These plots are updated daily.
 To follow the plot generation, see the `notebook.ipynb`.
 To run yourself, see **Usage** below.
 
@@ -31,7 +31,7 @@ To run yourself, see **Usage** below.
 
 ## Limitations
 
-- Because Github's Actions runners are shared (and free), the cron isn't 100% reliable. We can expect some occasional missing data.
+- Because Github's Actions runners are shared (and free), the cronjobs aren't 100% reliable. Expect occasional missing data.
 
 - Unclear what the difference between the 18th DNO region, "GB", and the "National" forecasts are. National: https://api.carbonintensity.org.uk/intensity/2023-03-11T22:31Z. Regional: https://api.carbonintensity.org.uk/regional/intensity/2023-03-11T22:31Z/fw48h at timepoint 0, regionid 18. Slightly different.
 
@@ -218,12 +218,14 @@ Because solar and wind generation data are estimates, their values can change ev
 - Tests
     - saving valid json and csv
     - summary generation is idempotent
+    - 
 
 - summary measures:
     - for a given half-hour window, in a given region, with a known actual CI:
         - the spread: variance (or mean deviation) about a central point (the actual value; not the mean), stdev, interquartile range -- of the ~96 forecasts.
 
 - make Github actions more efficient by reusing some steps
+- Could overwrite a single file per endpoint, and use a tool like [git-history](https://simonwillison.net/2021/Dec/7/git-history/) to retrieve past data. Keeping the files separate is a little more transparent, though, and a bit easier for now.
 
 ## Testing
 
