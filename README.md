@@ -2,97 +2,76 @@
 
 Tracking differences between the UK National Grid's Carbon Intensity forecast and its eventual recorded value.
 
-The UK's National Grid Electricity System Operator (NGESO) publishes [an API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) showing half-hourly carbon intensity (gCO2/kWh) in different GB regions, together with a 48-hour forecast. The national data is based upon real and estimated metered generation statistics and values describing the relative carbon intensity of different energy sources (how much CO2 is released when generating the electricity). Regional data is based upon forecasted generation, consumption, and a complex model describing inter-region interaction.
+The UK's National Grid Electricity System Operator (NGESO) publishes [an API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) showing half-hourly carbon intensity (gCO2/kWh) in different GB regions, together with a 48-hour forecast. The national data is based upon real and estimated metered generation statistics and values describing the relative carbon intensity of different energy sources. Regional data is based upon forecasted generation, consumption, and a model describing inter-region interaction.
 
-Forecasts are updated every half hour, but the API does not keep historical forecasts. How reliable are they?
+The forecasts are updated every half hour, but the API does not keep historical forecasts; they're overwritten. How reliable are they?
 
 ![Published CI values](./data/ci_lines.png)
 
+The above figure shows the evolution of 24 hours' worth of time windows' forecasts. Each window is forecasted about 96 times in the preceeding 48 hours. The more recent time windows are darker blue.
+
 ## Basic idea
 
-- Use GitHub Actions to [git scrape](https://simonwillison.net/2020/Oct/9/git-scraping/) the National Grid Carbon Intensity API. This method was inspired by [food-scraper](https://github.com/codeinthehole/food-scraper).
+- [Git scrape](https://simonwillison.net/2020/Oct/9/git-scraping/) the National Grid Carbon Intensity API using GitHub Actions, as inspired by [food-scraper](https://github.com/codeinthehole/food-scraper).
 - Scraping occurs twice per hour on a [cron schedule](https://github.com/nmpowell/carbon-intensity-forecast-tracking/blob/main/.github/workflows/scrape_data.yaml) ([docs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)).
 - Download JSON data from the [various endpoints](https://carbon-intensity.github.io/api-definitions/#intensity), and save to `data/`.
-- Once per day, data is converted to CSV, summarised, and plots are generated.
-- It is then parsed into a Pandas dataframe for plotting and analysis.
+- Once per day, data is converted to CSV, and parsed into a Pandas dataframe for summarising, plotting and analysis.
 - With summary statistics and plots, we can attempt to estimate the accuracy of the forecasts.
 
-These plots are updated daily.
 To follow the plot generation, see the `notebook.ipynb`.
 To run yourself, see **Usage** below.
 
+## Prior work
+
+I'm unsure whether this has been done before. NGESO do not seem to release historic forecasts or figures about their accuracy. If you know more, please let me know!
+
+Kate Rose Morley [created the canonincal great design](https://grid.iamkate.com/) for tracking the UK's live carbon intensity.
+
 ## Forecast Accuracy
+
+![Published CI values](./data/ci_boxplot.png)
+
+The above boxplot shows the range of all published forecast values for each 30-minute time window.
 
 - For each actual 30-minute period defined by its "from" datetime, capture published forecasts for that period.
 - Forecasts are published up to 48 hours ahead, so we should expect about 96 future forecasts for one real period, and 48 more from the "past" 24 hours.
-- Also capture the "actual" values by choosing a stable point about 6 hours after the window has passed.
+- Also capture "actual" values by choosing the latest available "actual" value (national data only) up to 24 hours after the window has passed.
+- For the regional data, absent "actual" values we choose the final available forecast 24h after the window has passed (usually, this does not change).
 - We can do this for each of the published regions and the National data.
 
+![Published CI values](./data/ci_error_boxplot.png)
+
+The above plot shows forecast percentage error (compared with "actual" values) for the same times.
 
 ## Limitations
 
 - Because Github's Actions runners are shared (and free), the cronjobs aren't 100% reliable. Expect occasional missing data.
 
-- Unclear what the difference between the 18th DNO region, "GB", and the "National" forecasts are. National: https://api.carbonintensity.org.uk/intensity/2023-03-11T22:31Z. Regional: https://api.carbonintensity.org.uk/regional/intensity/2023-03-11T22:31Z/fw48h at timepoint 0, regionid 18. Slightly different.
+- Unclear what the difference between the 18th DNO region, "GB", and the "National" forecasts are. [National](https://api.carbonintensity.org.uk/intensity/2023-03-11T22:31Z). [Regional](https://api.carbonintensity.org.uk/regional/intensity/2023-03-11T22:31Z/fw48h): at timepoint 0, regionid 18. Slightly different.
 
 ### Actual intensity and generation mix
 
-To measure regional forecast accuracy it would be preferable to have a retrospective `actual` CI value for each region, but the API does not seem to provide this except at the national level: https://api.carbonintensity.org.uk/intensity for the previous complete half-hour window; https://api.carbonintensity.org.uk/intensity/2023-03-11T12:01Z for a specific window; https://api.carbonintensity.org.uk/intensity/2023-03-11T12:01Z/fw24h for that window and the next 48 hours' worth (etc.).
+To measure regional forecast accuracy it would be preferable to have a retrospective `actual` CI value for each region, but the API only provides this [at the national level](https://api.carbonintensity.org.uk/intensity).
 
-From tracking the `pt24h` data, it seems these "actual" values, as well as forecasts, can change slightly after the fact, i.e. after the relevant time window has passed.
-
-although they do seem to settle down after a while
-
-I've attempted to track this, as well, to give a good anchor against which we can measure forecast accuracy. For the purposes of this project, let us say the "final forecast" is the one accessible 6 hours after the start of the time window. So if we're measuring the accuracy of a half-hour window beginning 2023-03-11T12:00Z, we'll use the "final forecast" and "actual" intensity values from 2023-03-11T18:00Z.
-
-## Prior work
-
-I am unsure whether this has been done before. NGESO do not seem to release historic forecasts or figures about their accuracy.
-
-Kate Rose Morley [created the canonincal great design](https://grid.iamkate.com/) for tracking the UK's carbon intensity.
-
-If you know more, please let me know!
+From tracking the [pt24h](https://carbon-intensity.github.io/api-definitions/#get-intensity-from-pt24h) data, these "actual" values, as well as forecasts, are sometimes adjusted post-hoc, i.e. several hours after the relevant time window has passed. This is because some renewable generation data becomes available after the fact, and NGESO update their numbers. We could continue monitoring this, but we have to stop sometime. For the purposes of this project, to give an anchor against which we can measure forecast accuracy, I choose the "actual" "final forecast" values as the latest ones accessible up to 24 hours after the start of the time window.
 
 ## Data
 
 You can plot something similar using the datasets here: https://data.nationalgrideso.com/data-groups/carbon-intensity1: go to "Regional Carbon Intensity Forecast" (or "National"); click "Explore", choose "Chart", deselect "datetime" and add the regions. The "National" dataset includes the "actual" CI, so you can plot forecast alongside "actual". This is also shown here: https://carbonintensity.org.uk/#graphs
 
-A forecast is published every 30 minutes for 48 hours ahead. How accurate are those numbers? How much do they change with each new forecast?
-
-- A point in time at the start of a real window: 202303091630 or a UTC datetime
-    - the number of half-hours preceding: 1-96, or -96 to -1
-
-Estimating storage:
-
-- intensity is an int
-- generation perc is a float
-
-- ~96 forecasts
-- 1 actual value
-- so intensity approx: 20 * 100 = 2000 measurements per real half-hour window. 4 bytes each so 8 kb.
-- 48 half-hours per day, so * 50 = 100,000 measurements per day, 4 bytes each so 400 kb.
-- 1 year so 150 MB per year
-- Github size limit of about 5GB we should be fine for a while.
-
-#### Dates and times
-
-Throughout, I represent the 30-minute time window defined by a "from" and "to" timestamp in the API using just the "from" datetime. Thus a forecasted datetime given here represents a 30-minute window beginning at that time.
+### Dates and times
 
 All times are UTC.
 
-If we query the 48h forecast API at a given time X, the earliest time window (the 0th entry in the data) begins at the current time rounded down to the nearest half hour, i.e. "from" timepoint 0 represents the window covering the time requested.
+Throughout, I represent the 30-minute time window defined by a "from" and "to" timestamp in the API using just the "from" datetime. Thus a forecasted datetime given here represents a 30-minute window beginning at that time.
 
-#### Regions
+If we query the 48h forecast API at a given time e.g. 18:45, the earliest time window (the 0th entry in the data) begins at the current time rounded down to the nearest half hour, i.e. the "from" timepoint 0 will be 18:30 and represents the window covering the time requested. A wrinkle is that if you request 18:30, you'll get the window beginning 18:00, so the code here always requests +1 minute from the rounded-down half-hour.
 
-- 17 DNO regions including national: https://carbon-intensity.github.io/api-definitions/#region-list and in the 48 hour forecasts, there's an 18th region which is "GB", which approximates the "national" forecast.
+### Regions
 
-### Check this concept works at all
+- There are [17 DNO regions including national](https://carbon-intensity.github.io/api-definitions/#region-list). In the 48 hour forecasts, there's an 18th region which is "GB", which may approximate the "national" forecast but doesn't match it exactly.
 
-- Right now: https://api.carbonintensity.org.uk/regional/intensity/2023-03-09T20:01Z/fw48h
-
-### API and data notes
-
-- The national data and forecasts are different from the regional (national != GB).
+### API notes
 
 - This will give you the CI and forecast for the current period: https://api.carbonintensity.org.uk/intensity
 - Datetimes given to https://api.carbonintensity.org.uk/intensity/ ...
@@ -102,8 +81,6 @@ If we query the 48h forecast API at a given time X, the earliest time window (th
 - This endpoint includes a `forecast` alongside the `actual` CI value. This forecast appears to be the last forecast for that datetime. The 95-odd prior forecasts are unavailable (hence, this project to scrape them).
 - Regional forecast data does not appear to exist before https://api.carbonintensity.org.uk/regional/intensity/2018-05-10T23:30Z/fw48h
 
-- They seem to have saved forecasts historically. The earliet seems to be "2018-05-10T23:30Z"
-- No need to scrape every half hour; we can scrape daily instead and just get the previous day's ~48 forecasts.
 - _Actually_, that's wrong. They aren't publishing historical forecasts; it's just that you can lookup "forecasts" forwards and backwards from historical dates. Those forecasts I guess are the last ones they do for the date? They don't seem to change.
     - e.g. look at the last ones here: https://api.carbonintensity.org.uk/regional/intensity/2019-01-01T02:31Z/fw48h vs the earliest ones here: https://api.carbonintensity.org.uk/regional/intensity/2019-01-03T01:31Z/fw48h vs #46 here: https://api.carbonintensity.org.uk/regional/intensity/2019-01-02T02:31Z/fw48h - exactly the same!
 - So you _do_ have to scrape every 30 minutes in order to not lose any data.
@@ -158,8 +135,12 @@ To enable GitHub Actions, within the repo `Settings > Actions > General > Workfl
 
 Output JSON files are named for the `{from}` time given: `data/<endpoint>/<from-datetime>.json`.
 
-3. Parse the data and produce CSV files. Example:
+3. Parse the data and produce CSV files.
     - `python3 run.py wrangle --input_directory "data/national_fw48h" --output_dir "test"`
+
+### Test
+
+Run `make test` or `pytest -v tests`
 
 ## Data storage
 
@@ -175,20 +156,7 @@ Datetimes are all in UTC, in the format 2018-09-17T23:00:00
 
 ### Number of forecasts
 
-- 48 * 2 = 96, plus the 0th so 97.
-- I think some data is published more than 48 hours in advance. I wonder when values stop being updated?
-
-Q: when do the forecasts _stop_ getting updated?
-A: look at data/2023-03-10T1200Z.json. At position 0, this has:
-    "from": "2023-03-10T11:30Z",
-    "to": "2023-03-10T12:00Z",
-
 - I might need to add 1 minute to the inspect datetime before querying the endpoint (done).
-
-- It looks as though you can look a little further ahead than 48 hours - let's not worry about that too much.
-
-- I've disabled the "latest" schedule and added a "t-3hr" schedule which starts the download at now() minus 3 hours. This should give us 5-6 timepoints after the forecasted time, recorded/downloaded 5-6 times, so we can see whether they ever change.
-
 
 ## Plots
 
@@ -218,7 +186,6 @@ Because solar and wind generation data are estimates, their values can change ev
 - Tests
     - saving valid json and csv
     - summary generation is idempotent
-    - 
 
 - summary measures:
     - for a given half-hour window, in a given region, with a known actual CI:
@@ -226,7 +193,3 @@ Because solar and wind generation data are estimates, their values can change ev
 
 - make Github actions more efficient by reusing some steps
 - Could overwrite a single file per endpoint, and use a tool like [git-history](https://simonwillison.net/2021/Dec/7/git-history/) to retrieve past data. Keeping the files separate is a little more transparent, though, and a bit easier for now.
-
-## Testing
-
-Run `make test` or `pytest -v tests`
