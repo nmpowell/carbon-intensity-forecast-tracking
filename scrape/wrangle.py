@@ -36,7 +36,7 @@ def _regional_json_to_csv(data) -> pd.DataFrame:
         record_path=["regions", "generationmix"],
         meta=["from", ["regions", "regionid"], ["regions", "intensity", "forecast"]],
     )
-    # This raises FutureWarning: In a future version, the Index constructor will not infer numeric dtypes when passed object-dtype sequences (matching Series behavior)
+    # TODO: This raises FutureWarning: In a future version, the Index constructor will not infer numeric dtypes when passed object-dtype sequences (matching Series behavior)
     return df.pivot(
         index=["from", "regions.regionid", "regions.intensity.forecast"],
         columns="fuel",

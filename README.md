@@ -140,6 +140,7 @@ Because solar and wind generation data are estimates, their values can change ev
 
 ## TODOs & future work
 
+- [ ] fix :/home/runner/work/carbon-intensity-forecast-tracking/carbon-intensity-forecast-tracking/scrape/wrangle.py:40: FutureWarning: In a future version, the Index constructor will not infer numeric dtypes when passed object-dtype sequences (matching Series behavior)"
 - Summaries and plots for each region and DNO region
 - track regions' performance i.e. lower CI
 - investigate BMRS data: actual? total? https://www.bmreports.com/bmrs/?q=help/about-us
