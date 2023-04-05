@@ -345,6 +345,14 @@ def generate_boxplot_ci_error_for_days(
     ax.set_title(f"Percentage forecast error, past {days+1} days")
     ax.set_ylabel("forecast % error")
     ax.grid("on", linestyle="--", alpha=0.33)
+    ax.hlines(
+        0.0,
+        ax.get_xlim()[0],
+        ax.get_xlim()[-1],
+        color="k",
+        linestyle="--",
+        linewidth=0.5,
+    )
 
     return fig
 

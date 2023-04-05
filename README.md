@@ -8,7 +8,7 @@ The forecasts are updated every half hour, but the API does not keep historical 
 
 ![Published CI values](./data/ci_lines.png)
 
-The above figure shows the evolution of 24 hours' worth of time windows' forecasts. Each window is forecasted about 96 times in the preceeding 48 hours. The more recent time windows are darker blue.
+The above figure shows the evolution of 24 hours' worth of time windows' national forecasts. The more recent time windows are darker blue. Each window is forecasted about 96 times in the preceeding 48 hours (left of the dashed line, from the fw48h endpoint). Right of the dashed line are a further 48 post-hoc "forecasts" and "actual" values (pt24h endpoint).
 
 ## Basic idea
 
@@ -124,11 +124,11 @@ The JSON format isn't great for parsing and plotting, and the files are huge. So
 
 ## Plots
 
-- Want to show forecasts forward from a given date. It doesn't matter if we collect some past dates if we know which to ignore. If we take the datetime at which we call the API as timepoint 0, it doesn't really matter if the values change after we've stopped looking at past values. The purpose is to discover the reliability 
+- Want to show forecasts forward from a given date. It doesn't matter if we collect some past dates if we know which to ignore.
 
-Note that there could be many contributing factors to a broad error range, including missing data (not scraped successfully by this project).
+Note that there could be many contributing factors to a broad error standard deviation, including missing data (not scraped successfully).
 
-This plot shows all the forecasted intensity values for a given half-hour window starting at the time indicated by the vertical dashed line at t=0. Forecasts are published half-hourly at the `fw48h` endpoint, up to 48 hours before a window, and 24 hours after, at the `pt24h` endpoint. Therefore we have up to 96 forecasts (left of the dashed line) and 48 post-hoc "forecasts" (right). Forecast and "actual" values are published post-hoc.
+This plot shows all the forecasted intensity values for a given half-hour window starting at the time indicated by the vertical dashed line at t=0. Forecasts are published half-hourly at the `fw48h` endpoint, up to 48 hours before a window, and 24 hours after, at the `pt24h` endpoint. 
 
 This box plot shows the the spread of percentage error for all intensity forecasts for 12 hours prior to the given time. The error is based upon the final recorded "actual" intensity value (i.e. `actual - forecast`).
 
