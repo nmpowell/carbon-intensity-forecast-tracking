@@ -95,6 +95,8 @@ def run(
     **kwargs,
 ):
 
+    log.info(f"Using endpoint: {endpoint}")
+
     output_directory = check_create_directory(os.path.join(output_directory, endpoint))
 
     capture_dt = datetime.now(tz=timezone.utc).strftime(DATETIME_FMT_STR)
