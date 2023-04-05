@@ -100,10 +100,12 @@ From tracking the [pt24h](https://carbon-intensity.github.io/api-definitions/#ge
     python3 run.py download --output_dir "data" --now
     # 24-hour past "forecasts" from the current window
     python3 run.py download --output_dir "data" --now --endpoint regional_pt24h
-    # national intensity for a given date
+    # national intensity for a given time
     python3 run.py download --start_date "2023-03-13T12:01Z" -n 1 --endpoint national --unique_names
     # individual regions
-    python3 run.py download_regional -o data --start_date "2023-03-13T12:01Z" -n 1 --endpoint one_region_fw48h
+    python3 run.py download_regional -o "data" --start_date "2023-03-13T12:01Z" -n 1 --endpoint one_region_fw48h
+    # You can download data from many timepoints (-n 24 for 12 hours' worth), but this will be the fixed, historical data which is available forever anyway.
+    python3 run.py download --output_dir "temp" --start_date "2023-03-01T12:01Z" -n 24 --endpoint national
     ```
     Output JSON files are named for the `{from}` time given: `data/<endpoint>/<from-datetime>.json`.
 3. Parse the data and produce CSV files: `python3 run.py wrangle --input_directory "data/national_fw48h"`
