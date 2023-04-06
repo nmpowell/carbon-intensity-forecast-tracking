@@ -161,7 +161,7 @@ def get_dates(
 def get_dates_days(
     df: pd.DataFrame,
     num_days: int = 7,
-    hours_offset: int = 48,
+    hours_offset: int = 72,
 ) -> list:
     """Get all dates within a given number of days from the last date with complete data.
 
@@ -169,7 +169,7 @@ def get_dates_days(
         df (pd.DataFrame): Summary dataframe with datetime index.
         num_days (int): The number of complete days' data to include. Defaults to 7.
         hours_offset (int, optional): assume this many hours prior to the final timepoint in
-            the data have incomplete data. Defaults to 48 (we do not need actual data).
+            the data have incomplete data. Defaults to 72.
 
     Returns:
         list: All timepoints to include.
