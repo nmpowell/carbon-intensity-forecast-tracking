@@ -111,8 +111,7 @@ def load_summary(filepath: str, format: str) -> pd.DataFrame:
 def run(
     input_directory: str,
     output_directory: str = None,
-    endpoint: "str" = "regional_fw48h",
-    summary_name: str = None,
+    endpoint: str = "regional_fw48h",
     *args,
     **kwargs,
 ) -> None:

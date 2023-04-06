@@ -123,7 +123,7 @@ def get_dates(
         df (pd.DataFrame): dataframe with datetime index
         num_plots (int): number of plots to generate
         hours_offset (int): assume this many hours prior to the final timepoint in
-            the data have incomplete 'actual' data.
+            the data have incomplete 'actual' data. Defaults to 72.
 
     Returns:
         list: list of datetimes
@@ -163,12 +163,13 @@ def get_dates_days(
     num_days: int = 7,
     hours_offset: int = 48,
 ) -> list:
-    """_summary_
+    """Get all dates within a given number of days from the last date with complete data.
 
     Args:
-        df (pd.DataFrame): _description_
-        num_days (int): _description_
-        hours_offset (int, optional): _description_. Defaults to 48.
+        df (pd.DataFrame): Summary dataframe with datetime index.
+        num_days (int): The number of complete days' data to include. Defaults to 7.
+        hours_offset (int, optional): assume this many hours prior to the final timepoint in
+            the data have incomplete data. Defaults to 48 (we do not need actual data).
 
     Returns:
         list: All timepoints to include.
@@ -177,10 +178,13 @@ def get_dates_days(
     # The last timepoint with complete data
     latest_tp = df.index[-1] - timedelta(hours=hours_offset)
 
-    hours_prior = num_days * 24
-
     # The earliest timepoint to return
-    dt_pastpoint = latest_tp - timedelta(hours=hours_prior)
+    dt_pastpoint = latest_tp - timedelta(days=num_days)
+
+    # floor to the start of that day
+    dt_pastpoint = datetime(
+        dt_pastpoint.year, dt_pastpoint.month, dt_pastpoint.day, 0, 0, 0
+    ).astimezone(timezone.utc)
 
     if dt_pastpoint > df.index[-1]:
         raise ValueError("Not enough data to generate plots")
@@ -368,12 +372,12 @@ def generate_boxplot_ci_error_for_days(
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
 
-    # Get the earliest time from the day a week ago
-    dt = NOW - timedelta(days=days)
-    dt = datetime(dt.year, dt.month, dt.day, 0, 0, 0).astimezone(timezone.utc)
+    if days:
+        # Get the earliest time from a given number of days ago
+        df = df.loc[get_dates_days(df, days)].copy()
 
     # All days from then to now
-    dff = df.loc[dt:NOW][["intensity.forecast", "intensity.actual.final"]].copy()
+    dff = df[["intensity.forecast", "intensity.actual.final"]].copy()
 
     # Percentage err
     dfferr = 100.0 * (
@@ -434,11 +438,8 @@ def generate_boxplot_ci_error_per_hour(
     plt.rcParams["figure.dpi"] = DPI
 
     if days:
-        # Get the earliest time from the day a week ago
-        dt = NOW - timedelta(days=days)
-        dt = datetime(dt.year, dt.month, dt.day, 0, 0, 0).astimezone(timezone.utc)
-        df = df.loc[dt:NOW].copy()
-        # df = df.loc[get_dates_days(df, days)].copy()
+        # Get the earliest time from a given number of days ago
+        df = df.loc[get_dates_days(df, days)].copy()
 
     dff = df[["intensity.forecast", "intensity.actual.final"]]
 
@@ -474,6 +475,7 @@ def create_graph_images(
     input_directory: str,
     output_directory: str = None,
     hours_of_data: int = HOURS_OF_DATA,
+    filter: str = "national",
     *args,
     **kwargs,
 ) -> None:
@@ -487,7 +489,7 @@ def create_graph_images(
     output_directory = output_directory or input_directory
 
     summaries_merged_df = get_merged_summaries_with_final_actual_intensities(
-        input_directory, filter="national"
+        input_directory, filter=filter.split("_")[0]
     )
 
     fig = generate_plot_ci_lines(summaries_merged_df, hours_of_data)
