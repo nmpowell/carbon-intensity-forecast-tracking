@@ -105,22 +105,50 @@ def fancy_xaxis_dateformats(df: pd.DataFrame) -> None:
         df.rename(index={dt: _special_fmt(dt)}, inplace=True)
 
 
-def get_dates(df: pd.DataFrame, num_plots: int, latest: bool = True) -> list:
+def get_dates(
+    df: pd.DataFrame,
+    num_plots: int,
+    hours_offset: int = 72,
+    start_date: datetime = None,
+    start_days_offset: int = None,
+) -> list:
     """Get the dates to plot.
-    By default the most recent available data is used.
+    By default the most recent available complete data is used. Note that "complete"
+    data includes 'actual' figures, which are only complete 24 hours after a given
+    timepoint.
+    Note also that we forecast 48 hours into the future, so the most recent timepoint
+    with complete data is 72 hours earlier than the latest timepoint in the data.
 
     Args:
         df (pd.DataFrame): dataframe with datetime index
         num_plots (int): number of plots to generate
+        hours_offset (int): assume this many hours prior to the final timepoint in
+            the data have incomplete 'actual' data.
 
     Returns:
         list: list of datetimes
     """
-    # Want to show N hours of data. The most recent timepoint for which all data is available will be now - 24 hours.
-    # The first timepoint will be now - 24 hours - N hours.
-    latest_tp = df.index[-1] if latest else NOW
 
-    hours_prior = 24 + num_plots / 2
+    # Want to show N hours of data. The most recent timepoint for which all data is available
+    # should be the latest - 24 hours.
+    # The first timepoint will be now - 24 hours - N hours.
+
+    if not num_plots:
+        num_plots = int(HOURS_OF_DATA * 2)
+
+    if start_date:
+        return [d for d in df.index if d >= start_date][:num_plots]
+
+    # The last timepoint with complete data
+    latest_tp = df.index[-1] - timedelta(hours=hours_offset)
+
+    # if start_days_offset:
+    #     hours_prior = start_days_offset * 24
+    # else:
+    # The number of hours' data to show
+    hours_prior = num_plots / 2
+
+    # The earliest timepoint to return
     dt_pastpoint = latest_tp - timedelta(hours=hours_prior)
 
     if dt_pastpoint > df.index[-1]:
@@ -128,6 +156,37 @@ def get_dates(df: pd.DataFrame, num_plots: int, latest: bool = True) -> list:
 
     # pick datetimes
     return [d for d in df.index if d >= dt_pastpoint][:num_plots]
+
+
+def get_dates_days(
+    df: pd.DataFrame,
+    num_days: int = 7,
+    hours_offset: int = 48,
+) -> list:
+    """_summary_
+
+    Args:
+        df (pd.DataFrame): _description_
+        num_days (int): _description_
+        hours_offset (int, optional): _description_. Defaults to 48.
+
+    Returns:
+        list: All timepoints to include.
+    """
+
+    # The last timepoint with complete data
+    latest_tp = df.index[-1] - timedelta(hours=hours_offset)
+
+    hours_prior = num_days * 24
+
+    # The earliest timepoint to return
+    dt_pastpoint = latest_tp - timedelta(hours=hours_prior)
+
+    if dt_pastpoint > df.index[-1]:
+        raise ValueError("Not enough data to generate plots")
+
+    # pick datetimes
+    return [d for d in df.index if d >= dt_pastpoint and d <= latest_tp]
 
 
 def generate_plot_ci_lines(
@@ -209,8 +268,6 @@ def generate_boxplot_ci(
     df = df.drop("intensity.actual", level=0, axis=1)
 
     dates = get_dates(df, hours_of_data * 2)
-    print(len(dates))
-    # print(dates)
 
     # reformat x-axis for display
     dff = df["intensity.forecast"].loc[dates]
@@ -365,7 +422,8 @@ def generate_boxplot_ci_error_per_hour(
     df: pd.DataFrame,
     days: int = 7,
 ):
-    """_summary_
+    """Generate boxplots of the percentage forecast error per hour prior to the window,
+    using data from the past days.
 
     Args:
         input_directory (str): Directory containing summary CSVs.
@@ -380,6 +438,7 @@ def generate_boxplot_ci_error_per_hour(
         dt = NOW - timedelta(days=days)
         dt = datetime(dt.year, dt.month, dt.day, 0, 0, 0).astimezone(timezone.utc)
         df = df.loc[dt:NOW].copy()
+        # df = df.loc[get_dates_days(df, days)].copy()
 
     dff = df[["intensity.forecast", "intensity.actual.final"]]
 
