@@ -1,5 +1,5 @@
-Downloaded: /home/runner/work/carbon-intensity-forecast-tracking/carbon-intensity-forecast-tracking/data/regional_fw48h/2023-04-06T0901Z.json at 2023-04-06 09:20:30.387489+00:00
-Downloaded: /home/runner/work/carbon-intensity-forecast-tracking/carbon-intensity-forecast-tracking/data/regional_pt24h/2023-04-06T0901Z.json at 2023-04-06 09:20:36.191857+00:00
-Downloaded: /home/runner/work/carbon-intensity-forecast-tracking/carbon-intensity-forecast-tracking/data/national_fw48h/2023-04-06T0901Z.json at 2023-04-06 09:20:39.737004+00:00
-Downloaded: /home/runner/work/carbon-intensity-forecast-tracking/carbon-intensity-forecast-tracking/data/national_pt24h/2023-04-06T0901Z.json at 2023-04-06 09:20:41.179644+00:00
-Downloaded: /home/runner/work/carbon-intensity-forecast-tracking/carbon-intensity-forecast-tracking/data/national_generation_pt24h/2023-04-06T0901Z.json at 2023-04-06 09:20:45.757884+00:00
+Downloaded: /home/runner/work/carbon-intensity-forecast-tracking/carbon-intensity-forecast-tracking/data/regional_fw48h/2023-04-06T0931Z.json at 2023-04-06 09:39:37.191001+00:00
+Downloaded: /home/runner/work/carbon-intensity-forecast-tracking/carbon-intensity-forecast-tracking/data/regional_pt24h/2023-04-06T0931Z.json at 2023-04-06 09:39:43.311611+00:00
+Downloaded: /home/runner/work/carbon-intensity-forecast-tracking/carbon-intensity-forecast-tracking/data/national_fw48h/2023-04-06T0931Z.json at 2023-04-06 09:39:45.025682+00:00
+Downloaded: /home/runner/work/carbon-intensity-forecast-tracking/carbon-intensity-forecast-tracking/data/national_pt24h/2023-04-06T0931Z.json at 2023-04-06 09:39:46.456021+00:00
+Downloaded: /home/runner/work/carbon-intensity-forecast-tracking/carbon-intensity-forecast-tracking/data/national_generation_pt24h/2023-04-06T0931Z.json at 2023-04-06 09:39:51.510786+00:00
