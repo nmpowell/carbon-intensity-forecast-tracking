@@ -50,6 +50,7 @@ jobs:
           git config user.name "Automated"
           git config user.email "actions@users.noreply.github.com"
           git add -A
+          git restore --staged commit_msg.txt
           git commit --file commit_msg.txt || exit 0
           git pull --rebase
           git push

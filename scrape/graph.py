@@ -205,11 +205,12 @@ def generate_boxplot_ci(
     plt.rcParams["figure.dpi"] = DPI
 
     # We don't get "actual" intensity from the fw48h endpoint
+    # Use only forecasts for measuring prediction quality
     df = df.drop("intensity.actual", level=0, axis=1)
 
-    # Use only forecasts for measuring prediction quality
-
     dates = get_dates(df, hours_of_data * 2)
+    print(len(dates))
+    # print(dates)
 
     # reformat x-axis for display
     dff = df["intensity.forecast"].loc[dates]
