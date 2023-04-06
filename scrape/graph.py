@@ -105,8 +105,9 @@ def fancy_xaxis_dateformats(df: pd.DataFrame) -> None:
         df.rename(index={dt: _special_fmt(dt)}, inplace=True)
 
 
-def get_dates(df: pd.DataFrame, num_plots: int) -> list:
+def get_dates(df: pd.DataFrame, num_plots: int, latest: bool = True) -> list:
     """Get the dates to plot.
+    By default the most recent available data is used.
 
     Args:
         df (pd.DataFrame): dataframe with datetime index
@@ -117,8 +118,13 @@ def get_dates(df: pd.DataFrame, num_plots: int) -> list:
     """
     # Want to show N hours of data. The most recent timepoint for which all data is available will be now - 24 hours.
     # The first timepoint will be now - 24 hours - N hours.
-    hours_prior_to_now = 24 + HOURS_OF_DATA
-    dt_pastpoint = NOW - timedelta(hours=hours_prior_to_now)
+    latest_tp = df.index[-1] if latest else NOW
+
+    hours_prior = 24 + num_plots / 2
+    dt_pastpoint = latest_tp - timedelta(hours=hours_prior)
+
+    if dt_pastpoint > df.index[-1]:
+        raise ValueError("Not enough data to generate plots")
 
     # pick datetimes
     return [d for d in df.index if d >= dt_pastpoint][:num_plots]
