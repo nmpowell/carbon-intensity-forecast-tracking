@@ -43,27 +43,34 @@ def format_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     return new_df
 
 
-def load_summaries(directory: str, filter: str = "summary_national") -> list:
+# TODO: need another header row for regional data
+def load_summaries(directory: str, filter: str = "") -> list:
     files = get_data_files(directory, extension=".csv", filter=filter)
     return [pd.read_csv(f, index_col=0, header=[0, 1]) for f in files]
 
 
-def load_forward_summary(directory: str) -> pd.DataFrame:
+def load_merge_summaries(
+    directory: str, filter: str = "summary_national"
+) -> pd.DataFrame:
+    summaries = load_summaries(directory, filter=filter)
+    merged_df = pd.merge(*summaries, left_index=True, right_index=True, how="outer")
+    return format_dataframe(merged_df)
+
+
+def _load_forward_summary(directory: str) -> pd.DataFrame:
     files = get_data_files(directory, extension=".csv", filter="summary_national_fw48h")
     return pd.read_csv(files[0], index_col=0, header=[0, 1])
 
 
-def load_past_summary(directory: str) -> pd.DataFrame:
+def _load_past_summary(directory: str) -> pd.DataFrame:
     files = get_data_files(directory, extension=".csv", filter="summary_national_pt24h")
     return pd.read_csv(files[0], index_col=0, header=[0, 1])
 
 
 def get_merged_summaries_with_final_actual_intensities(
-    directory: str, filter: str = "summary_national"
+    directory: str, filter: str = "national"
 ) -> pd.DataFrame:
-    summaries = load_summaries(directory, filter=filter)
-    merged_df = pd.merge(*summaries, left_index=True, right_index=True, how="outer")
-    merged_df = format_dataframe(merged_df)
+    merged_df = load_merge_summaries(directory, filter="summary_" + filter)
 
     # Get the final (rightmost, assuming we have -24.0 as the rightmost) non-NaN value in each row
     merged_df["intensity.actual.final"] = (
@@ -118,7 +125,7 @@ def get_dates(df: pd.DataFrame, num_plots: int) -> list:
 
 
 def generate_plot_ci_lines(
-    input_directory: str,
+    df: pd.DataFrame,
     hours_of_data: int = HOURS_OF_DATA,
 ):
     """Generate plots from summaries.
@@ -128,11 +135,7 @@ def generate_plot_ci_lines(
         output_directory (str, optional): _description_. Defaults to None.
     """
 
-    summaries = load_summaries(input_directory)
-    merged_df = pd.merge(*summaries, left_index=True, right_index=True, how="outer")
-    merged_df = format_dataframe(merged_df)
-
-    dates = get_dates(merged_df, hours_of_data * 2)
+    dates = get_dates(df, hours_of_data * 2)
 
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
@@ -152,13 +155,13 @@ def generate_plot_ci_lines(
         if dt == dates[-1]:
             plot_defs["label"] = "forecast"
         plot_defs["c"] = next(colours)
-        fct = merged_df["intensity.forecast"].loc[dt].plot(**plot_defs)
+        fct = df["intensity.forecast"].loc[dt].plot(**plot_defs)
 
         # Actual
         if dt == dates[-1]:
             plot_defs["label"] = "actual"
         plot_defs["c"] = next(colours)
-        act = merged_df["intensity.actual"].loc[dt].plot(**plot_defs)
+        act = df["intensity.actual"].loc[dt].plot(**plot_defs)
 
         # legend
         if dt == dates[-1]:
@@ -183,7 +186,7 @@ def generate_plot_ci_lines(
 
 
 def generate_boxplot_ci(
-    input_directory: str,
+    df: pd.DataFrame,
     hours_of_data: int = HOURS_OF_DATA,
 ):
     """Generate boxplot of CI values.
@@ -195,27 +198,25 @@ def generate_boxplot_ci(
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
 
-    merged_df = get_merged_summaries_with_final_actual_intensities(input_directory)
-
     # We don't get "actual" intensity from the fw48h endpoint
-    merged_df = merged_df.drop("intensity.actual", level=0, axis=1)
+    df = df.drop("intensity.actual", level=0, axis=1)
 
     # Use only forecasts for measuring prediction quality
 
-    dates = get_dates(merged_df, hours_of_data * 2)
+    dates = get_dates(df, hours_of_data * 2)
 
     # reformat x-axis for display
-    df = merged_df["intensity.forecast"].loc[dates]
-    fancy_xaxis_dateformats(df)
+    dff = df["intensity.forecast"].loc[dates]
+    fancy_xaxis_dateformats(dff)
 
     fig, ax = plt.subplots(1, 1)
-    _ = df.T.boxplot(rot=90, sym="r.", ax=ax)
+    _ = dff.T.boxplot(rot=90, sym="r.", ax=ax)
 
     # Boxplots have weird positioning so we can't plot a line directly over them using the same axes; instead use this hackery.
     x_locs = ax.get_xticks()
     ax.plot(
         x_locs,
-        merged_df["intensity.actual.final"].loc[dates],
+        df["intensity.actual.final"].loc[dates],
         "tab:orange",
         linestyle="-",
         linewidth=0.5,
@@ -241,11 +242,11 @@ def generate_boxplot_ci_future(
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
 
-    df = load_forward_summary(input_directory)
+    df = _load_forward_summary(input_directory)
 
 
 def generate_boxplot_ci_error(
-    input_directory: str,
+    df: pd.DataFrame,
     hours_of_data: int = HOURS_OF_DATA,
 ):
     """Generate boxplot of CI error values.
@@ -257,11 +258,9 @@ def generate_boxplot_ci_error(
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
 
-    merged_df = get_merged_summaries_with_final_actual_intensities(input_directory)
+    dates = get_dates(df, hours_of_data * 2)
 
-    dates = get_dates(merged_df, hours_of_data * 2)
-
-    dff = merged_df.loc[dates][["intensity.forecast", "intensity.actual.final"]].copy()
+    dff = df.loc[dates][["intensity.forecast", "intensity.actual.final"]].copy()
 
     # Percentage error
     dfferr = 100.0 * (
@@ -295,7 +294,7 @@ def generate_boxplot_ci_error(
 
 
 def generate_boxplot_ci_error_for_days(
-    input_directory: str,
+    df: pd.DataFrame,
     days: int = 7,
 ):
     """Generate boxplot summaries for entire days.
@@ -305,14 +304,12 @@ def generate_boxplot_ci_error_for_days(
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
 
-    merged_df = get_merged_summaries_with_final_actual_intensities(input_directory)
-
     # Get the earliest time from the day a week ago
     dt = NOW - timedelta(days=days)
     dt = datetime(dt.year, dt.month, dt.day, 0, 0, 0).astimezone(timezone.utc)
 
     # All days from then to now
-    dff = merged_df.loc[dt:NOW][["intensity.forecast", "intensity.actual.final"]].copy()
+    dff = df.loc[dt:NOW][["intensity.forecast", "intensity.actual.final"]].copy()
 
     # Percentage err
     dfferr = 100.0 * (
@@ -358,7 +355,7 @@ def generate_boxplot_ci_error_for_days(
 
 
 def generate_boxplot_ci_error_per_hour(
-    input_directory: str,
+    df: pd.DataFrame,
     days: int = 7,
 ):
     """_summary_
@@ -371,15 +368,13 @@ def generate_boxplot_ci_error_per_hour(
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
 
-    merged_df = get_merged_summaries_with_final_actual_intensities(input_directory)
-
     if days:
         # Get the earliest time from the day a week ago
         dt = NOW - timedelta(days=days)
         dt = datetime(dt.year, dt.month, dt.day, 0, 0, 0).astimezone(timezone.utc)
-        merged_df = merged_df.loc[dt:NOW].copy()
+        df = df.loc[dt:NOW].copy()
 
-    dff = merged_df[["intensity.forecast", "intensity.actual.final"]]
+    dff = df[["intensity.forecast", "intensity.actual.final"]]
 
     # Percentage err
     dfferr = 100.0 * (
@@ -423,19 +418,23 @@ def create_graph_images(
         output_directory (str): Directory to save figures
     """
 
-    fig = generate_plot_ci_lines(input_directory, hours_of_data)
-    save_figure(fig, output_directory or input_directory, "ci_lines.png")
+    output_directory = output_directory or input_directory
 
-    fig = generate_boxplot_ci(input_directory, hours_of_data)
-    save_figure(fig, output_directory or input_directory, "ci_boxplot.png")
-
-    fig = generate_boxplot_ci_error(input_directory, hours_of_data)
-    save_figure(fig, output_directory or input_directory, "ci_error_boxplot.png")
-
-    fig = generate_boxplot_ci_error_for_days(input_directory)
-    save_figure(fig, output_directory or input_directory, "ci_error_boxplot_days.png")
-
-    fig = generate_boxplot_ci_error_per_hour(input_directory)
-    save_figure(
-        fig, output_directory or input_directory, "ci_error_boxplot_per_hour.png"
+    summaries_merged_df = get_merged_summaries_with_final_actual_intensities(
+        input_directory, filter="national"
     )
+
+    fig = generate_plot_ci_lines(summaries_merged_df, hours_of_data)
+    save_figure(fig, output_directory, "ci_lines.png")
+
+    fig = generate_boxplot_ci(summaries_merged_df, hours_of_data)
+    save_figure(fig, output_directory, "ci_boxplot.png")
+
+    fig = generate_boxplot_ci_error(summaries_merged_df, hours_of_data)
+    save_figure(fig, output_directory, "ci_error_boxplot.png")
+
+    fig = generate_boxplot_ci_error_for_days(summaries_merged_df)
+    save_figure(fig, output_directory, "ci_error_boxplot_days.png")
+
+    fig = generate_boxplot_ci_error_per_hour(summaries_merged_df)
+    save_figure(fig, output_directory, "ci_error_boxplot_per_hour.png")
