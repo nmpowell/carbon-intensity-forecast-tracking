@@ -9,6 +9,7 @@ from itertools import cycle
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import scipy.stats as st
 
 from scrape.files import get_data_files
 
@@ -182,15 +183,31 @@ def get_dates_days(
     dt_pastpoint = latest_tp - timedelta(days=num_days)
 
     # floor to the start of that day
-    dt_pastpoint = datetime(
-        dt_pastpoint.year, dt_pastpoint.month, dt_pastpoint.day, 0, 0, 0
-    ).astimezone(timezone.utc)
+    dt_pastpoint = dt_pastpoint.floor("D").astimezone(timezone.utc)
 
     if dt_pastpoint > df.index[-1]:
         raise ValueError("Not enough data to generate plots")
 
     # pick datetimes
     return [d for d in df.index if d >= dt_pastpoint and d <= latest_tp]
+
+
+def confidence_interval(data, level=0.99, decimals=2):
+    # Pandas would remove NaNs for us but not NumPy!
+    data = data[~np.isnan(data)]
+    m = np.mean(data)
+    sem = st.sem(data)
+    dof = int(len(data) - 1)
+    result = st.t.interval(confidence=level, df=dof, loc=m, scale=sem)
+    return tuple([np.round(i, decimals=decimals) for i in result])
+
+
+def confidence_95(data):
+    return confidence_interval(data, 0.95, 2)
+
+
+def confidence_99(data):
+    return confidence_interval(data, 0.99, 2)
 
 
 def generate_plot_ci_lines(
@@ -471,11 +488,81 @@ def generate_boxplot_ci_error_per_hour(
     return fig
 
 
+# def generate_text_boxes(df: pd.DataFrame, hours_of_data: int = 24):
+#     """ """
+#     plt.rcParams["figure.figsize"] = [9, 3]
+#     plt.rcParams["figure.dpi"] = DPI
+
+#     fig, axs = plt.subplots(nrows=1, ncols=3, squeeze=0)
+#     for ax in axs.reshape(-1):
+#         ax.text(2, 6, r'an equation: $E=mc^2$', fontsize=15)
+
+
+def generate_markdown_table(df: pd.DataFrame, days: int = 7) -> str:
+    # Get the earliest time from a given number of days ago
+    df = df.loc[get_dates_days(df, days)]
+    df = df[["intensity.forecast", "intensity.actual.final"]]
+
+    # Error
+    dferr = df["intensity.forecast"].sub(df["intensity.actual.final"], axis=0)
+
+    # Percentage error
+    dfferr = 100.0 * (
+        df["intensity.forecast"].sub(df["intensity.actual.final"], axis=0)
+    ).div(df["intensity.actual.final"], axis=0)
+
+    # only pre-timepoint forecasts
+    dfferr = dfferr[[c for c in dfferr.columns if float(c) >= 0.0]]
+
+    dff = dfferr.copy()
+    dff.index = dff.index.date
+    forecast_cols = dff.columns
+
+    # Add a helper column to count occurrences of each label
+    dff["count_per_day"] = dff.groupby(dff.index).cumcount()
+
+    # pivot into a multiindex
+    result = dff.pivot_table(
+        index=dff.index,
+        columns="count_per_day",
+        values=list(forecast_cols),
+        aggfunc="first",
+    )
+
+    # flatten
+    result.columns = [f"{level1}_{level2+1}" for level1, level2 in result.columns]
+
+    stats = result.T.agg(
+        ["count", "mean", "std", "sem", confidence_95, confidence_99], axis=0
+    ).T
+    stats_rounded = stats[["mean", "std", "sem"]].astype("float").round(2)
+    stats = pd.concat(
+        [stats[["count"]], stats_rounded, stats[["confidence_95", "confidence_99"]]],
+        axis=1,
+    ).astype(str)
+
+    # splitting each ci column:
+    # ci_95 = pd.DataFrame(
+    #     stats["confidence_95"].to_list(),
+    #     columns=["ci_95_lo", "ci_95_hi"],
+    #     index=stats.index,
+    # )
+    # ci_99 = pd.DataFrame(
+    #     stats["confidence_99"].to_list(),
+    #     columns=["ci_99_lo", "ci_99_hi"],
+    #     index=stats.index,
+    # )
+    # stats = pd.concat([stats, ci_95, ci_99], axis=1)
+
+    return stats.to_markdown()
+
+
 def create_graph_images(
     input_directory: str,
     output_directory: str = None,
     hours_of_data: int = HOURS_OF_DATA,
     filter: str = "national",
+    days: int = 7,
     *args,
     **kwargs,
 ) -> None:
@@ -501,8 +588,14 @@ def create_graph_images(
     fig = generate_boxplot_ci_error(summaries_merged_df, hours_of_data)
     save_figure(fig, output_directory, "ci_error_boxplot.png")
 
-    fig = generate_boxplot_ci_error_for_days(summaries_merged_df)
+    fig = generate_boxplot_ci_error_for_days(summaries_merged_df, days)
     save_figure(fig, output_directory, "ci_error_boxplot_days.png")
 
-    fig = generate_boxplot_ci_error_per_hour(summaries_merged_df)
+    fig = generate_boxplot_ci_error_per_hour(summaries_merged_df, days)
     save_figure(fig, output_directory, "ci_error_boxplot_per_hour.png")
+
+    # fig = generate_text_boxes(summaries_merged_df, hours_of_data)
+    # save_figure(fig, output_directory, "text_boxes.png")
+
+    markdown = generate_markdown_table(summaries_merged_df, days=days)
+    print(markdown)
