@@ -8,7 +8,7 @@ The UK's National Grid Electricity System Operator (NGESO) publishes [an API](ht
 
 The forecasts are updated every half hour, but the API does not keep historical forecasts; they're unavailable or overwritten. How reliable are they?
 
-![Published CI values](./data/ci_lines.png)
+![Published CI values](./data/national_ci_lines.png)
 
 The above figure shows the evolution of 24 hours' worth of time windows' national forecasts. The more recent time windows are darker blue. Each window is forecasted about 96 times in the preceeding 48 hours (left of the dashed line, from the fw48h endpoint). Right of the dashed line are a further 48 post-hoc "forecasts" and "actual" values (pt24h endpoint).
 
@@ -33,19 +33,9 @@ The API site shows [a graph](https://carbonintensity.org.uk/#graphs) of the fore
 
 ## Forecast Accuracy
 
-![Published CI values](./data/ci_boxplot.png)
+### 7-day summary
 
-The above boxplot shows the range of all published forecast values for each 30-minute time window.
-
-- For each actual 30-minute period defined by its "from" datetime, capture published forecasts for that period.
-- Forecasts are published up to 48 hours ahead, so we should expect about 96 future forecasts for one real period, and 48 more from the "past" 24 hours.
-- Also capture "actual" values by choosing the latest available "actual" value (national data only) up to 24 hours after the window has passed.
-- For the regional data, absent "actual" values we choose the final available forecast 24h after the window has passed (usually, this does not change).
-- We can do this for each of the published regions and the National data.
-
-![Published CI values](./data/ci_error_boxplot.png)
-
-The above plot shows forecast percentage error (compared with "actual" values) for the same times.
+#### Error, gCO2/kWh
 
 | error, gCO_2/kWh   |   mean |    std |    sem | confidence_95    |
 |:-------------------|-------:|-------:|-------:|:-----------------|
@@ -55,6 +45,8 @@ The above plot shows forecast percentage error (compared with "actual" values) f
 | 2023-04-04         | -12.29 |  46.03 |   1.42 | (-15.09, -9.5)   |
 | 2023-04-05         | -24.73 |  34.76 |   0.82 | (-26.34, -23.12) |
 
+#### Percentage error
+
 | error, %   |   mean |    std |    sem | confidence_95    |
 |:-----------|-------:|-------:|-------:|:-----------------|
 | 2023-03-29 |  -2.26 |  17.56 |   0.28 | (-2.81, -1.71)   |
@@ -62,6 +54,22 @@ The above plot shows forecast percentage error (compared with "actual" values) f
 | 2023-04-03 |  -0.58 | nan    | nan    | (nan, nan)       |
 | 2023-04-04 |  -2.61 |  28.1  |   0.87 | (-4.31, -0.9)    |
 | 2023-04-05 | -11.5  |  16.86 |   0.4  | (-12.28, -10.72) |
+
+### 24 hours
+
+![Published CI values](./data/national_ci_boxplot.png)
+
+The above boxplot shows the range of all published forecast values for each 30-minute time window.
+
+- For each actual 30-minute period defined by its "from" datetime, capture published forecasts for that period.
+- Forecasts are published up to 48 hours ahead, so we should expect about 96 future forecasts for one real period, and 48 more from the "past" 24 hours.
+- Also capture "actual" values by choosing the latest available "actual" value (national data only) up to 24 hours after the window has passed.
+- For the regional data, absent "actual" values we choose the final available forecast 24h after the window has passed (usually, this does not change).
+- We can do this for each of the published regions and the National data.
+
+![Published CI values](./data/national_ci_error_boxplot.png)
+
+The above plot shows forecast percentage error (compared with "actual" values) for the same times.
 
 ## Limitations
 
@@ -127,7 +135,7 @@ From tracking the [pt24h](https://carbon-intensity.github.io/api-definitions/#ge
     ```
     Output JSON files are named for the `{from}` time given: `data/<endpoint>/<from-datetime>.json`.
 3. Parse the data and produce CSV files: `python3 run.py wrangle --input_directory "data/national_fw48h"`
-4. Summarise the CSVs: `python3 run.py summarise --input_directory "data/national_fw48h"`
+4. Summarise the CSVs: `python3 run.py summarise --input_directory "data/national_fw48h"`. Old CSVs are moved to an `_archive` subdirectory.
 5. Generate plots: `python3 run.py plot --input_directory "data/national_fw48h"`
 
 To copy the scraping functionality of this repo, enable GitHub Actions within your repo `Settings > Actions > General > Workflow permissions > Read and write permissions`.
@@ -156,12 +164,12 @@ This box plot shows the the spread of percentage error for all intensity forecas
 
 This box plot shows the spread of all the intensity forecasts (their actual intensity values) for 12 hours prior to the given time.
 
-Because solar and wind generation data are estimates, their values can change even post-hoc (i.e. after the time window has passed). This can be seen from the orange line in <the plot>, tracking the `pt24h` endpoint, which varies slightly over time. Therefore, I compare forecast accuracy against the last available "actual" value, which is at most 24h after the window. (Instead of the last forecast value, which is fixed, or the first available "actual" value, which is recorded just after the window has passed.)
+Because solar and wind generation data are estimates, their values can change even post-hoc (i.e. after the time window has passed). This can be seen from the orange line in <the plot>, tracking the `pt24h` endpoint, which varies slightly over time. Therefore, I compare forecast accuracy against the last available "actual" value, which here is at most 24h after the window. (Instead of the last forecast value, which is fixed, or the first available "actual" value, which is recorded just after the window has passed.)
 
 ## TODOs & future work
 
 - [ ] fix/check time range on plots
-- [ ] summaries up to 10 days to make the files smaller
+- [ ] summaries up to 10 days to make the files smaller (regional)
 - [ ] fix :/home/runner/work/carbon-intensity-forecast-tracking/carbon-intensity-forecast-tracking/scrape/wrangle.py:40: FutureWarning: In a future version, the Index constructor will not infer numeric dtypes when passed object-dtype sequences (matching Series behavior)"
 - [ ] split summaries into smaller files, or only generate for a small date range.
 - Summaries and plots for each region and DNO region

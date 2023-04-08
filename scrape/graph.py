@@ -605,19 +605,19 @@ def create_graph_images(
     )
 
     fig = generate_plot_ci_lines(summaries_merged_df, hours_of_data)
-    save_figure(fig, output_directory, "ci_lines.png")
+    save_figure(fig, output_directory, filter + "_ci_lines.png")
 
     fig = generate_boxplot_ci(summaries_merged_df, hours_of_data)
-    save_figure(fig, output_directory, "ci_boxplot.png")
+    save_figure(fig, output_directory, filter + "_ci_boxplot.png")
 
     fig = generate_boxplot_ci_error(summaries_merged_df, hours_of_data)
-    save_figure(fig, output_directory, "ci_error_boxplot.png")
+    save_figure(fig, output_directory, filter + "_ci_error_boxplot.png")
 
     fig = generate_boxplot_ci_error_for_days(summaries_merged_df, days)
-    save_figure(fig, output_directory, "ci_error_boxplot_days.png")
+    save_figure(fig, output_directory, filter + "_ci_error_boxplot_days.png")
 
     fig = generate_boxplot_ci_error_per_hour(summaries_merged_df, days)
-    save_figure(fig, output_directory, "ci_error_boxplot_per_hour.png")
+    save_figure(fig, output_directory, filter + "_ci_error_boxplot_per_hour.png")
 
     # fig = generate_text_boxes(summaries_merged_df, hours_of_data)
     # save_figure(fig, output_directory, "text_boxes.png")
