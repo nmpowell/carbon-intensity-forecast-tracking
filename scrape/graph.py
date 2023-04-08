@@ -264,9 +264,8 @@ def generate_plot_ci_lines(
     )
     ax.set_xlabel("hours before forecasted window")
     ax.set_ylabel("carbon intensity")
-    ax.set_title(
-        f"Published CI forecast values, {len(dates)} half-hour windows {_ftime(dates[0])} - {_ftime(dates[-1])} UTC"
-    )
+    ax.set_title(f"{_ftime(dates[0])} - {_ftime(dates[-1])} UTC")
+    fig.suptitle(f"Published CI forecast values, {len(dates)} half-hour windows")
 
     return fig
 
@@ -308,26 +307,24 @@ def generate_boxplot_ci(
         label="actual",
     )
 
-    ax.set_title(
-        f"Carbon intensity forecast ranges, {len(dates)} half-hour windows {_ftime(dates[0])} - {_ftime(dates[-1])} UTC"
-    )
+    ax.set_title(f"{_ftime(dates[0])} - {_ftime(dates[-1])} UTC")
     ax.set_ylabel("carbon intensity")
-
     ax.grid("on", linestyle="--", alpha=0.33)
     ax.legend()
+    fig.suptitle(f"Carbon intensity forecast ranges, {len(dates)} half-hour windows")
 
     return fig
 
 
-def generate_boxplot_ci_future(
-    input_directory: str, hours_of_data: int = HOURS_OF_DATA
-):
-    """Generate boxplot of future CI forecasts. This data will be less complete than the past data."""
+# def generate_boxplot_ci_future(
+#     input_directory: str, hours_of_data: int = HOURS_OF_DATA
+# ):
+#     """Generate boxplot of future CI forecasts. This data will be less complete than the past data."""
 
-    plt.rcParams["figure.figsize"] = [12, 6]
-    plt.rcParams["figure.dpi"] = DPI
+#     plt.rcParams["figure.figsize"] = [12, 6]
+#     plt.rcParams["figure.dpi"] = DPI
 
-    df = _load_forward_summary(input_directory)
+#     df = _load_forward_summary(input_directory)
 
 
 def generate_boxplot_ci_error(
@@ -361,9 +358,7 @@ def generate_boxplot_ci_error(
 
     fig, ax = plt.subplots(1, 1)
     _ = df.T.boxplot(rot=90, sym="r.")
-    ax.set_title(
-        f"Percentage forecast error, {len(dates)} half-hour windows {_ftime(dates[0])} - {_ftime(dates[-1])} UTC"
-    )
+    ax.set_title(f"{_ftime(dates[0])} - {_ftime(dates[-1])} UTC")
     ax.set_ylabel("forecast % error")
     ax.grid("on", linestyle="--", alpha=0.33)
     ax.hlines(
@@ -374,6 +369,8 @@ def generate_boxplot_ci_error(
         linestyle="--",
         linewidth=0.5,
     )
+
+    fig.suptitle(f"Percentage forecast error, {len(dates)} half-hour windows")
 
     return fig
 
@@ -389,38 +386,18 @@ def generate_boxplot_ci_error_for_days(
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
 
-    if days:
-        # Get the earliest time from a given number of days ago
-        df = df.loc[get_dates_days(df, days)].copy()
+    # Get the earliest time from a given number of days ago
+    df = df.loc[get_dates_days(df, days)].copy()
 
     # All days from then to now
     dff = df[["intensity.forecast", "intensity.actual.final"]].copy()
 
     # Percentage err
-    dfferr = 100.0 * (
+    df_pc_err = 100.0 * (
         dff["intensity.forecast"].sub(dff["intensity.actual.final"], axis=0)
     ).div(dff["intensity.actual.final"], axis=0)
-    # only pre-timepoint forecasts
-    dfferr = dfferr[[c for c in dfferr.columns if float(c) >= 0.0]]
 
-    dff = dfferr.copy()
-    dff.index = dff.index.date
-
-    forecast_cols = dff.columns
-
-    # Add a helper column to count occurrences of each label
-    dff["count_per_day"] = dff.groupby(dff.index).cumcount()
-
-    # pivot into a multiindex
-    result = dff.pivot_table(
-        index=dff.index,
-        columns="count_per_day",
-        values=list(forecast_cols),
-        aggfunc="first",
-    )
-
-    # flatten
-    result.columns = [f"{level1}_{level2+1}" for level1, level2 in result.columns]
+    result = _aggregate_per_day(df_pc_err)
 
     fig, ax = plt.subplots(1, 1)
     _ = result.T.boxplot(sym="r.")
@@ -471,9 +448,7 @@ def generate_boxplot_ci_error_per_hour(
 
     fig, ax = plt.subplots(1, 1)
     _ = dfferr.boxplot(rot=90, sym="r.")
-    ax.set_title(
-        f"Percentage forecast error per half-hour before forecasted window, {_ftime(dates[0])} - {_ftime(dates[-1])} UTC"
-    )
+    ax.set_title(f"{_ftime(dates[0])} - {_ftime(dates[-1])} UTC")
     ax.set_ylabel("forecast % error")
     ax.grid("on", linestyle="--", alpha=0.33)
     ax.hlines(
@@ -484,6 +459,8 @@ def generate_boxplot_ci_error_per_hour(
         linestyle="--",
         linewidth=0.5,
     )
+
+    fig.suptitle("Percentage forecast error per half-hour before forecasted window")
 
     return fig
 
@@ -498,7 +475,8 @@ def generate_boxplot_ci_error_per_hour(
 #         ax.text(2, 6, r'an equation: $E=mc^2$', fontsize=15)
 
 
-def _get_stats_per_day(df: pd.DataFrame) -> pd.DataFrame:
+def _aggregate_per_day(df: pd.DataFrame) -> pd.DataFrame:
+    """..."""
     df_err = df.copy()
 
     # Only pre-timepoint forecasts
@@ -521,6 +499,11 @@ def _get_stats_per_day(df: pd.DataFrame) -> pd.DataFrame:
 
     # flatten
     result.columns = [f"{level1}_{level2+1}" for level1, level2 in result.columns]
+    return result
+
+
+def _get_stats_per_day(df: pd.DataFrame) -> pd.DataFrame:
+    result = _aggregate_per_day(df)
 
     stats = result.T.agg(
         ["count", "mean", "std", "sem", confidence_95, confidence_99], axis=0
@@ -582,6 +565,43 @@ def generate_markdown_table(df: pd.DataFrame, days: int = 7) -> str:
     return stats_corr.to_markdown(), stats_pc_corr.to_markdown()
 
 
+def replace_markdown_section(
+    filepath: str, section: str, text: str, pad_before="\n\n", pad_after="\n\n"
+) -> None:
+    """Replace a section in a markdown file with new text.
+
+    Args:
+        filepath (str): Path to markdown file
+        section (str): Section header to replace
+        text (str): Text to replace section with
+    """
+    with open(filepath, "r") as f:
+        lines = f.readlines()
+
+    # Find the start and end of the section
+    start = 0
+    end = start
+    for i, line in enumerate(lines):
+        if line.startswith(section):
+            start = i
+            end = i
+            continue
+        if line.startswith("#") and start > 0:
+            end = i
+            break
+
+    # Replace the section
+    before = lines[:start]
+    after = lines[end:]
+
+    new_section = section + pad_before + text + pad_after
+
+    result = before + [new_section] + after
+
+    with open(filepath, "w") as f:
+        f.writelines(result)
+
+
 def create_graph_images(
     input_directory: str,
     output_directory: str = None,
@@ -623,4 +643,7 @@ def create_graph_images(
     # save_figure(fig, output_directory, "text_boxes.png")
 
     md_stats, md_stats_pc = generate_markdown_table(summaries_merged_df, days=days)
-    print(md_stats, md_stats_pc)
+
+    readme_filepath = os.path.join(os.path.abspath(output_directory), "..", "README.md")
+    replace_markdown_section(readme_filepath, "#### Error, gCO2/kWh", md_stats)
+    replace_markdown_section(readme_filepath, "#### Percentage error", md_stats_pc)

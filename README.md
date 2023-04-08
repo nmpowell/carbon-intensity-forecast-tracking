@@ -4,7 +4,7 @@ Tracking differences between the [UK National Grid's Carbon Intensity forecast](
 
 ## What is this?
 
-The UK's National Grid Electricity System Operator (NGESO) publishes [an API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) showing half-hourly carbon intensity (gCO2/kWh) in different GB regions, together with a 48-hour forecast. The national data is based upon real and estimated metered generation statistics and values representing the relative carbon intensity of different energy sources. Regional data is based upon forecasted generation, consumption, and a model describing inter-region interaction.
+The UK's National Grid Electricity System Operator (NGESO) publishes [an API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) showing half-hourly carbon intensity (gCO2/kWh), together with a 48-hour forecast. The national data is based upon real and estimated metered generation statistics and values representing the relative carbon intensity of different energy sources. Regional data is based upon forecasted generation, consumption, and a model describing inter-region interaction.
 
 The forecasts are updated every half hour, but the API does not keep historical forecasts; they're unavailable or overwritten. How reliable are they?
 
@@ -37,23 +37,23 @@ The API site shows [a graph](https://carbonintensity.org.uk/#graphs) of the fore
 
 #### Error, gCO2/kWh
 
-| error, gCO_2/kWh   |   mean |    std |    sem | confidence_95    |
-|:-------------------|-------:|-------:|-------:|:-----------------|
-| 2023-03-29         |  -5.85 |  16.48 |   0.26 | (-6.36, -5.33)   |
-| 2023-03-30         |  -4.89 |  22.01 |   0.43 | (-5.73, -4.04)   |
-| 2023-04-03         |  -1    | nan    | nan    | (nan, nan)       |
-| 2023-04-04         | -12.29 |  46.03 |   1.42 | (-15.09, -9.5)   |
-| 2023-04-05         | -24.73 |  34.76 |   0.82 | (-26.34, -23.12) |
+|            |   mean |    std |    sem | confidence_95    |
+|:-----------|-------:|-------:|-------:|:-----------------|
+| 2023-04-03 |  -1    | nan    | nan    | (nan, nan)       |
+| 2023-04-04 | -12.29 |  46.03 |   1.42 | (-15.09, -9.5)   |
+| 2023-04-05 | -26.29 |  28.4  |   0.51 | (-27.28, -25.29) |
+| 2023-04-06 | -30.31 |  25.13 |   0.39 | (-31.08, -29.55) |
+| 2023-04-07 | -49.49 |  24.55 |   1.52 | (-52.49, -46.49) |
 
 #### Percentage error
 
-| error, %   |   mean |    std |    sem | confidence_95    |
+|            |   mean |    std |    sem | confidence_95    |
 |:-----------|-------:|-------:|-------:|:-----------------|
-| 2023-03-29 |  -2.26 |  17.56 |   0.28 | (-2.81, -1.71)   |
-| 2023-03-30 |  -1.32 |  24.17 |   0.47 | (-2.25, -0.4)    |
 | 2023-04-03 |  -0.58 | nan    | nan    | (nan, nan)       |
 | 2023-04-04 |  -2.61 |  28.1  |   0.87 | (-4.31, -0.9)    |
-| 2023-04-05 | -11.5  |  16.86 |   0.4  | (-12.28, -10.72) |
+| 2023-04-05 | -11.87 |  13.65 |   0.24 | (-12.35, -11.39) |
+| 2023-04-06 | -17.27 |  14.56 |   0.23 | (-17.71, -16.82) |
+| 2023-04-07 | -28.6  |  14.18 |   0.88 | (-30.33, -26.87) |
 
 ### 24 hours
 
