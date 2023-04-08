@@ -1,21 +1,8 @@
 # Carbon Intensity Forecast Tracking
 
-For the 24 hours forecasted 2023 Apr 4 15:00 - 2023 Apr 5 14:30, the forecast accuracy error was:
-mean absolute: **0.2** gCO2/kWh (**10%**)
-and a mean absolute percentage error of **10%**. The standard deviation of the forecast error was **0.3** gCO2/kWh (**17%**).
-
-|            |   mean |    std |    sem | confidence_95    | confidence_99    |
-|:-----------|-------:|-------:|-------:|:-----------------|:-----------------|
-| 2023-03-28 |  -1.72 |   6.35 |   0.5  | (-2.7, -0.75)    | (-3.02, -0.43)   |
-| 2023-03-29 |  -2.26 |  17.56 |   0.28 | (-2.81, -1.71)   | (-2.98, -1.54)   |
-| 2023-03-30 |  -1.32 |  24.17 |   0.47 | (-2.25, -0.4)    | (-2.54, -0.1)    |
-| 2023-04-03 |  -0.58 | nan    | nan    | (nan, nan)       | (nan, nan)       |
-| 2023-04-04 |  -2.61 |  28.1  |   0.87 | (-4.31, -0.9)    | (-4.85, -0.36)   |
-| 2023-04-05 | -11.5  |  16.86 |   0.4  | (-12.28, -10.72) | (-12.53, -10.47) |
+Tracking differences between the [UK National Grid's Carbon Intensity forecast](https://carbonintensity.org.uk/) and its eventual recorded value.
 
 ## What is this?
-
-Tracking differences between the [UK National Grid's Carbon Intensity forecast](https://carbonintensity.org.uk/) and its eventual recorded value.
 
 The UK's National Grid Electricity System Operator (NGESO) publishes [an API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) showing half-hourly carbon intensity (gCO2/kWh) in different GB regions, together with a 48-hour forecast. The national data is based upon real and estimated metered generation statistics and values representing the relative carbon intensity of different energy sources. Regional data is based upon forecasted generation, consumption, and a model describing inter-region interaction.
 
@@ -59,6 +46,22 @@ The above boxplot shows the range of all published forecast values for each 30-m
 ![Published CI values](./data/ci_error_boxplot.png)
 
 The above plot shows forecast percentage error (compared with "actual" values) for the same times.
+
+| error, gCO_2/kWh   |   mean |    std |    sem | confidence_95    |
+|:-------------------|-------:|-------:|-------:|:-----------------|
+| 2023-03-29         |  -5.85 |  16.48 |   0.26 | (-6.36, -5.33)   |
+| 2023-03-30         |  -4.89 |  22.01 |   0.43 | (-5.73, -4.04)   |
+| 2023-04-03         |  -1    | nan    | nan    | (nan, nan)       |
+| 2023-04-04         | -12.29 |  46.03 |   1.42 | (-15.09, -9.5)   |
+| 2023-04-05         | -24.73 |  34.76 |   0.82 | (-26.34, -23.12) |
+
+| error, %   |   mean |    std |    sem | confidence_95    |
+|:-----------|-------:|-------:|-------:|:-----------------|
+| 2023-03-29 |  -2.26 |  17.56 |   0.28 | (-2.81, -1.71)   |
+| 2023-03-30 |  -1.32 |  24.17 |   0.47 | (-2.25, -0.4)    |
+| 2023-04-03 |  -0.58 | nan    | nan    | (nan, nan)       |
+| 2023-04-04 |  -2.61 |  28.1  |   0.87 | (-4.31, -0.9)    |
+| 2023-04-05 | -11.5  |  16.86 |   0.4  | (-12.28, -10.72) |
 
 ## Limitations
 

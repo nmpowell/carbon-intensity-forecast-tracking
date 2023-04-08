@@ -498,32 +498,22 @@ def generate_boxplot_ci_error_per_hour(
 #         ax.text(2, 6, r'an equation: $E=mc^2$', fontsize=15)
 
 
-def generate_markdown_table(df: pd.DataFrame, days: int = 7) -> str:
-    # Get the earliest time from a given number of days ago
-    df = df.loc[get_dates_days(df, days)]
-    df = df[["intensity.forecast", "intensity.actual.final"]]
+def _get_stats_per_day(df: pd.DataFrame) -> pd.DataFrame:
+    df_err = df.copy()
 
-    # Error
-    dferr = df["intensity.forecast"].sub(df["intensity.actual.final"], axis=0)
+    # Only pre-timepoint forecasts
+    df_err = df_err[[c for c in df_err.columns if float(c) >= 0.0]]
 
-    # Percentage error
-    dfferr = 100.0 * (
-        df["intensity.forecast"].sub(df["intensity.actual.final"], axis=0)
-    ).div(df["intensity.actual.final"], axis=0)
-
-    # only pre-timepoint forecasts
-    dfferr = dfferr[[c for c in dfferr.columns if float(c) >= 0.0]]
-
-    dff = dfferr.copy()
-    dff.index = dff.index.date
-    forecast_cols = dff.columns
+    # Replace all index values by their date (day)
+    df_err.index = df_err.index.date
+    forecast_cols = df_err.columns
 
     # Add a helper column to count occurrences of each label
-    dff["count_per_day"] = dff.groupby(dff.index).cumcount()
+    df_err["count_per_day"] = df_err.groupby(df_err.index).cumcount()
 
     # pivot into a multiindex
-    result = dff.pivot_table(
-        index=dff.index,
+    result = df_err.pivot_table(
+        index=df_err.index,
         columns="count_per_day",
         values=list(forecast_cols),
         aggfunc="first",
@@ -535,13 +525,14 @@ def generate_markdown_table(df: pd.DataFrame, days: int = 7) -> str:
     stats = result.T.agg(
         ["count", "mean", "std", "sem", confidence_95, confidence_99], axis=0
     ).T
+
     stats_rounded = stats[["mean", "std", "sem"]].astype("float").round(2)
     stats = pd.concat(
         [stats[["count"]], stats_rounded, stats[["confidence_95", "confidence_99"]]],
         axis=1,
     ).astype(str)
 
-    # splitting each ci column:
+    # # splitting each ci column:
     # ci_95 = pd.DataFrame(
     #     stats["confidence_95"].to_list(),
     #     columns=["ci_95_lo", "ci_95_hi"],
@@ -554,7 +545,41 @@ def generate_markdown_table(df: pd.DataFrame, days: int = 7) -> str:
     # )
     # stats = pd.concat([stats, ci_95, ci_99], axis=1)
 
-    return stats.to_markdown()
+    return stats
+
+
+def generate_markdown_table(df: pd.DataFrame, days: int = 7) -> str:
+    # Get the earliest time from a given number of days ago
+    df = df.loc[get_dates_days(df, days)]
+    df = df[["intensity.forecast", "intensity.actual.final"]]
+
+    # Error
+    df_err = df["intensity.forecast"].sub(df["intensity.actual.final"], axis=0)
+
+    # Percentage error
+    df_pc_err = 100.0 * df_err.div(df["intensity.actual.final"], axis=0)
+
+    stats = _get_stats_per_day(df_err)
+    stats_pc = _get_stats_per_day(df_pc_err)
+
+    # some cleanup
+    stats_corr = stats.drop(columns=["count", "confidence_99"])
+    stats_pc_corr = stats_pc.drop(columns=["count", "confidence_99"])
+
+    # label indices (but this is the title)
+    # stats_corr.index.name = "error, gCO_2/kWh"
+    # stats_pc_corr.index.name = "error, %"
+
+    # # group into a dict so we can concat into a multi-level dataframe
+    # d = {
+    #     "": stats["count"],
+    #     "error, gCO2/kWh": stats_corr,
+    #     "percentage error": stats_pc_corr,
+    # }
+    # combined = pd.concat(d.values(), axis=1, keys=d.keys()).to_markdown()
+
+    # return stats_corr, stats_pc_corr
+    return stats_corr.to_markdown(), stats_pc_corr.to_markdown()
 
 
 def create_graph_images(
@@ -597,5 +622,5 @@ def create_graph_images(
     # fig = generate_text_boxes(summaries_merged_df, hours_of_data)
     # save_figure(fig, output_directory, "text_boxes.png")
 
-    markdown = generate_markdown_table(summaries_merged_df, days=days)
-    print(markdown)
+    md_stats, md_stats_pc = generate_markdown_table(summaries_merged_df, days=days)
+    print(md_stats, md_stats_pc)
