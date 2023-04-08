@@ -5,6 +5,7 @@ pandas
 python-dateutil
 python-json-logger
 requests
+scipy
 
 # Linting
 black

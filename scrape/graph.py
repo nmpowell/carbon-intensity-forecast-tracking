@@ -644,6 +644,6 @@ def create_graph_images(
 
     md_stats, md_stats_pc = generate_markdown_table(summaries_merged_df, days=days)
 
-    readme_filepath = os.path.join(os.path.abspath(output_directory), "..", "README.md")
+    readme_filepath = os.path.join(os.path.abspath(input_directory), "..", "README.md")
     replace_markdown_section(readme_filepath, "#### Error, gCO2/kWh", md_stats)
     replace_markdown_section(readme_filepath, "#### Percentage error", md_stats_pc)
