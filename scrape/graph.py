@@ -515,6 +515,8 @@ def _get_stats_per_day(df: pd.DataFrame) -> pd.DataFrame:
         axis=1,
     ).astype(str)
 
+    stats.rename(columns={"confidence_95": "95% confidence interval"})
+
     # # splitting each ci column:
     # ci_95 = pd.DataFrame(
     #     stats["confidence_95"].to_list(),
