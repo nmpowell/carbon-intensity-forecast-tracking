@@ -85,7 +85,7 @@ The above plot shows forecast percentage error (compared with "actual" values, i
 
 To measure regional forecast accuracy it would be preferable to have a retrospective `actual` CI value for each region, but the API only provides this [at the national level](https://api.carbonintensity.org.uk/intensity).
 
-From tracking the [pt24h](https://carbon-intensity.github.io/api-definitions/#get-intensity-from-pt24h) data, these "actual" values, as well as forecasts, are sometimes adjusted post-hoc, i.e. several hours after the relevant time window has passed. This is because some renewable generation data becomes available after the fact, and NGESO update their numbers. We could continue monitoring this, but we have to stop sometime. For the purposes of this project, to give an anchor against which we can measure forecast accuracy, I choose the "actual" "final forecast" values as the latest ones accessible up to 24 hours after the start of the time window.
+From tracking the [pt24h](https://carbon-intensity.github.io/api-definitions/#get-intensity-from-pt24h) data, these "actual" values, as well as forecasts, are sometimes adjusted post-hoc, i.e. several hours after the relevant time window has passed. This is because some renewable generation data becomes available after the fact, and NGESO update their numbers. We could continue monitoring this, but we have to stop sometime. For the purposes of this project, to give an anchor against which we can measure forecast accuracy, I choose the "actual" and "final forecast" values as the latest ones accessible up to 24 hours after the start of the time window.
 
 ## Data notes
 
@@ -165,22 +165,17 @@ The JSON format isn't great for parsing and plotting, and the files are huge. So
 - [ ] split summaries into smaller files, or only generate for a small date range.
 - [ ] fix:
 ```
-/Users/nick.powell/.virtualenvs/carbon-intensity-forecast-tracking/lib/python3.10/site-packages/numpy/core/_methods.py:269: RuntimeWarning: Degrees of freedom <= 0 for slice
+numpy/core/_methods.py:269: RuntimeWarning: Degrees of freedom <= 0 for slice
   ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
-/Users/nick.powell/.virtualenvs/carbon-intensity-forecast-tracking/lib/python3.10/site-packages/numpy/core/_methods.py:261: RuntimeWarning: invalid value encountered in scalar divide
+numpy/core/_methods.py:261: RuntimeWarning: invalid value encountered in scalar divide
 ```
   ret = ret.dtype.type(ret / rcount)
 - Summaries and plots for each region and DNO region
 - track regions' performance i.e. lower CI
 - investigate BMRS data: actual? total? https://www.bmreports.com/bmrs/?q=help/about-us
+- make Github actions more efficient by reusing some steps
+- Could overwrite a single file per endpoint, and use a tool like [git-history](https://simonwillison.net/2021/Dec/7/git-history/) to retrieve past data. Keeping the files separate is a little more transparent, though, and a bit easier for now.
 
 - Tests
     - saving valid json and csv
     - summary generation is idempotent
-
-- summary measures:
-    - for a given half-hour window, in a given region, with a known actual CI:
-        - the spread: variance (or mean deviation) about a central point (the actual value; not the mean), stdev, interquartile range -- of the ~96 forecasts.
-
-- make Github actions more efficient by reusing some steps
-- Could overwrite a single file per endpoint, and use a tool like [git-history](https://simonwillison.net/2021/Dec/7/git-history/) to retrieve past data. Keeping the files separate is a little more transparent, though, and a bit easier for now.
