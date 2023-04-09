@@ -263,7 +263,7 @@ def generate_plot_ci_lines(
         linewidth=0.5,
     )
     ax.set_xlabel("hours before forecasted window")
-    ax.set_ylabel("carbon intensity")
+    ax.set_ylabel("carbon intensity, $gCO_2/kWh$")
     ax.set_title(f"{_ftime(dates[0])} - {_ftime(dates[-1])} UTC")
     fig.suptitle(f"Published CI forecast values, {len(dates)} half-hour windows")
 
@@ -308,7 +308,7 @@ def generate_boxplot_ci(
     )
 
     ax.set_title(f"{_ftime(dates[0])} - {_ftime(dates[-1])} UTC")
-    ax.set_ylabel("carbon intensity")
+    ax.set_ylabel("carbon intensity, $gCO_2/kWh$")
     ax.grid("on", linestyle="--", alpha=0.33)
     ax.legend()
     fig.suptitle(f"Carbon intensity forecast ranges, {len(dates)} half-hour windows")
