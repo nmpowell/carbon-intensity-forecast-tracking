@@ -629,7 +629,7 @@ def update_stats_history(
     filename = "stats_history_{}.csv".format(name)
     filepath = os.path.join(input_directory, filename)
     if os.path.exists(filepath):
-        df_stats = pd.read_csv(filename, header=[0, 1], index_col=0)
+        df_stats = pd.read_csv(filepath, header=[0, 1], index_col=0)
         log.info("Read existing history file: {}".format(filepath))
     else:
         df_stats = pd.DataFrame()
