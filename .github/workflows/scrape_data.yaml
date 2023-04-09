@@ -52,5 +52,7 @@ jobs:
           git add -A
           git restore --staged commit_msg.txt
           git commit --file commit_msg.txt || exit 0
+          rm commit_msg.txt
+          git restore commit_msg.txt
           git pull --rebase
           git push
