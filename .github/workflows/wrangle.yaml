@@ -44,6 +44,11 @@ jobs:
           python3 run.py wrangle --input_directory "data/national_generation_pt24h" --endpoint "national_generation_pt24h" --delete_json | tee -a commit_msg.txt
           python3 run.py wrangle --input_directory "data/national_fw48h" --endpoint "national_fw48h" --delete_json | tee -a commit_msg.txt
           python3 run.py wrangle --input_directory "data/national_pt24h" --endpoint "national_pt24h" --delete_json | tee -a commit_msg.txt
+          # Summarise
+          python3 run.py summary --input_directory "data/national_fw48h" --output_directory "data" --endpoint "national_fw48h"
+          python3 run.py summary --input_directory "data/national_pt24h" --output_directory "data" --endpoint "national_pt24h"
+          # Plot graphs
+          python3 run.py graph --input_directory "data"
 
       - name: Commit and push new data
         run: |-
