@@ -89,6 +89,10 @@ From tracking the [pt24h](https://carbon-intensity.github.io/api-definitions/#ge
 
 ## Data notes
 
+The carbon intensity of electricity is a measure of the CO2 emissions produced per kilowatt hour of electricity consumed. Units, including forecast values, are usually gCO2/kWh.
+
+- The JSON format isn't great for parsing and plotting, and the files are huge. So here they're wrangled (`wrangle.py`) into CSV.
+
 ### Dates and times
 
 - All times are UTC. Seconds are ignored.
@@ -151,18 +155,14 @@ To copy the scraping functionality of this repo, enable GitHub Actions within yo
 
 Run `make test` or `pytest -v tests`
 
-## Data storage
-
-The JSON format isn't great for parsing and plotting, and the files are huge. So here they're wrangled (`wrangle.py`) into CSV.
-
-"The carbon intensity of electricity is a measure of how much CO2 emissions are produced per kilowatt hour of electricity consumed." Units, including forecast values, are usually gCO2/kWh.
+---
 
 ## TODOs & future work
 
 - [ ] fix/check time range on plots
 - [ ] For the complete history, see `data/daily_statistics.csv`.
 - [ ] summaries up to 10 days to make the files smaller (regional)
-- [ ] split summaries into smaller files, or only generate for a small date range.
+- [ ] split summaries into smaller files, or only generate for a small date range, or on the fly.
 - [ ] fix:
 ```
 numpy/core/_methods.py:269: RuntimeWarning: Degrees of freedom <= 0 for slice
