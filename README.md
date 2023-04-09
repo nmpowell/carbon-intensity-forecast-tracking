@@ -171,6 +171,13 @@ Because solar and wind generation data are estimates, their values can change ev
 - [ ] fix/check time range on plots
 - [ ] summaries up to 10 days to make the files smaller (regional)
 - [ ] split summaries into smaller files, or only generate for a small date range.
+- [ ] fix:
+```
+/Users/nick.powell/.virtualenvs/carbon-intensity-forecast-tracking/lib/python3.10/site-packages/numpy/core/_methods.py:269: RuntimeWarning: Degrees of freedom <= 0 for slice
+  ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/Users/nick.powell/.virtualenvs/carbon-intensity-forecast-tracking/lib/python3.10/site-packages/numpy/core/_methods.py:261: RuntimeWarning: invalid value encountered in scalar divide
+```
+  ret = ret.dtype.type(ret / rcount)
 - Summaries and plots for each region and DNO region
 - track regions' performance i.e. lower CI
 - investigate BMRS data: actual? total? https://www.bmreports.com/bmrs/?q=help/about-us

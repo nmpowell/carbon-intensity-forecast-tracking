@@ -6,6 +6,7 @@ python-dateutil
 python-json-logger
 requests
 scipy
+tabulate
 
 # Linting
 black
