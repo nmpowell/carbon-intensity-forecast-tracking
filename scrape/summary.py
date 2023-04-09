@@ -137,11 +137,13 @@ def run(
     value_column_names = SUMMARY_FORMATS[abbreviated_endpoint].get("values")
 
     # file selection range
-    start_dt = datetime.strptime(start_date, DATETIME_FMT_STR)
+    start_dt = datetime.strptime(start_date, DATETIME_FMT_STR).replace(
+        tzinfo=timezone.utc
+    )
     end_dt = (
         datetime.now(timezone.utc)
         if end_date is None
-        else datetime.strptime(end_date, DATETIME_FMT_STR)
+        else datetime.strptime(end_date, DATETIME_FMT_STR).replace(tzinfo=timezone.utc)
     )
 
     file_count = 0
