@@ -124,8 +124,10 @@ From tracking the [pt24h](https://carbon-intensity.github.io/api-definitions/#ge
 1. Activate the venv: `source venv/bin/activate`
 2. Download JSON files. Examples:
     ``` sh
-    # 48-hour forward forecast from the current window, default endpoint
-    python3 run.py download --output_dir "data" --now
+    # 48-hour forward forecast from the current window, default (regional) endpoint
+    python3 run.py download --output_dir "data" --now --endpoint regional_fw48h
+    # Same, for national data
+    python3 run.py download --output_dir "data" --now --endpoint national_fw48h
     # 24-hour past "forecasts" from the current window
     python3 run.py download --output_dir "data" --now --endpoint regional_pt24h
     # national intensity for a given time
