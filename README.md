@@ -10,7 +10,7 @@ The forecasts are updated every half hour, but the API does not keep historical 
 
 ![Published CI values](./data/national_ci_lines.png)
 
-The above figure shows the evolution of 24 hours' worth of time windows' national forecasts. The more recent time windows are darker blue. Each window is forecasted about 96 times in the preceeding 48 hours (left of the dashed line, from the fw48h endpoint). Right of the dashed line are a further 48 post-hoc "forecasts" and "actual" values (pt24h endpoint).
+The above figure shows the evolution of 24 hours' worth of time windows' national forecasts. The more recent time windows are darker blue. Each window is forecasted about 96 times in the preceeding 48 hours (left of the dashed line, from the `fw48h` endpoint). Right of the dashed line are a further 48 post-hoc "forecasts" and "actual" values (`pt24h` endpoint).
 
 ## Basic idea
 
@@ -35,7 +35,7 @@ The API site shows [a graph](https://carbonintensity.org.uk/#graphs) of the fore
 
 ### 7-day summary
 
-These are daily summaries from all 48 half-hour windows on each day.
+These are daily summaries of forecast error from all 48 half-hour windows on each day.
 
 #### Error, gCO2/kWh
 
@@ -79,6 +79,7 @@ The above plot shows forecast percentage error (compared with "actual" values, i
 
 - Because Github's Actions runners are shared (and free), the cronjobs aren't 100% reliable. Expect occasional missing data.
 - Unclear what the difference between the 18th DNO region, "GB", and the "National" forecasts are. [National](https://api.carbonintensity.org.uk/intensity/2023-03-11T22:31Z). [Regional](https://api.carbonintensity.org.uk/regional/intensity/2023-03-11T22:31Z/fw48h): at timepoint 0, regionid 18. Slightly different.
+- There could be many contributing factors to broad error standard deviation, including missing data (not scraped successfully).
 
 ### Actual intensity and generation mix
 
@@ -155,16 +156,6 @@ Run `make test` or `pytest -v tests`
 The JSON format isn't great for parsing and plotting, and the files are huge. So here they're wrangled (`wrangle.py`) into CSV.
 
 "The carbon intensity of electricity is a measure of how much CO2 emissions are produced per kilowatt hour of electricity consumed." Units, including forecast values, are usually gCO2/kWh.
-
-## Plots
-
-- Want to show forecasts forward from a given date. It doesn't matter if we collect some past dates if we know which to ignore.
-
-Note that there could be many contributing factors to a broad error standard deviation, including missing data (not scraped successfully).
-
-This plot shows all the forecasted intensity values for a given half-hour window starting at the time indicated by the vertical dashed line at t=0. Forecasts are published half-hourly at the `fw48h` endpoint, up to 48 hours before a window, and 24 hours after, at the `pt24h` endpoint. 
-
-Because solar and wind generation data are estimates, their values can change even post-hoc (i.e. after the time window has passed). This can be seen from the orange line in <the plot>, tracking the `pt24h` endpoint, which varies slightly over time. Therefore, I compare forecast accuracy against the last available "actual" value, which here is at most 24h after the window. (Instead of the last forecast value, which is fixed, or the first available "actual" value, which is recorded just after the window has passed.)
 
 ## TODOs & future work
 

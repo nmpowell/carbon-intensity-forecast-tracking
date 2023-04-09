@@ -533,7 +533,9 @@ def _get_stats_per_day(df: pd.DataFrame) -> pd.DataFrame:
     return stats
 
 
-def generate_markdown_table(df: pd.DataFrame, days: int = 7) -> (str, str):
+def generate_stats_dataframes(
+    df: pd.DataFrame, days: int = 7
+) -> (pd.DataFrame, pd.DataFrame):
     # Get the earliest time from a given number of days ago
     df = df.loc[get_dates_days(df, days)]
     df = df[["intensity.forecast", "intensity.actual.final"]]
@@ -561,8 +563,12 @@ def generate_markdown_table(df: pd.DataFrame, days: int = 7) -> (str, str):
     #     "error, gCO2/kWh": stats_corr,
     #     "percentage error": stats_pc_corr,
     # }
-    # combined = pd.concat(d.values(), axis=1, keys=d.keys()).to_markdown()
+    # combined = pd.concat(d.values(), axis=1, keys=d.keys())
+    return stats_corr, stats_pc_corr
 
+
+def generate_markdown_table(df: pd.DataFrame, days: int = 7) -> (str, str):
+    stats_corr, stats_pc_corr = generate_stats_dataframes(df, days)
     return stats_corr.to_markdown(), stats_pc_corr.to_markdown()
 
 
