@@ -35,7 +35,7 @@ The API site shows [a graph](https://carbonintensity.org.uk/#graphs) of the fore
 
 ### 7-day summary
 
-These are daily summaries from all 48 half-hour windows on each day. For the complete history, see `data/daily_statistics.csv`.
+These are daily summaries from all 48 half-hour windows on each day.
 
 #### Error, gCO2/kWh
 
@@ -165,6 +165,7 @@ Because solar and wind generation data are estimates, their values can change ev
 ## TODOs & future work
 
 - [ ] fix/check time range on plots
+- [ ] For the complete history, see `data/daily_statistics.csv`.
 - [ ] summaries up to 10 days to make the files smaller (regional)
 - [ ] split summaries into smaller files, or only generate for a small date range.
 - [ ] fix:
