@@ -37,22 +37,19 @@ jobs:
         run: |-
           # Download data
           # Regional forward 48h
-          python run.py download --output_directory data --now | tee commit_msg.txt
+          python run.py download --output_directory data --now
           # Regional past 24h
-          python run.py download --output_directory data --now --endpoint regional_pt24h | tee -a commit_msg.txt
+          python run.py download --output_directory data --now --endpoint regional_pt24h
           # National
-          python run.py download --output_directory data --now --endpoint national_fw48h | tee -a commit_msg.txt
-          python run.py download --output_directory data --now --endpoint national_pt24h | tee -a commit_msg.txt
-          python run.py download --output_directory data --now --endpoint national_generation_pt24h | tee -a commit_msg.txt
+          python run.py download --output_directory data --now --endpoint national_fw48h
+          python run.py download --output_directory data --now --endpoint national_pt24h
+          python run.py download --output_directory data --now --endpoint national_generation_pt24h
 
       - name: Commit and push new data
         run: |-
           git config user.name "Automated"
           git config user.email "actions@users.noreply.github.com"
           git add -A
-          # git restore --staged commit_msg.txt
-          git commit --file commit_msg.txt || exit 0
-          # rm commit_msg.txt
-          # git restore commit_msg.txt
+          git commit -m "Add latest data" || exit 0
           git pull --rebase
           git push

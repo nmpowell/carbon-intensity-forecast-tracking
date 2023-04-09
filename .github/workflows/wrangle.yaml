@@ -39,11 +39,11 @@ jobs:
       - name: Wrangle all JSON files to CSV
         run: |-
           # Wrangle data to CSV
-          python run.py wrangle --input_directory data/regional_fw48h --delete_json | tee -a commit_msg.txt
-          python run.py wrangle --input_directory data/regional_pt24h --delete_json | tee -a commit_msg.txt
-          python3 run.py wrangle --input_directory "data/national_generation_pt24h" --endpoint "national_generation_pt24h" --delete_json | tee -a commit_msg.txt
-          python3 run.py wrangle --input_directory "data/national_fw48h" --endpoint "national_fw48h" --delete_json | tee -a commit_msg.txt
-          python3 run.py wrangle --input_directory "data/national_pt24h" --endpoint "national_pt24h" --delete_json | tee -a commit_msg.txt
+          python run.py wrangle --input_directory data/regional_fw48h --delete_json
+          python run.py wrangle --input_directory data/regional_pt24h --delete_json
+          python3 run.py wrangle --input_directory "data/national_generation_pt24h" --endpoint "national_generation_pt24h" --delete_json
+          python3 run.py wrangle --input_directory "data/national_fw48h" --endpoint "national_fw48h" --delete_json
+          python3 run.py wrangle --input_directory "data/national_pt24h" --endpoint "national_pt24h" --delete_json
           # Summarise
           python3 run.py summary --input_directory "data/national_fw48h" --output_directory "data" --endpoint "national_fw48h"
           python3 run.py summary --input_directory "data/national_pt24h" --output_directory "data" --endpoint "national_pt24h"
@@ -55,9 +55,6 @@ jobs:
           git config user.name "Automated"
           git config user.email "actions@users.noreply.github.com"
           git add -A
-          # git restore --staged commit_msg.txt
-          git commit --file commit_msg.txt || exit 0
-          # rm commit_msg.txt
-          # git restore commit_msg.txt
+          git commit -m "Summarise data and plot" || exit 0
           git pull --rebase
           git push
