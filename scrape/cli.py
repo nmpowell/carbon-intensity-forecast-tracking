@@ -8,6 +8,7 @@ from scrape import graph
 from scrape import summary
 from scrape import wrangle
 from scrape.api import DATETIME_FMT_STR
+from scrape.api import EARLIEST_DATE_STR
 from scrape.api import TEMPLATE_URLS
 
 log = logging.getLogger(__name__)
@@ -76,7 +77,7 @@ def get_parser():
     )
     parser_download.add_argument(
         "--start_date",
-        default=download_data.EARLIEST_DATE_STR,
+        default=EARLIEST_DATE_STR,
         type=str,
         help="Start date in format {}".format(DATETIME_FMT_STR),
     )
@@ -121,6 +122,18 @@ def get_parser():
         default="data",
         help="Path to input directory containing CSV files",
         type=str,
+    )
+    parser_summary.add_argument(
+        "--start_date",
+        default=EARLIEST_DATE_STR,
+        type=str,
+        help="Start date in format {}".format(DATETIME_FMT_STR),
+    )
+    parser_summary.add_argument(
+        "--end_date",
+        default=None,
+        type=str,
+        help="End date in format {}".format(DATETIME_FMT_STR),
     )
 
     parser_graph = subparsers.add_parser(

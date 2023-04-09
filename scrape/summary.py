@@ -14,6 +14,7 @@ from datetime import timezone
 import pandas as pd
 
 from scrape.api import DATETIME_FMT_STR
+from scrape.api import EARLIEST_DATE_STR
 from scrape.download_data import round_down_datetime
 from scrape.files import check_create_directory
 from scrape.files import get_data_files
@@ -75,6 +76,7 @@ def _update_summary_dataframe(summary: pd.DataFrame, df: pd.DataFrame) -> pd.Dat
 
     # .update is reasonably fast and overwrites NaNs as we want. Columns will be identical.
     # It doesn't appear to require identical indices, but it requires the index of df1 to be exhaustive i.e. includes all the indices in df2 (a superset); df2 must be a subset of df1, or values will be lost from df2.
+    # Don't want to overwrite and accidentally lose data.
 
     union_index = summary.index.union(df.index)
     if summary.empty:
@@ -112,6 +114,9 @@ def run(
     input_directory: str,
     output_directory: str = None,
     endpoint: str = "regional_fw48h",
+    start_date: str = EARLIEST_DATE_STR,
+    end_date: str = None,
+    num_files: int = 0,
     *args,
     **kwargs,
 ) -> None:
@@ -131,11 +136,23 @@ def run(
     group_column_names = SUMMARY_FORMATS[abbreviated_endpoint].get("columns")
     value_column_names = SUMMARY_FORMATS[abbreviated_endpoint].get("values")
 
+    # file selection range
+    start_dt = datetime.strptime(start_date, DATETIME_FMT_STR)
+    end_dt = (
+        datetime.now(timezone.utc)
+        if end_date is None
+        else datetime.strptime(end_date, DATETIME_FMT_STR)
+    )
+
+    file_count = 0
     forecast_files = get_data_files(input_directory, extension=".csv")
     for fp in forecast_files:
 
         # The datetime of the filepath is the approximate time the forecast was made
         fp_dt = round_down_datetime(datetime_from_filepath(fp))
+
+        if fp_dt < start_dt or fp_dt > end_dt:
+            continue
 
         df = pd.read_csv(fp)
         # For each date in the "from" column, get the time difference from the forecast time
@@ -165,8 +182,14 @@ def run(
 
         summary = _update_summary_dataframe(summary, df_p)
 
+        # TODO: do this with a limit on the number of files to load, instead.
         # Archive the CSV to speed up future runs
-        move_to_subdirectory(fp, "_archive")
+        if "_archive" not in fp:
+            move_to_subdirectory(fp, "_archive")
+
+        file_count += 1
+        if num_files and file_count >= num_files:
+            break
 
     summary.to_csv(summary_fp)
 

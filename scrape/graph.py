@@ -1,5 +1,6 @@
 # Show some graphs
 
+import logging
 import os
 from datetime import datetime
 from datetime import timedelta
@@ -12,6 +13,8 @@ import pandas as pd
 import scipy.stats as st
 
 from scrape.files import get_data_files
+
+log = logging.getLogger(__name__)
 
 # TODO:
 # check the merge of summaries doesn't require a known order
@@ -515,7 +518,12 @@ def _get_stats_per_day(df: pd.DataFrame) -> pd.DataFrame:
         axis=1,
     ).astype(str)
 
-    stats = stats.rename(columns={"confidence_95": "95% confidence interval"})
+    stats = stats.rename(
+        columns={
+            "confidence_95": "95% confidence interval",
+            "confidence_99": "99% confidence interval",
+        }
+    )
 
     # # splitting each ci column:
     # ci_95 = pd.DataFrame(
@@ -550,21 +558,25 @@ def generate_stats_dataframes(
     stats_pc = _get_stats_per_day(df_pc_err)
 
     # some cleanup
-    stats_corr = stats.drop(columns=["count", "confidence_99"])
-    stats_pc_corr = stats_pc.drop(columns=["count", "confidence_99"])
+    stats_corr = stats.drop(columns=["99% confidence interval"])
+    stats_pc_corr = stats_pc.drop(columns=["count", "99% confidence interval"])
 
     # label indices (but this is the title)
     # stats_corr.index.name = "error, gCO_2/kWh"
     # stats_pc_corr.index.name = "error, %"
-
-    # # group into a dict so we can concat into a multi-level dataframe
-    # d = {
-    #     "": stats["count"],
-    #     "error, gCO2/kWh": stats_corr,
-    #     "percentage error": stats_pc_corr,
-    # }
-    # combined = pd.concat(d.values(), axis=1, keys=d.keys())
     return stats_corr, stats_pc_corr
+
+
+def generate_combined_stats_dataframe(df: pd.DataFrame, days: int = 7) -> pd.DataFrame:
+    stats_corr, stats_pc_corr = generate_stats_dataframes(df, days)
+    # group into a dict so we can concat into a multi-level dataframe
+    d = {
+        "": stats_corr["count"],
+        "error, gCO2/kWh": stats_corr.drop(columns=["count"]),
+        "percentage error": stats_pc_corr,
+    }
+    combined = pd.concat(d.values(), axis=1, keys=d.keys())
+    return combined
 
 
 def generate_markdown_table(df: pd.DataFrame, days: int = 7) -> (str, str):
@@ -609,6 +621,31 @@ def replace_markdown_section(
         f.writelines(result)
 
 
+def update_stats_history(
+    input_directory: str, df: pd.DataFrame, name: str = "national"
+) -> None:
+    """Create or update an existing CSV with statistics."""
+
+    filename = "stats_history_{}.csv".format(name)
+    filepath = os.path.join(input_directory, filename)
+    if os.path.exists(filepath):
+        df_stats = pd.read_csv(filename, header=[0, 1], index_col=0)
+        log.info("Read existing history file: {}".format(filepath))
+    else:
+        df_stats = pd.DataFrame()
+
+    union_index = df_stats.index.union(df.index)
+    if df_stats.empty:
+        df_stats = df.reindex(union_index)
+    else:
+        df_stats = df_stats.reindex(union_index)
+        # Overwrite any existing stats
+        df_stats.update(df, overwrite=True)
+
+    df_stats.to_csv(filepath)
+    log.info("Saved stats history to: {}".format(filepath))
+
+
 def create_graph_images(
     input_directory: str,
     output_directory: str = None,
@@ -649,8 +686,13 @@ def create_graph_images(
     # fig = generate_text_boxes(summaries_merged_df, hours_of_data)
     # save_figure(fig, output_directory, "text_boxes.png")
 
+    # TODO: avoid all this repetition
     md_stats, md_stats_pc = generate_markdown_table(summaries_merged_df, days=days)
-
     readme_filepath = os.path.join(os.path.abspath(input_directory), "..", "README.md")
     replace_markdown_section(readme_filepath, "#### Error, gCO2/kWh", md_stats)
     replace_markdown_section(readme_filepath, "#### Percentage error", md_stats_pc)
+
+    stats_combined_df = generate_combined_stats_dataframe(
+        summaries_merged_df, days=days
+    )
+    update_stats_history(input_directory, stats_combined_df, name=filter)
