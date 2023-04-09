@@ -401,7 +401,7 @@ def generate_boxplot_ci_error_for_days(
 
     fig, ax = plt.subplots(1, 1)
     _ = result.T.boxplot(sym="r.")
-    ax.set_title(f"Percentage forecast error, past {days+1} days")
+    ax.set_title(f"Percentage forecast error, all time windows, past {days+1} days")
     ax.set_ylabel("forecast % error")
     ax.grid("on", linestyle="--", alpha=0.33)
     ax.hlines(
@@ -531,7 +531,7 @@ def _get_stats_per_day(df: pd.DataFrame) -> pd.DataFrame:
     return stats
 
 
-def generate_markdown_table(df: pd.DataFrame, days: int = 7) -> str:
+def generate_markdown_table(df: pd.DataFrame, days: int = 7) -> (str, str):
     # Get the earliest time from a given number of days ago
     df = df.loc[get_dates_days(df, days)]
     df = df[["intensity.forecast", "intensity.actual.final"]]
@@ -561,7 +561,6 @@ def generate_markdown_table(df: pd.DataFrame, days: int = 7) -> str:
     # }
     # combined = pd.concat(d.values(), axis=1, keys=d.keys()).to_markdown()
 
-    # return stats_corr, stats_pc_corr
     return stats_corr.to_markdown(), stats_pc_corr.to_markdown()
 
 

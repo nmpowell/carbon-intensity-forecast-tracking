@@ -35,6 +35,8 @@ The API site shows [a graph](https://carbonintensity.org.uk/#graphs) of the fore
 
 ### 7-day summary
 
+These are daily summaries from all 48 half-hour windows on each day. For the complete history, see `data/daily_statistics.csv`.
+
 #### Error, gCO2/kWh
 
 |            |   mean |    std |    sem | confidence_95    |
@@ -69,7 +71,7 @@ The above boxplot shows the range of all published forecast values for each 30-m
 
 ![Published CI values](./data/national_ci_error_boxplot.png)
 
-The above plot shows forecast percentage error (compared with "actual" values) for the same times.
+The above plot shows forecast percentage error (compared with "actual" values, i.e. `forecast - actual`) for the same times.
 
 ## Limitations
 
@@ -157,12 +159,6 @@ The JSON format isn't great for parsing and plotting, and the files are huge. So
 Note that there could be many contributing factors to a broad error standard deviation, including missing data (not scraped successfully).
 
 This plot shows all the forecasted intensity values for a given half-hour window starting at the time indicated by the vertical dashed line at t=0. Forecasts are published half-hourly at the `fw48h` endpoint, up to 48 hours before a window, and 24 hours after, at the `pt24h` endpoint. 
-
-This box plot shows the the spread of percentage error for all intensity forecasts for 12 hours prior to the given time. The error is based upon the final recorded "actual" intensity value (i.e. `actual - forecast`).
-
-This box plot shows the the spread of percentage error for all intensity forecasts for the past 7 days.
-
-This box plot shows the spread of all the intensity forecasts (their actual intensity values) for 12 hours prior to the given time.
 
 Because solar and wind generation data are estimates, their values can change even post-hoc (i.e. after the time window has passed). This can be seen from the orange line in <the plot>, tracking the `pt24h` endpoint, which varies slightly over time. Therefore, I compare forecast accuracy against the last available "actual" value, which here is at most 24h after the window. (Instead of the last forecast value, which is fixed, or the first available "actual" value, which is recorded just after the window has passed.)
 
