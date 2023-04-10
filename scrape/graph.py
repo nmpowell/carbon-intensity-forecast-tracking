@@ -217,12 +217,7 @@ def generate_plot_ci_lines(
     df: pd.DataFrame,
     hours_of_data: int = HOURS_OF_DATA,
 ):
-    """Generate plots from summaries.
-
-    Args:
-        input_directory (str): _description_
-        output_directory (str, optional): _description_. Defaults to None.
-    """
+    """Generate plots from summaries."""
 
     dates = get_dates(df, hours_of_data * 2)
 
@@ -571,7 +566,7 @@ def generate_combined_stats_dataframe(df: pd.DataFrame, days: int = 7) -> pd.Dat
     stats_corr, stats_pc_corr = generate_stats_dataframes(df, days)
     # group into a dict so we can concat into a multi-level dataframe
     d = {
-        "": stats_corr["count"],
+        "forecast": stats_corr["count"],
         "error, gCO2/kWh": stats_corr.drop(columns=["count"]),
         "percentage error": stats_pc_corr,
     }
@@ -648,7 +643,7 @@ def update_stats_history(
 
 def create_graph_images(
     input_directory: str,
-    output_directory: str = None,
+    output_directory: str = "charts",
     hours_of_data: int = HOURS_OF_DATA,
     filter: str = "national",
     days: int = 7,
@@ -688,11 +683,11 @@ def create_graph_images(
 
     # TODO: avoid all this repetition
     md_stats, md_stats_pc = generate_markdown_table(summaries_merged_df, days=days)
-    readme_filepath = os.path.join(os.path.abspath(input_directory), "..", "README.md")
+    readme_filepath = os.path.join(os.path.abspath("."), "README.md")
     replace_markdown_section(readme_filepath, "#### Error, gCO2/kWh", md_stats)
     replace_markdown_section(readme_filepath, "#### Percentage error", md_stats_pc)
 
     stats_combined_df = generate_combined_stats_dataframe(
         summaries_merged_df, days=days
     )
-    update_stats_history(input_directory, stats_combined_df, name=filter)
+    update_stats_history(output_directory, stats_combined_df, name=filter)

@@ -8,7 +8,7 @@ The UK's National Grid Electricity System Operator (NGESO) publishes [an API](ht
 
 The forecasts are updated every half hour, but the API does not keep historical forecasts; they're unavailable or overwritten. How reliable are they?
 
-![Published CI values](./data/national_ci_lines.png)
+![Published CI values](./charts/national_ci_lines.png)
 
 The above figure shows the evolution of 24 hours' worth of time windows' national forecasts. The more recent time windows are darker blue. Each window is forecasted about 96 times in the preceeding 48 hours (left of the dashed line, from the `fw48h` endpoint). Right of the dashed line are a further 48 post-hoc "forecasts" and "actual" values (`pt24h` endpoint).
 
@@ -61,7 +61,7 @@ These are daily summaries of forecast error from all 48 half-hour windows on eac
 
 ### 24 hours
 
-![Published CI values](./data/national_ci_boxplot.png)
+![Published CI values](./charts/national_ci_boxplot.png)
 
 The above boxplot shows the range of all published forecast values for each 30-minute time window.
 
@@ -71,7 +71,7 @@ The above boxplot shows the range of all published forecast values for each 30-m
 - For the regional data, absent "actual" values we choose the final available forecast 24h after the window has passed (usually, this does not change).
 - We can do this for each of the published regions and the National data.
 
-![Published CI values](./data/national_ci_error_boxplot.png)
+![Published CI values](./charts/national_ci_error_boxplot.png)
 
 The above plot shows forecast percentage error (compared with "actual" values, i.e. `forecast - actual`) for the same times.
 
@@ -160,7 +160,7 @@ Run `make test` or `pytest -v tests`
 ## TODOs & future work
 
 - [ ] fix/check time range on plots
-- [ ] For the complete history, see `data/daily_statistics.csv`.
+- [ ] For the complete history, see `charts/daily_statistics.csv`.
 - [ ] summaries up to 10 days to make the files smaller (regional)
 - [ ] split summaries into smaller files, or only generate for a small date range, or on the fly.
 - [ ] fix:
