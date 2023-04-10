@@ -10,14 +10,8 @@ on:
     - cron: '33 1 * * *'
 
 jobs:
-  call-scrape-workflow:
-    uses: ./.github/workflows/scrape_data.yaml
   scheduled:
     name: Wrangle data
-    # always run
-    if: ${{ always() }}
-    # run sequentially after this job
-    needs: call-scrape-workflow
     runs-on: ubuntu-latest
     steps:
       - name: Check out this repo
@@ -35,6 +29,18 @@ jobs:
       - name: Install Python packages
         run: |-
           make install
+
+      - name: Fetch latest data and save as JSON
+        run: |-
+          # Download data
+          # Regional forward 48h
+          python run.py download --output_directory data --now
+          # Regional past 24h
+          python run.py download --output_directory data --now --endpoint regional_pt24h
+          # National
+          python run.py download --output_directory data --now --endpoint national_fw48h
+          python run.py download --output_directory data --now --endpoint national_pt24h
+          python run.py download --output_directory data --now --endpoint national_generation_pt24h
 
       - name: Wrangle all JSON files to CSV
         run: |-
