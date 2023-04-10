@@ -20,8 +20,9 @@ The above figure shows the evolution of 24 hours' worth of time windows' nationa
 - Once per day, data is converted to CSV, and parsed into a Pandas dataframe for summarising, plotting and analysis.
 - With summary statistics and plots, we can attempt to estimate the accuracy of the forecasts.
 
-To follow the plot generation, see the [./notebook.ipynb](./notebook.ipynb).
-To run yourself, see **Usage** below.
+- To see a brief investigation of past data, see [./investigation.ipynb](./investigation.ipynb).
+- To follow the plot generation, see the [./notebook.ipynb](./notebook.ipynb).
+- To run yourself, see **Usage** below.
 
 ## Prior work
 
