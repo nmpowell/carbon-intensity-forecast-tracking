@@ -171,8 +171,8 @@ Run `make test` or `pytest -v tests`
     numpy/core/_methods.py:269: RuntimeWarning: Degrees of freedom <= 0 for slice
     ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
     numpy/core/_methods.py:261: RuntimeWarning: invalid value encountered in scalar divide
+    ret = ret.dtype.type(ret / rcount)
     ```
-  ret = ret.dtype.type(ret / rcount)
 - [ ] Summaries and plots for each region and DNO region
 - [ ] track regions' performance i.e. lower CI
 - [ ] investigate BMRS data: actual? total? https://www.bmreports.com/bmrs/?q=help/about-us

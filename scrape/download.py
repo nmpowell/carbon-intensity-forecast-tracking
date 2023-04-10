@@ -83,7 +83,7 @@ def get_datetimes(start: str, end: str):
     return round_down_datetime(start_dt), round_down_datetime(end_dt)
 
 
-def run(
+def run_download(
     output_directory: str = "data",
     endpoint: str = "regional_fw48h",
     start_date: str = EARLIEST_DATE_STR,

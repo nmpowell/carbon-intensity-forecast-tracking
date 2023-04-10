@@ -1,24 +1,26 @@
 import argparse
 import logging
+from importlib import import_module
 
 from pythonjsonlogger import jsonlogger
 
-from scrape import download_data
-from scrape import graph
-from scrape import summary
-from scrape import wrangle
 from scrape.api import DATETIME_FMT_STR
 from scrape.api import EARLIEST_DATE_STR
 from scrape.api import TEMPLATE_URLS
+
+# from scrape.download import run_download
+# from scrape.graph import create_graph_images
+# from scrape.summary import run_summary
+# from scrape.wrangle import run_wrangle
 
 log = logging.getLogger(__name__)
 
 
 PIPELINE_FUNCTIONS = {
-    "download": download_data.run,
-    "wrangle": wrangle.run_wrangle,
-    "summary": summary.run,
-    "graph": graph.create_graph_images,
+    "download": "run_download",
+    "wrangle": "run_wrangle",
+    "summary": "run_summary",
+    "graph": "create_graph_images",
 }
 
 
@@ -161,7 +163,9 @@ def main() -> None:
         log.debug("Debug mode enabled")
 
     if fn := PIPELINE_FUNCTIONS.get(args.func):
-        fn(**vars(args))
+        module = import_module("scrape." + args.func)
+        function = getattr(module, fn)
+        function(**vars(args))
     else:
         get_parser().print_help()
 

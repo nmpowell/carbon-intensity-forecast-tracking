@@ -15,7 +15,7 @@ import pandas as pd
 
 from scrape.api import DATETIME_FMT_STR
 from scrape.api import EARLIEST_DATE_STR
-from scrape.download_data import round_down_datetime
+from scrape.download import round_down_datetime
 from scrape.files import check_create_directory
 from scrape.files import get_data_files
 from scrape.files import move_to_subdirectory
@@ -110,7 +110,7 @@ def load_summary(filepath: str, format: str) -> pd.DataFrame:
 
 
 # Read CSVs and collate into a forecast summary
-def run(
+def run_summary(
     input_directory: str,
     output_directory: str = None,
     endpoint: str = "regional_fw48h",

@@ -4,7 +4,7 @@ from datetime import timezone
 
 import pytest
 
-from scrape import download_data as dd
+from scrape import download as dd
 
 
 class TestDownloadData:
