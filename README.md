@@ -33,6 +33,8 @@ The API site shows [a graph](https://carbonintensity.org.uk/#graphs) of the fore
 
 ## Forecast Accuracy
 
+- For the complete history, see `charts/stats_history_national.csv`.
+
 ### 7-day summary
 
 These are daily summaries of forecast error from all 48 half-hour windows on each day.
@@ -162,7 +164,6 @@ Run `make test` or `pytest -v tests`
 ## TODOs & future work
 
 - [ ] fix/check time range on plots
-- [ ] For the complete history, see `charts/daily_statistics.csv`.
 - [ ] summaries up to 10 days to make the files smaller (regional)
 - [ ] split summaries into smaller files, or only generate for a small date range, or on the fly.
 - [ ] fix:
