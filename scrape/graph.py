@@ -571,6 +571,7 @@ def generate_combined_stats_dataframe(df: pd.DataFrame, days: int = 7) -> pd.Dat
         "percentage error": stats_pc_corr,
     }
     combined = pd.concat(d.values(), axis=1, keys=d.keys())
+    combined.index = combined.index.astype("str")
     return combined
 
 
@@ -637,7 +638,7 @@ def update_stats_history(
         # Overwrite any existing stats
         df_stats.update(df, overwrite=True)
 
-    df_stats.to_csv(filepath)
+    df_stats.to_csv(filepath, index=True)
     log.info("Saved stats history to: {}".format(filepath))
 
 
