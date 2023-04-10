@@ -48,7 +48,7 @@ jobs:
           python3 run.py summary --input_directory "data/national_fw48h" --output_directory "data" --endpoint "national_fw48h"
           python3 run.py summary --input_directory "data/national_pt24h" --output_directory "data" --endpoint "national_pt24h"
           # Plot graphs
-          python3 run.py graph --input_directory "data"
+          python3 run.py graph --input_directory "data" --output_directory "charts"
 
       - name: Commit and push new data
         run: |-
