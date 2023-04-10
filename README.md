@@ -20,7 +20,7 @@ The above figure shows the evolution of 24 hours' worth of time windows' nationa
 - Once per day, data is converted to CSV, and parsed into a Pandas dataframe for summarising, plotting and analysis.
 - With summary statistics and plots, we can attempt to estimate the accuracy of the forecasts.
 
-To follow the plot generation, see the `notebook.ipynb`.
+To follow the plot generation, see the [./charts/notebook.ipynb](./charts/notebook.ipynb).
 To run yourself, see **Usage** below.
 
 ## Prior work
@@ -33,7 +33,7 @@ The API site shows [a graph](https://carbonintensity.org.uk/#graphs) of the fore
 
 ## Forecast Accuracy
 
-- For the complete history, see `charts/stats_history_national.csv`.
+- For the complete history, see [./charts/stats_history_national.csv](./charts/stats_history_national.csv).
 
 ### 7-day summary
 
@@ -163,22 +163,21 @@ Run `make test` or `pytest -v tests`
 
 ## TODOs & future work
 
-- [ ] fix/check time range on plots
 - [ ] summaries up to 10 days to make the files smaller (regional)
 - [ ] split summaries into smaller files, or only generate for a small date range, or on the fly.
-- [ ] fix:
-```
-numpy/core/_methods.py:269: RuntimeWarning: Degrees of freedom <= 0 for slice
-  ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
-numpy/core/_methods.py:261: RuntimeWarning: invalid value encountered in scalar divide
-```
+- [ ] fix warning:
+    ```
+    numpy/core/_methods.py:269: RuntimeWarning: Degrees of freedom <= 0 for slice
+    ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+    numpy/core/_methods.py:261: RuntimeWarning: invalid value encountered in scalar divide
+    ```
   ret = ret.dtype.type(ret / rcount)
-- Summaries and plots for each region and DNO region
-- track regions' performance i.e. lower CI
-- investigate BMRS data: actual? total? https://www.bmreports.com/bmrs/?q=help/about-us
-- make Github actions more efficient by reusing some steps
+- [ ] Summaries and plots for each region and DNO region
+- [ ] track regions' performance i.e. lower CI
+- [ ] investigate BMRS data: actual? total? https://www.bmreports.com/bmrs/?q=help/about-us
+- [ ] make Github actions more efficient by reusing some steps
 - Could overwrite a single file per endpoint, and use a tool like [git-history](https://simonwillison.net/2021/Dec/7/git-history/) to retrieve past data. Keeping the files separate is a little more transparent, though, and a bit easier for now.
 
 - Tests
-    - saving valid json and csv
-    - summary generation is idempotent
+    - [ ] saving valid json and csv
+    - [ ] summary generation is idempotent
