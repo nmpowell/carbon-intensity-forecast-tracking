@@ -31,7 +31,7 @@ jobs:
 
       - name: Install Python packages
         run: |-
-          make install
+          make install-minimal
 
       - name: Fetch latest data and save as JSON
         run: |-
