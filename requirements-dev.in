@@ -1,0 +1,22 @@
+# Application
+matplotlib
+numpy
+pandas
+python-dateutil
+python-json-logger
+requests
+scipy
+tabulate
+
+# Notebooks only
+jupyter
+
+# Linting
+black
+isort
+flake8
+flake8-bugbear
+flake8-docstrings
+
+# Type hints
+mypy

@@ -129,6 +129,8 @@ The carbon intensity of electricity is a measure of the CO2 emissions produced p
     python3 -m pip install -r requirements.txt
     # or
     make install
+    # or for development
+    make install-dev
     ```
     `make` will call `pip-sync` which will use the `requirements.txt` file to install requirements. To regenerate that file, use `pip-compile requirements.in`
 
