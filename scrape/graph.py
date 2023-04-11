@@ -198,6 +198,8 @@ def get_dates_days(
 def confidence_interval(data, level=0.99, decimals=2):
     # Pandas would remove NaNs for us but not NumPy!
     data = data[~np.isnan(data)]
+    if len(data) < 2:
+        return (np.nan, np.nan)
     m = np.mean(data)
     sem = st.sem(data)
     dof = int(len(data) - 1)
@@ -329,6 +331,18 @@ def generate_boxplot_ci(
 #     df = _load_forward_summary(input_directory)
 
 
+def _error_and_percentage_error(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
+    dff = df[["intensity.forecast", "intensity.actual.final"]]
+
+    # Error
+    df_err = dff["intensity.forecast"].sub(dff["intensity.actual.final"], axis=0)
+
+    # Percentage error
+    df_pc_err = 100.0 * df_err.div(dff["intensity.actual.final"], axis=0)
+
+    return df_err, df_pc_err
+
+
 def generate_boxplot_ci_error(
     df: pd.DataFrame,
     hours_of_data: int = HOURS_OF_DATA,
@@ -343,19 +357,15 @@ def generate_boxplot_ci_error(
     plt.rcParams["figure.dpi"] = DPI
 
     dates = get_dates(df, hours_of_data * 2)
+    df = df.loc[dates].copy()
 
-    dff = df.loc[dates][["intensity.forecast", "intensity.actual.final"]].copy()
-
-    # Percentage error
-    dfferr = 100.0 * (
-        dff["intensity.forecast"].sub(dff["intensity.actual.final"], axis=0)
-    ).div(dff["intensity.actual.final"], axis=0)
+    _, df_pc_err = _error_and_percentage_error(df)
 
     # only pre-timepoint forecasts
-    dfferr = dfferr[[c for c in dfferr.columns if float(c) >= 0.0]]
+    df_pc_err = df_pc_err[[c for c in df_pc_err.columns if float(c) >= 0.0]]
 
     # reformat x-axis for display
-    df = dfferr.loc[dates]
+    df = df_pc_err.loc[dates]
     fancy_xaxis_dateformats(df)
 
     fig, ax = plt.subplots(1, 1)
@@ -389,15 +399,10 @@ def generate_boxplot_ci_error_for_days(
     plt.rcParams["figure.dpi"] = DPI
 
     # Get the earliest time from a given number of days ago
+    # All days from then to now
     df = df.loc[get_dates_days(df, days)].copy()
 
-    # All days from then to now
-    dff = df[["intensity.forecast", "intensity.actual.final"]].copy()
-
-    # Percentage err
-    df_pc_err = 100.0 * (
-        dff["intensity.forecast"].sub(dff["intensity.actual.final"], axis=0)
-    ).div(dff["intensity.actual.final"], axis=0)
+    _, df_pc_err = _error_and_percentage_error(df)
 
     result = _aggregate_per_day(df_pc_err)
 
@@ -437,14 +442,10 @@ def generate_boxplot_ci_error_per_hour(
         # Get the earliest time from a given number of days ago
         df = df.loc[get_dates_days(df, days)].copy()
 
-    dff = df[["intensity.forecast", "intensity.actual.final"]]
+    _, df_pc_err = _error_and_percentage_error(df)
 
-    # Percentage err
-    dfferr = 100.0 * (
-        dff["intensity.forecast"].sub(dff["intensity.actual.final"], axis=0)
-    ).div(dff["intensity.actual.final"], axis=0)
     # only pre-timepoint forecasts
-    dfferr = dfferr[[c for c in dfferr.columns if float(c) >= 0.0]]
+    dfferr = df_pc_err[[c for c in df_pc_err.columns if float(c) >= 0.0]]
 
     dates = dfferr.index
 
@@ -545,13 +546,8 @@ def generate_stats_dataframes(
 ) -> (pd.DataFrame, pd.DataFrame):
     # Get the earliest time from a given number of days ago
     df = df.loc[get_dates_days(df, days)]
-    df = df[["intensity.forecast", "intensity.actual.final"]]
 
-    # Error
-    df_err = df["intensity.forecast"].sub(df["intensity.actual.final"], axis=0)
-
-    # Percentage error
-    df_pc_err = 100.0 * df_err.div(df["intensity.actual.final"], axis=0)
+    df_err, df_pc_err = _error_and_percentage_error(df)
 
     stats = _get_stats_per_day(df_err)
     stats_pc = _get_stats_per_day(df_pc_err)

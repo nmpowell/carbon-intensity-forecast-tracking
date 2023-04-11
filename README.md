@@ -168,7 +168,7 @@ Run `make test` or `pytest -v tests`
 
 - [ ] summaries up to 10 days to make the files smaller (regional)
 - [ ] split summaries into smaller files, or only generate for a small date range, or on the fly.
-- [ ] fix warning:
+- [ ] fix warning (from `confidence_interval` (from scipy.stats.sem) when there is just one result on a day, e.g. 2023-04-03: `result.iloc[0].agg([confidence_95])`):
     ```
     numpy/core/_methods.py:269: RuntimeWarning: Degrees of freedom <= 0 for slice
     ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
