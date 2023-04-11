@@ -168,6 +168,7 @@ Run `make test` or `pytest -v tests`
 
 ## TODOs & future work
 
+- [ ] factor out scipy entirely; use numpy
 - [ ] summaries up to 10 days to make the files smaller (regional)
 - [ ] split summaries into smaller files, or only generate for a small date range, or on the fly.
 - [ ] Summaries and plots for each region and DNO region
