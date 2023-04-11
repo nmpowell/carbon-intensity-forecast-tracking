@@ -28,7 +28,7 @@ The above figure shows the evolution of 24 hours' worth of time windows' nationa
 
 I'm unsure whether this has been done before. NGESO do not seem to release historic forecasts or figures about their accuracy. If you know more, please let me know!
 
-Kate Rose Morley [created the canonincal great design](https://grid.iamkate.com/) for tracking the UK's live carbon intensity.
+Kate Rose Morley [created the canonincal great design](https://grid.iamkate.com/) for viewing the UK's live carbon intensity.
 
 The API site shows [a graph](https://carbonintensity.org.uk/#graphs) of the forecast and "actual" values. You can create plots of a custom time range using [NGESO datasets](https://data.nationalgrideso.com/data-groups/carbon-intensity1): go to Regional/National "Carbon Intensity Forecast", click "Explore", choose "Chart", deselect "datetime" and add the regions. The "National" dataset includes the "actual" CI. But these are the final/latest values. This project aims to track the accuracy of the forecasts as they are published.
 
@@ -175,6 +175,7 @@ Run `make test` or `pytest -v tests`
 - [ ] track regions' performance i.e. lower CI
 - [ ] investigate BMRS data: actual? total? https://www.bmreports.com/bmrs/?q=help/about-us
 - [ ] make Github actions more efficient by reusing some steps
+- [ ] fix: {"asctime": "2023-04-11 02:21:50,229", "levelname": "INFO", "name": "matplotlib.font_manager", "message": "Failed to extract font properties from /usr/share/fonts/truetype/noto/NotoColorEmoji.ttf: In FT2Font: Can not load face (unknown file format; error code 0x2)"}
 - Could overwrite a single file per endpoint, and use a tool like [git-history](https://simonwillison.net/2021/Dec/7/git-history/) to retrieve past data. Keeping the files separate is a little more transparent, though, and a bit easier for now.
 
 - Tests
