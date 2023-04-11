@@ -30,6 +30,7 @@ jobs:
           cache: pip
 
       - name: Install Python packages
+        # only need minimal requirements for scraping
         run: |-
           make install-minimal
 

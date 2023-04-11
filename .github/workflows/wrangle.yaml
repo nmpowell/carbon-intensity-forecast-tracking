@@ -10,6 +10,7 @@ on:
     - cron: '33 1 * * *'
 
 jobs:
+  # could call the scrape workflow here but installing packages is the longest-running step - and would be repeated here. So, scrape as part of this workflow.
   scheduled:
     name: Wrangle data
     runs-on: ubuntu-latest
