@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 import scipy.stats as st
 
+from scrape.colourmap import add_colourmap
 from scrape.files import get_data_files
 
 log = logging.getLogger(__name__)
@@ -19,7 +20,6 @@ log = logging.getLogger(__name__)
 # TODO:
 # check the merge of summaries doesn't require a known order
 # How complete is the data?
-
 
 DPI = 250
 
@@ -316,6 +316,7 @@ def generate_boxplot_ci(
     fig.suptitle(
         f"National carbon intensity forecast ranges, {len(dates)} half-hour windows"
     )
+    # add_colourmap(ax, 2023)
 
     return fig
 
@@ -506,7 +507,13 @@ def _aggregate_per_day(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _get_stats_per_day(df: pd.DataFrame) -> pd.DataFrame:
+    """Generate summary statistics for each day.
+    Note that we should take the mean absolute error, as errors can be +/-.
+    """
     result = _aggregate_per_day(df)
+
+    # Get the absolute error values
+    result = result.abs()
 
     stats = result.T.agg(
         ["count", "mean", "std", "sem", confidence_95, confidence_99], axis=0
@@ -567,8 +574,8 @@ def generate_combined_stats_dataframe(df: pd.DataFrame, days: int = 7) -> pd.Dat
     # group into a dict so we can concat into a multi-level dataframe
     d = {
         "forecast": stats_corr["count"],
-        "error, gCO2/kWh": stats_corr.drop(columns=["count"]),
-        "percentage error": stats_pc_corr,
+        "absolute error, gCO2/kWh": stats_corr.drop(columns=["count"]),
+        "percentage absolute error": stats_pc_corr,
     }
     combined = pd.concat(d.values(), axis=1, keys=d.keys())
     combined.index = combined.index.astype("str")
@@ -685,8 +692,10 @@ def create_graph_images(
     # TODO: avoid all this repetition
     md_stats, md_stats_pc = generate_markdown_table(summaries_merged_df, days=days)
     readme_filepath = os.path.join(os.path.abspath("."), "README.md")
-    replace_markdown_section(readme_filepath, "#### Error, gCO2/kWh", md_stats)
-    replace_markdown_section(readme_filepath, "#### Percentage error", md_stats_pc)
+    replace_markdown_section(readme_filepath, "#### Absolute error, gCO2/kWh", md_stats)
+    replace_markdown_section(
+        readme_filepath, "#### Percentage absolute error", md_stats_pc
+    )
 
     stats_combined_df = generate_combined_stats_dataframe(
         summaries_merged_df, days=days
