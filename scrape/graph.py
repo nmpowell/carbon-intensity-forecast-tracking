@@ -565,9 +565,10 @@ def generate_stats_dataframes(
     stats = _get_stats_per_day(df_err)
     stats_pc = _get_stats_per_day(df_pc_err)
 
-    # some cleanup
-    stats_corr = stats.drop(columns=["99% confidence interval"])
-    stats_pc_corr = stats_pc.drop(columns=["count", "99% confidence interval"])
+    # Drop some columns to clean up.
+    # Standard deviation on these absolute errors is not that helpful.
+    stats_corr = stats.drop(columns=["std", "99% confidence interval"])
+    stats_pc_corr = stats_pc.drop(columns=["count", "std", "99% confidence interval"])
 
     # label indices (but this is the title)
     # stats_corr.index.name = "error, gCO_2/kWh"
@@ -703,7 +704,6 @@ def create_graph_images(
         readme_filepath, "#### Absolute percentage error", md_stats_pc
     )
 
-    stats_combined_df = generate_combined_stats_dataframe(
-        summaries_merged_df, days=days
-    )
+    # Save stats to a single combined CSV
+    stats_combined_df = generate_combined_stats_dataframe(summaries_merged_df, days=100)
     update_stats_history(output_directory, stats_combined_df, name=filter)
