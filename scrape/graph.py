@@ -705,5 +705,7 @@ def create_graph_images(
     )
 
     # Save stats to a single combined CSV
-    stats_combined_df = generate_combined_stats_dataframe(summaries_merged_df, days=100)
+    stats_combined_df = generate_combined_stats_dataframe(
+        summaries_merged_df, days=days
+    )
     update_stats_history(output_directory, stats_combined_df, name=filter)
