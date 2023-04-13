@@ -53,7 +53,7 @@ These are daily summaries of forecast error from all 48 half-hour windows on eac
 | 2023-04-11 |    4194 |  23.9  | 17.69 |  0.27 | (23.36, 24.43)            |
 | 2023-04-12 |     356 |  22.62 |  7.03 |  0.37 | (21.89, 23.35)            |
 
-#### Percentage absolute error
+#### Absolute percentage error
 
 |            |   mean |   std |   sem | 95% confidence interval   |
 |:-----------|-------:|------:|------:|:--------------------------|
@@ -168,6 +168,9 @@ Run `make test` or `pytest -v tests`
 
 ## TODOs & future work
 
+- [ ] separate scrape and wrangle steps (again)
+- [ ] combine get_dates and get_dates_days fns.
+- [ ] figure out mean absolute error, CI and stdev
 - [ ] factor out scipy entirely; use numpy
 - [ ] summaries up to 10 days to make the files smaller (regional)
 - [ ] split summaries into smaller files, or only generate for a small date range, or on the fly.

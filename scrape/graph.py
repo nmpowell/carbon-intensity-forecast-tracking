@@ -115,6 +115,7 @@ def get_dates(
     hours_offset: int = 72,
     start_date: datetime = None,
     start_days_offset: int = None,
+    random_n: int = 0,
 ) -> list:
     """Get the dates to plot.
     By default the most recent available complete data is used. Note that "complete"
@@ -128,6 +129,7 @@ def get_dates(
         num_plots (int): number of plots to generate
         hours_offset (int): assume this many hours prior to the final timepoint in
             the data have incomplete 'actual' data. Defaults to 72.
+        random_n (int): if > 0, return a sorted random sample of this size. Default is 0.
 
     Returns:
         list: list of datetimes
@@ -159,7 +161,10 @@ def get_dates(
         raise ValueError("Not enough data to generate plots")
 
     # pick datetimes
-    return [d for d in df.index if d >= dt_pastpoint][:num_plots]
+    dates = [d for d in df.index if d >= dt_pastpoint][:num_plots]
+    if random_n > 0:
+        return sorted(np.random.choice(dates, size=random_n, replace=False))
+    return dates
 
 
 def get_dates_days(
@@ -218,10 +223,11 @@ def confidence_99(data):
 def generate_plot_ci_lines(
     df: pd.DataFrame,
     hours_of_data: int = HOURS_OF_DATA,
+    random_n: int = 0,
 ):
     """Generate plots from summaries."""
 
-    dates = get_dates(df, hours_of_data * 2)
+    dates = get_dates(df, hours_of_data * 2, random_n=random_n)
 
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
@@ -694,7 +700,7 @@ def create_graph_images(
     readme_filepath = os.path.join(os.path.abspath("."), "README.md")
     replace_markdown_section(readme_filepath, "#### Absolute error, gCO2/kWh", md_stats)
     replace_markdown_section(
-        readme_filepath, "#### Percentage absolute error", md_stats_pc
+        readme_filepath, "#### Absolute percentage error", md_stats_pc
     )
 
     stats_combined_df = generate_combined_stats_dataframe(
