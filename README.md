@@ -10,7 +10,7 @@ The forecasts are updated every half hour, but the API does not keep historical 
 
 ![Published CI values](./charts/national_ci_lines.png)
 
-The above figure shows the evolution of 24 hours' worth of time windows' national forecasts. The more recent time windows are darker blue. Each window is forecasted about 96 times in the preceeding 48 hours (left of the dashed line, from the `fw48h` endpoint). Right of the dashed line are a further 48 post-hoc "forecasts" and "actual" values (`pt24h` endpoint).
+The above figure shows the evolution of 12 hours' worth of time windows' national forecasts. The more recent time windows are darker blue. Each window is forecasted about 96 times in the preceeding 48 hours (left of the dashed line, from the `fw48h` endpoint). Right of the dashed line are a further 48 post-hoc "forecasts" and "actual" values (`pt24h` endpoint).
 
 ## Basic idea
 

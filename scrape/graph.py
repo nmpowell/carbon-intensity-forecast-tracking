@@ -512,7 +512,7 @@ def _aggregate_per_day(df: pd.DataFrame) -> pd.DataFrame:
     return result
 
 
-def _get_stats_per_day(df: pd.DataFrame) -> pd.DataFrame:
+def _get_stats_per_day(df: pd.DataFrame, split_ci: bool = False) -> pd.DataFrame:
     """Generate summary statistics for each day.
     Note that we should take the mean absolute error, as errors can be +/-.
     """
@@ -538,20 +538,21 @@ def _get_stats_per_day(df: pd.DataFrame) -> pd.DataFrame:
         }
     )
 
-    # # splitting each ci column:
-    # ci_95 = pd.DataFrame(
-    #     stats["confidence_95"].to_list(),
-    #     columns=["ci_95_lo", "ci_95_hi"],
-    #     index=stats.index,
-    # )
-    # ci_99 = pd.DataFrame(
-    #     stats["confidence_99"].to_list(),
-    #     columns=["ci_99_lo", "ci_99_hi"],
-    #     index=stats.index,
-    # )
-    # stats = pd.concat([stats, ci_95, ci_99], axis=1)
+    if not split_ci:
+        return stats
 
-    return stats
+    # splitting each ci column:
+    ci_95 = pd.DataFrame(
+        stats["confidence_95"].to_list(),
+        columns=["ci_95_lo", "ci_95_hi"],
+        index=stats.index,
+    )
+    ci_99 = pd.DataFrame(
+        stats["confidence_99"].to_list(),
+        columns=["ci_99_lo", "ci_99_hi"],
+        index=stats.index,
+    )
+    return pd.concat([stats, ci_95, ci_99], axis=1)
 
 
 def generate_stats_dataframes(
@@ -678,7 +679,7 @@ def create_graph_images(
         input_directory, filter=filter.split("_")[0]
     )
 
-    fig = generate_plot_ci_lines(summaries_merged_df, hours_of_data)
+    fig = generate_plot_ci_lines(summaries_merged_df, hours_of_data // 2)
     save_figure(fig, output_directory, filter + "_ci_lines.png")
 
     fig = generate_boxplot_ci(summaries_merged_df, hours_of_data)
