@@ -111,10 +111,10 @@ def fancy_xaxis_dateformats(df: pd.DataFrame) -> None:
 
 def get_dates(
     df: pd.DataFrame,
-    num_plots: int,
-    hours_offset: int = 72,
+    num_plots: int = None,
     start_date: datetime = None,
-    start_days_offset: int = None,
+    num_days: int = None,
+    incomplete_hours_offset: int = 72,
     random_n: int = 0,
 ) -> list:
     """Get the dates to plot.
@@ -127,7 +127,9 @@ def get_dates(
     Args:
         df (pd.DataFrame): dataframe with datetime index
         num_plots (int): number of plots to generate
-        hours_offset (int): assume this many hours prior to the final timepoint in
+        num_days (int): number of complete days' data to return. Optional. If set, overrides
+            num_plots.
+        incomplete_hours_offset (int): assume this many hours prior to the final timepoint in
             the data have incomplete 'actual' data. Defaults to 72.
         random_n (int): if > 0, return a sorted random sample of this size. Default is 0.
 
@@ -146,58 +148,58 @@ def get_dates(
         return [d for d in df.index if d >= start_date][:num_plots]
 
     # The last timepoint with complete data
-    latest_tp = df.index[-1] - timedelta(hours=hours_offset)
-
-    # if start_days_offset:
-    #     hours_prior = start_days_offset * 24
-    # else:
-    # The number of hours' data to show
-    hours_prior = num_plots / 2
+    latest_tp = df.index[-1] - timedelta(hours=incomplete_hours_offset)
 
     # The earliest timepoint to return
-    dt_pastpoint = latest_tp - timedelta(hours=hours_prior)
+    if num_days:
+        dt_earliest = latest_tp - timedelta(days=num_days)
+        num_plots = int(24 * num_days * 2)
+    else:
+        # The number of hours' data to show
+        hours_prior = num_plots / 2
+        dt_earliest = latest_tp - timedelta(hours=hours_prior)
 
-    if dt_pastpoint > df.index[-1]:
+    if dt_earliest > df.index[-1]:
         raise ValueError("Not enough data to generate plots")
 
     # pick datetimes
-    dates = [d for d in df.index if d >= dt_pastpoint][:num_plots]
+    dates = [d for d in df.index if d >= dt_earliest and d <= latest_tp][:num_plots]
     if random_n > 0:
         return sorted(np.random.choice(dates, size=random_n, replace=False))
     return dates
 
 
-def get_dates_days(
-    df: pd.DataFrame,
-    num_days: int = 7,
-    hours_offset: int = 72,
-) -> list:
-    """Get all dates within a given number of days from the last date with complete data.
+# def get_dates_days(
+#     df: pd.DataFrame,
+#     num_days: int = 7,
+#     incomplete_hours_offset: int = 72,
+# ) -> list:
+#     """Get all dates within a given number of days from the last date with complete data.
 
-    Args:
-        df (pd.DataFrame): Summary dataframe with datetime index.
-        num_days (int): The number of complete days' data to include. Defaults to 7.
-        hours_offset (int, optional): assume this many hours prior to the final timepoint in
-            the data have incomplete data. Defaults to 72.
+#     Args:
+#         df (pd.DataFrame): Summary dataframe with datetime index.
+#         num_days (int): The number of complete days' data to include. Defaults to 7.
+#         incomplete_hours_offset (int, optional): assume this many hours prior to the final timepoint in
+#             the data have incomplete data. Defaults to 72.
 
-    Returns:
-        list: All timepoints to include.
-    """
+#     Returns:
+#         list: All timepoints to include.
+#     """
 
-    # The last timepoint with complete data
-    latest_tp = df.index[-1] - timedelta(hours=hours_offset)
+#     # The last timepoint with complete data
+#     latest_tp = df.index[-1] - timedelta(hours=incomplete_hours_offset)
 
-    # The earliest timepoint to return
-    dt_pastpoint = latest_tp - timedelta(days=num_days)
+#     # The earliest timepoint to return
+#     dt_earliest = latest_tp - timedelta(days=num_days)
 
-    # floor to the start of that day
-    dt_pastpoint = dt_pastpoint.floor("D").astimezone(timezone.utc)
+#     # floor to the start of that day
+#     dt_earliest = dt_earliest.floor("D").astimezone(timezone.utc)
 
-    if dt_pastpoint > df.index[-1]:
-        raise ValueError("Not enough data to generate plots")
+#     if dt_earliest > df.index[-1]:
+#         raise ValueError("Not enough data to generate plots")
 
-    # pick datetimes
-    return [d for d in df.index if d >= dt_pastpoint and d <= latest_tp]
+#     # pick datetimes
+#     return [d for d in df.index if d >= dt_earliest and d <= latest_tp]
 
 
 def confidence_interval(data, level=0.99, decimals=2):
@@ -223,11 +225,12 @@ def confidence_99(data):
 def generate_plot_ci_lines(
     df: pd.DataFrame,
     hours_of_data: int = HOURS_OF_DATA,
+    start_date: datetime = None,
     random_n: int = 0,
 ):
     """Generate plots from summaries."""
 
-    dates = get_dates(df, hours_of_data * 2, random_n=random_n)
+    dates = get_dates(df, hours_of_data * 2, start_date=start_date, random_n=random_n)
 
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
@@ -281,6 +284,7 @@ def generate_plot_ci_lines(
 def generate_boxplot_ci(
     df: pd.DataFrame,
     hours_of_data: int = HOURS_OF_DATA,
+    start_date: datetime = None,
 ):
     """Generate boxplot of CI values.
     Boxplots for all of the forecasts for a list of given windows
@@ -295,7 +299,7 @@ def generate_boxplot_ci(
     # Use only forecasts for measuring prediction quality
     df = df.drop("intensity.actual", level=0, axis=1)
 
-    dates = get_dates(df, hours_of_data * 2)
+    dates = get_dates(df, hours_of_data * 2, start_date=start_date)
 
     # reformat x-axis for display
     dff = df["intensity.forecast"].loc[dates]
@@ -407,7 +411,7 @@ def generate_boxplot_ci_error_for_days(
 
     # Get the earliest time from a given number of days ago
     # All days from then to now
-    df = df.loc[get_dates_days(df, days)].copy()
+    df = df.loc[get_dates(df, num_days=days)].copy()
 
     _, df_pc_err = _error_and_percentage_error(df)
 
@@ -447,7 +451,7 @@ def generate_boxplot_ci_error_per_hour(
 
     if days:
         # Get the earliest time from a given number of days ago
-        df = df.loc[get_dates_days(df, days)].copy()
+        df = df.loc[get_dates(df, num_days=days)].copy()
 
     _, df_pc_err = _error_and_percentage_error(df)
 
@@ -559,7 +563,7 @@ def generate_stats_dataframes(
     df: pd.DataFrame, days: int = 7
 ) -> (pd.DataFrame, pd.DataFrame):
     # Get the earliest time from a given number of days ago
-    df = df.loc[get_dates_days(df, days)]
+    df = df.loc[get_dates(df, num_days=days)]
 
     df_err, df_pc_err = _error_and_percentage_error(df)
 
