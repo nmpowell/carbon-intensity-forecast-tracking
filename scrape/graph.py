@@ -169,39 +169,6 @@ def get_dates(
     return dates
 
 
-# def get_dates_days(
-#     df: pd.DataFrame,
-#     num_days: int = 7,
-#     incomplete_hours_offset: int = 72,
-# ) -> list:
-#     """Get all dates within a given number of days from the last date with complete data.
-
-#     Args:
-#         df (pd.DataFrame): Summary dataframe with datetime index.
-#         num_days (int): The number of complete days' data to include. Defaults to 7.
-#         incomplete_hours_offset (int, optional): assume this many hours prior to the final timepoint in
-#             the data have incomplete data. Defaults to 72.
-
-#     Returns:
-#         list: All timepoints to include.
-#     """
-
-#     # The last timepoint with complete data
-#     latest_tp = df.index[-1] - timedelta(hours=incomplete_hours_offset)
-
-#     # The earliest timepoint to return
-#     dt_earliest = latest_tp - timedelta(days=num_days)
-
-#     # floor to the start of that day
-#     dt_earliest = dt_earliest.floor("D").astimezone(timezone.utc)
-
-#     if dt_earliest > df.index[-1]:
-#         raise ValueError("Not enough data to generate plots")
-
-#     # pick datetimes
-#     return [d for d in df.index if d >= dt_earliest and d <= latest_tp]
-
-
 def confidence_interval(data, level=0.99, decimals=2):
     # Pandas would remove NaNs for us but not NumPy!
     data = data[~np.isnan(data)]
@@ -224,16 +191,10 @@ def confidence_99(data):
 
 def generate_plot_ci_lines(
     df: pd.DataFrame,
-    hours_of_data: int = HOURS_OF_DATA,
-    start_date: datetime = None,
-    random_n: int = 0,
+    dates: list,
     separate_subplots: bool = False,
 ):
     """Generate plots from summaries."""
-
-    dates = get_dates(
-        df, int(hours_of_data * 2), start_date=start_date, random_n=random_n
-    )
 
     height = 1 + 2 * len(dates) if separate_subplots else 6
     plt.rcParams["figure.figsize"] = [12, height]
@@ -246,9 +207,6 @@ def generate_plot_ci_lines(
         axes = np.ravel(axes)
     else:
         fig, ax = plt.subplots(1, 1)
-
-    # nrows = len(dates) if separate_subplots else 1
-    # fig, axes = plt.subplots(nrows, 1, sharex=True, sharey="col")
 
     # Don't start opacity from 0
     alphas = (
@@ -281,20 +239,6 @@ def generate_plot_ci_lines(
 
         ax.set(xlabel=None)
 
-        # legend
-        # if dt == dates[-1]:
-        #     ax.legend()
-
-        # if separate_subplots:
-        #     ax.text(
-        #         0.01,
-        #         0.95,
-        #         dt,
-        #         horizontalalignment="left",
-        #         verticalalignment="top",
-        #         transform=ax.transAxes,
-        #     )
-
     ax.legend()
 
     plt.gca().invert_xaxis()
@@ -306,8 +250,6 @@ def generate_plot_ci_lines(
         linestyle="--",
         linewidth=0.5,
     )
-    # ax.set_xlabel()
-    # ax.set_ylabel("carbon intensity, $gCO_2/kWh$")
     if len(dates) > 1:
         ax.set_title(f"{_ftime(dates[0])} - {_ftime(dates[-1])} UTC")
     else:
@@ -437,8 +379,7 @@ def generate_plots_ci_lines_with_boxplots(
 
 def generate_boxplot_ci(
     df: pd.DataFrame,
-    hours_of_data: int = HOURS_OF_DATA,
-    start_date: datetime = None,
+    dates: list,
 ):
     """Generate boxplot of CI values.
     Boxplots for all of the forecasts for a list of given windows
@@ -453,10 +394,8 @@ def generate_boxplot_ci(
     # Use only forecasts for measuring prediction quality
     df = df.drop("intensity.actual", level=0, axis=1)
 
-    dates = get_dates(df, hours_of_data * 2, start_date=start_date)
-
     # reformat x-axis for display
-    dff = df["intensity.forecast"].loc[dates]
+    dff = df["intensity.forecast"].copy()
     fancy_xaxis_dateformats(dff)
 
     fig, ax = plt.subplots(1, 1)
@@ -510,8 +449,7 @@ def _error_and_percentage_error(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame
 
 def generate_boxplot_ci_error(
     df: pd.DataFrame,
-    hours_of_data: int = HOURS_OF_DATA,
-    start_date: datetime = None,
+    dates: list,
 ):
     """Generate boxplot of CI error values.
     Boxplots for each of the forecasts for a list of given windows.
@@ -521,9 +459,6 @@ def generate_boxplot_ci_error(
 
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
-
-    dates = get_dates(df, hours_of_data * 2, start_date=start_date)
-    df = df.loc[dates].copy()
 
     _, df_pc_err = _error_and_percentage_error(df)
 
@@ -833,6 +768,8 @@ def create_graph_images(
     hours_of_data: int = HOURS_OF_DATA,
     filter: str = "national",
     days: int = 7,
+    start_date: datetime = None,
+    random_n: int = 0,
     *args,
     **kwargs,
 ) -> None:
@@ -848,14 +785,21 @@ def create_graph_images(
     summaries_merged_df = get_merged_summaries_with_final_actual_intensities(
         input_directory, filter=filter.split("_")[0]
     )
+    dates = get_dates(
+        summaries_merged_df,
+        int(hours_of_data * 2),
+        start_date=start_date,
+        random_n=random_n,
+    )
+    df = summaries_merged_df.loc[dates].copy()
 
-    fig = generate_plot_ci_lines(summaries_merged_df, hours_of_data // 2)
+    fig = generate_plot_ci_lines(df, dates=dates)
     save_figure(fig, output_directory, filter + "_ci_lines.png")
 
-    fig = generate_boxplot_ci(summaries_merged_df, hours_of_data)
+    fig = generate_boxplot_ci(df, dates=dates)
     save_figure(fig, output_directory, filter + "_ci_boxplot.png")
 
-    fig = generate_boxplot_ci_error(summaries_merged_df, hours_of_data)
+    fig = generate_boxplot_ci_error(df, dates=dates)
     save_figure(fig, output_directory, filter + "_ci_error_boxplot.png")
 
     fig = generate_boxplot_ci_error_for_days(summaries_merged_df, days)
