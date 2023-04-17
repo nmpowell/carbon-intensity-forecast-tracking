@@ -227,20 +227,41 @@ def generate_plot_ci_lines(
     hours_of_data: int = HOURS_OF_DATA,
     start_date: datetime = None,
     random_n: int = 0,
+    separate_subplots: bool = False,
 ):
     """Generate plots from summaries."""
 
-    dates = get_dates(df, hours_of_data * 2, start_date=start_date, random_n=random_n)
+    dates = get_dates(
+        df, int(hours_of_data * 2), start_date=start_date, random_n=random_n
+    )
 
-    plt.rcParams["figure.figsize"] = [12, 6]
+    height = 1 + 2 * len(dates) if separate_subplots else 6
+    plt.rcParams["figure.figsize"] = [12, height]
     plt.rcParams["figure.dpi"] = DPI
 
+    if separate_subplots:
+        fig, axes = plt.subplots(
+            len(dates), 1, sharex=True, sharey="col", constrained_layout=True
+        )
+        axes = np.ravel(axes)
+    else:
+        fig, ax = plt.subplots(1, 1)
+
+    # nrows = len(dates) if separate_subplots else 1
+    # fig, axes = plt.subplots(nrows, 1, sharex=True, sharey="col")
+
     # Don't start opacity from 0
-    alphas = iter(np.linspace(0.1, 1, len(dates)))
+    alphas = (
+        iter([1] * len(dates))
+        if (separate_subplots or len(dates) == 1)
+        else iter(np.linspace(0.1, 1, len(dates)))
+    )
     colours = cycle(["tab:blue", "tab:orange"])
 
-    fig, ax = plt.subplots(1, 1)
     for ix, dt in enumerate(dates):
+        if separate_subplots:
+            ax = axes[ix]
+
         alpha = next(alphas)
 
         # set label to empty string unless it is the last iteration
@@ -258,9 +279,23 @@ def generate_plot_ci_lines(
         plot_defs["c"] = next(colours)
         act = df["intensity.actual"].loc[dt].plot(**plot_defs)
 
+        ax.set(xlabel=None)
+
         # legend
-        if dt == dates[-1]:
-            ax.legend()
+        # if dt == dates[-1]:
+        #     ax.legend()
+
+        # if separate_subplots:
+        #     ax.text(
+        #         0.01,
+        #         0.95,
+        #         dt,
+        #         horizontalalignment="left",
+        #         verticalalignment="top",
+        #         transform=ax.transAxes,
+        #     )
+
+    ax.legend()
 
     plt.gca().invert_xaxis()
     ax.vlines(
@@ -271,9 +306,128 @@ def generate_plot_ci_lines(
         linestyle="--",
         linewidth=0.5,
     )
-    ax.set_xlabel("hours before forecasted window")
-    ax.set_ylabel("carbon intensity, $gCO_2/kWh$")
-    ax.set_title(f"{_ftime(dates[0])} - {_ftime(dates[-1])} UTC")
+    # ax.set_xlabel()
+    # ax.set_ylabel("carbon intensity, $gCO_2/kWh$")
+    if len(dates) > 1:
+        ax.set_title(f"{_ftime(dates[0])} - {_ftime(dates[-1])} UTC")
+    else:
+        ax.set_title(f"{_ftime(dates[0])} UTC")
+    fig.supylabel("carbon intensity, $gCO_2/kWh$")
+    fig.supxlabel("hours before forecasted window")
+    fig.suptitle(
+        f"Published national CI forecast values, {len(dates)} half-hour windows"
+    )
+
+    return fig
+
+
+def generate_plots_ci_lines_with_boxplots(
+    df: pd.DataFrame,
+    hours_of_data: int = HOURS_OF_DATA,
+    start_date: datetime = None,
+    random_n: int = 0,
+):
+    """Generate plots from summaries."""
+
+    dates = get_dates(
+        df, int(hours_of_data * 2), start_date=start_date, random_n=random_n
+    )
+
+    height = 1 + 2 * len(dates)
+    plt.rcParams["figure.figsize"] = [12, height]
+    plt.rcParams["figure.dpi"] = DPI
+
+    width_cols = 6
+    fig, axes = plt.subplots(
+        len(dates),
+        2,
+        sharex="col",
+        sharey=True,
+        constrained_layout=True,
+        gridspec_kw={"width_ratios": [width_cols - 1, 1]},
+    )
+    # axes = np.ravel(axes)
+
+    colours = cycle(["tab:blue", "tab:orange"])
+
+    ylims = (0, 0)
+    for ix, ax in enumerate(fig.axes):
+        dt = dates[ix // 2]
+
+        if ix % 2 == 0:
+            # Line plot in left column
+            # for ix, dt in enumerate(dates):
+            #     ax = axes[ix]
+
+            # all but the last column if we have a boxplot
+            # ax = fig.add_subplot(gs[ix, :-1])
+
+            # set label to empty string unless it is the last iteration
+            plot_defs = {"ax": ax, "linewidth": 1, "alpha": 1.0, "label": ""}
+
+            # Forecast
+            if ix == 0:
+                plot_defs["label"] = "forecast"
+            plot_defs["c"] = next(colours)
+            fct = df["intensity.forecast"].loc[dt].plot(**plot_defs)
+
+            # Actual
+            if ix == 0:
+                plot_defs["label"] = "actual"
+            plot_defs["c"] = next(colours)
+            act = df["intensity.actual"].loc[dt].plot(**plot_defs)
+
+            ax.text(
+                0.0,
+                0.95,
+                _ftime(dt) + " UTC ",
+                horizontalalignment="right",
+                verticalalignment="top",
+                # This transform uses x:data and y: axes
+                transform=ax.get_xaxis_transform(),
+            )
+
+            if ix == 0:
+                ax.legend()
+                ymin, ymax = ax.get_ylim()
+            else:
+                if ax.get_ylim()[0] < ymin:
+                    ymin = ax.get_ylim()[0]
+                if ax.get_ylim()[1] > ymax:
+                    ymax = ax.get_ylim()[1]
+
+            continue
+
+        # Boxplot in right column
+        bxp = pd.DataFrame(df[["intensity.forecast"]].loc[dt]).boxplot(
+            rot=90, sym="r.", ax=ax
+        )
+        ax.xaxis.set_ticklabels([])
+
+    # plt.gca().invert_xaxis()
+    for ix, ax in enumerate(fig.axes):
+        ax.set(xlabel=None)
+        ax.grid("on", linestyle="--", alpha=0.33)
+        if ix % 2 != 0:
+            continue
+        ax.vlines(
+            0.0,
+            ymin,
+            ymax,
+            color="k",
+            linestyle="--",
+            linewidth=0.5,
+        )
+
+    # select the last line-plot axis
+    fig.axes[-2].invert_xaxis()
+
+    # if len(dates) > 1:
+    #     fig.axes[0].set_title(f"{_ftime(dates[0])} - {_ftime(dates[-1])} UTC")
+    # else:
+    #     fig.axes[0].set_title(f"{_ftime(dates[0])} UTC")
+    fig.supylabel("carbon intensity, $gCO_2/kWh$")
+    fig.supxlabel("hours before forecasted window")
     fig.suptitle(
         f"Published national CI forecast values, {len(dates)} half-hour windows"
     )
@@ -357,6 +511,7 @@ def _error_and_percentage_error(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame
 def generate_boxplot_ci_error(
     df: pd.DataFrame,
     hours_of_data: int = HOURS_OF_DATA,
+    start_date: datetime = None,
 ):
     """Generate boxplot of CI error values.
     Boxplots for each of the forecasts for a list of given windows.
@@ -367,7 +522,7 @@ def generate_boxplot_ci_error(
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
 
-    dates = get_dates(df, hours_of_data * 2)
+    dates = get_dates(df, hours_of_data * 2, start_date=start_date)
     df = df.loc[dates].copy()
 
     _, df_pc_err = _error_and_percentage_error(df)
@@ -415,7 +570,7 @@ def generate_boxplot_ci_error_for_days(
 
     _, df_pc_err = _error_and_percentage_error(df)
 
-    result = _aggregate_per_day(df_pc_err)
+    result = _aggregate_per(df_pc_err, "date")
 
     fig, ax = plt.subplots(1, 1)
     _ = result.T.boxplot(sym="r.")
@@ -489,15 +644,26 @@ def generate_boxplot_ci_error_per_hour(
 #         ax.text(2, 6, r'an equation: $E=mc^2$', fontsize=15)
 
 
-def _aggregate_per_day(df: pd.DataFrame) -> pd.DataFrame:
+def _aggregate_per(df: pd.DataFrame, aggregate_by: str = "date") -> pd.DataFrame:
     """..."""
+
+    def group_by_dates(df: pd.DataFrame, aggregate_by: str):
+        if aggregate_by == "date" or aggregate_by == "day":
+            return df.index.date
+        elif aggregate_by == "month":
+            return df.index.month
+        elif aggregate_by == "year":
+            return df.index.year
+        else:
+            raise ValueError(f"aggregate_by must be one of 'date', 'month', 'year'")
+
     df_err = df.copy()
 
     # Only pre-timepoint forecasts
     df_err = df_err[[c for c in df_err.columns if float(c) >= 0.0]]
 
     # Replace all index values by their date (day)
-    df_err.index = df_err.index.date
+    df_err.index = group_by_dates(df_err, aggregate_by)
     forecast_cols = df_err.columns
 
     # Add a helper column to count occurrences of each label
@@ -520,7 +686,7 @@ def _get_stats_per_day(df: pd.DataFrame, split_ci: bool = False) -> pd.DataFrame
     """Generate summary statistics for each day.
     Note that we should take the mean absolute error, as errors can be +/-.
     """
-    result = _aggregate_per_day(df)
+    result = _aggregate_per(df, "date")
 
     # Get the absolute error values
     result = result.abs()

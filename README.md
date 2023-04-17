@@ -80,7 +80,7 @@ The above boxplot shows the range of all published forecast values for each 30-m
 
 ![Published CI values](./charts/national_ci_error_boxplot.png)
 
-The above plot shows forecast percentage error (compared with "actual" values, i.e. `forecast - actual`) for the same times.
+The above plot shows forecast percentage error (compared with "actual" values, i.e. $100\times(forecast-actual)/actual$) for the same times.
 
 ## Limitations
 
@@ -98,7 +98,7 @@ From tracking the [pt24h](https://carbon-intensity.github.io/api-definitions/#ge
 
 The carbon intensity of electricity is a measure of the CO2 emissions produced per kilowatt hour of electricity consumed. Units, including forecast values, are usually gCO2/kWh.
 
-- The JSON format isn't great for parsing and plotting, and the files are huge. So here they're wrangled (`wrangle.py`) into CSV.
+- The JSON format isn't great for parsing and plotting, and the files are huge. So here they're wrangled (`wrangle.py`) to CSV.
 
 ### Dates and times
 
