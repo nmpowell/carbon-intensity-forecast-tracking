@@ -103,9 +103,24 @@ def generate_colourmap(boundary_values: list):
     return listed_cmap, norm
 
 
+def get_y_tick_midpoints(y_tick_values, ylims):
+    yt = sorted(list(ylims) + y_tick_values)
+    midpoints = yt[:-1] + np.diff(yt) / 2
+    new_locs = []
+    for ix, point in enumerate(midpoints):
+        if ix == 0:
+            new_locs.append(point)
+            continue
+        if point > ylims[0] and new_locs[-1] <= ylims[0]:
+            _ = new_locs.pop()
+        new_locs.append(point)
+    return new_locs
+
+
 def add_colourmap(
     ax,
     year: int = None,
+    alpha: float = 0.33,
 ) -> None:
     """_summary_
 
@@ -119,14 +134,28 @@ def add_colourmap(
     # Load the CSV containing the CI index numerical boundaries
     y_labels, y_tick_values = get_boundaries(year)
 
-    listed_cmap, norm = generate_colourmap(y_tick_values)
-
     ax2 = ax.twinx()
-    ax2.set(ylim=ax.get_ylim(), yticks=y_tick_values, yticklabels=y_labels)
-    ax2.set_yticklabels(y_labels, verticalalignment="bottom")
-
     ylims = ax.get_ylim()
     xlims = ax.get_xlim()
+
+    # Want to place labels halfway between the boundaries and halfway between the axis min/max
+    # and the first/last visible boundary...
+    ytv = get_y_tick_midpoints(y_tick_values, ylims)
+
+    tick_label_params = {"rotation": 90, "va": "center", "ha": "left"}
+
+    ax2.set(ylim=ylims)
+    # Hide major tick labels
+    # Selectively enable major tick labels, because if we hide them all (ax2.set_yticklabels("")), then
+    # minor tick labels which coincide are not displayed either.
+    ax2.set_yticks([val for val in ytv if val in y_tick_values])
+    ax2.set_yticklabels(
+        [y_labels[ix] for ix, val in enumerate(ytv) if val in y_tick_values],
+        **tick_label_params,
+    )
+    # Customise minor tick labels
+    ax2.set_yticks(ytv, minor=True)
+    ax2.set_yticklabels(y_labels, minor=True, **tick_label_params)
 
     # do this last to align the secondary axis labels with the primary
     ax2.set_ylim(ylims)
@@ -136,13 +165,15 @@ def add_colourmap(
     # has to be reversed in this case
     yarr = np.vstack(y_range[::-1])
 
+    listed_cmap, norm = generate_colourmap(y_tick_values)
+
     # Show the colourmap as the background to the plot
     ax.imshow(
         yarr,
         extent=(xlims[0], xlims[1], ylims[0], ylims[1]),
         cmap=listed_cmap,
         norm=norm,
-        alpha=0.5,
+        alpha=alpha,
         aspect="auto",
         interpolation="nearest",
     )

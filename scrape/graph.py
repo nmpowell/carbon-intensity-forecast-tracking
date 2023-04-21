@@ -111,8 +111,9 @@ def fancy_xaxis_dateformats(df: pd.DataFrame) -> None:
 
 def get_dates(
     df: pd.DataFrame,
-    num_plots: int = None,
     start_date: datetime = None,
+    num_timepoints: int = None,
+    num_hours: float = None,
     num_days: int = None,
     incomplete_hours_offset: int = 72,
     random_n: int = 0,
@@ -124,11 +125,14 @@ def get_dates(
     Note also that we forecast 48 hours into the future, so the most recent timepoint
     with complete data is 72 hours earlier than the latest timepoint in the data.
 
+    If start date isn't specified, we return the latest complete num_timepoints timepoints,
+    based on the number of hours or days requested.
+
     Args:
         df (pd.DataFrame): dataframe with datetime index
-        num_plots (int): number of plots to generate
+        num_timepoints (int): number of plots to generate
         num_days (int): number of complete days' data to return. Optional. If set, overrides
-            num_plots.
+            num_timepoints.
         incomplete_hours_offset (int): assume this many hours prior to the final timepoint in
             the data have incomplete 'actual' data. Defaults to 72.
         random_n (int): if > 0, return a sorted random sample of this size. Default is 0.
@@ -141,11 +145,11 @@ def get_dates(
     # should be the latest - 24 hours.
     # The first timepoint will be now - 24 hours - N hours.
 
-    if not num_plots:
-        num_plots = int(HOURS_OF_DATA * 2)
+    if not num_timepoints:
+        num_timepoints = int(num_hours * 2)
 
     if start_date:
-        return [d for d in df.index if d >= start_date][:num_plots]
+        return [d for d in df.index if d >= start_date][:num_timepoints]
 
     # The last timepoint with complete data
     latest_tp = df.index[-1] - timedelta(hours=incomplete_hours_offset)
@@ -153,17 +157,19 @@ def get_dates(
     # The earliest timepoint to return
     if num_days:
         dt_earliest = latest_tp - timedelta(days=num_days)
-        num_plots = int(24 * num_days * 2)
+        num_timepoints = int(24 * num_days * 2)
     else:
         # The number of hours' data to show
-        hours_prior = num_plots / 2
+        hours_prior = num_timepoints / 2
         dt_earliest = latest_tp - timedelta(hours=hours_prior)
 
     if dt_earliest > df.index[-1]:
         raise ValueError("Not enough data to generate plots")
 
     # pick datetimes
-    dates = [d for d in df.index if d >= dt_earliest and d <= latest_tp][:num_plots]
+    dates = [d for d in df.index if d >= dt_earliest and d <= latest_tp][
+        :num_timepoints
+    ]
     if random_n > 0:
         return sorted(np.random.choice(dates, size=random_n, replace=False))
     return dates
@@ -265,15 +271,9 @@ def generate_plot_ci_lines(
 
 def generate_plots_ci_lines_with_boxplots(
     df: pd.DataFrame,
-    hours_of_data: int = HOURS_OF_DATA,
-    start_date: datetime = None,
-    random_n: int = 0,
+    dates: list,
 ):
     """Generate plots from summaries."""
-
-    dates = get_dates(
-        df, int(hours_of_data * 2), start_date=start_date, random_n=random_n
-    )
 
     height = 1 + 2 * len(dates)
     plt.rcParams["figure.figsize"] = [12, height]
@@ -363,13 +363,15 @@ def generate_plots_ci_lines_with_boxplots(
 
     # select the last line-plot axis
     fig.axes[-2].invert_xaxis()
+    fig.axes[-2].set_xlabel("hours before forecasted window")
+    fig.axes[-1].set_xlabel("forecast range")
 
     # if len(dates) > 1:
     #     fig.axes[0].set_title(f"{_ftime(dates[0])} - {_ftime(dates[-1])} UTC")
     # else:
     #     fig.axes[0].set_title(f"{_ftime(dates[0])} UTC")
     fig.supylabel("carbon intensity, $gCO_2/kWh$")
-    fig.supxlabel("hours before forecasted window")
+    # fig.supxlabel("hours before forecasted window")
     fig.suptitle(
         f"Published national CI forecast values, {len(dates)} half-hour windows"
     )
@@ -380,6 +382,7 @@ def generate_plots_ci_lines_with_boxplots(
 def generate_boxplot_ci(
     df: pd.DataFrame,
     dates: list,
+    colourmap: bool = False,
 ):
     """Generate boxplot of CI values.
     Boxplots for all of the forecasts for a list of given windows
@@ -419,8 +422,8 @@ def generate_boxplot_ci(
     fig.suptitle(
         f"National carbon intensity forecast ranges, {len(dates)} half-hour windows"
     )
-    # add_colourmap(ax, 2023)
-
+    if colourmap:
+        add_colourmap(ax, dates[0].year)
     return fig
 
 
@@ -787,7 +790,7 @@ def create_graph_images(
     )
     dates = get_dates(
         summaries_merged_df,
-        int(hours_of_data * 2),
+        num_hours=hours_of_data,
         start_date=start_date,
         random_n=random_n,
     )
