@@ -145,8 +145,12 @@ def get_dates(
     # should be the latest - 24 hours.
     # The first timepoint will be now - 24 hours - N hours.
 
-    if not num_timepoints:
+    if num_days:
+        num_hours = num_days * 24
+    if num_hours:
         num_timepoints = int(num_hours * 2)
+    if not num_timepoints:
+        num_timepoints = HOURS_OF_DATA * 2
 
     if start_date:
         return [d for d in df.index if d >= start_date][:num_timepoints]
@@ -157,7 +161,6 @@ def get_dates(
     # The earliest timepoint to return
     if num_days:
         dt_earliest = latest_tp - timedelta(days=num_days)
-        num_timepoints = int(24 * num_days * 2)
     else:
         # The number of hours' data to show
         hours_prior = num_timepoints / 2
