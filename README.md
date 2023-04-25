@@ -4,25 +4,29 @@ Tracking differences between the [UK National Grid's Carbon Intensity forecast](
 
 ## What is this?
 
+See an accompanying [blog post](https://nickmp.com/carbon-intensity-forecast-tracking).
+
 The UK's National Grid Electricity System Operator (NGESO) publishes [an API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) showing half-hourly carbon intensity (gCO2/kWh), together with a 48-hour forecast. The national data is based upon real and estimated metered generation statistics and values representing the relative carbon intensity of different energy sources. Regional data is based upon forecasted generation, consumption, and a model describing inter-region interaction.
 
 The forecasts are updated every half hour, but the API does not keep historical forecasts; they're unavailable or overwritten. How reliable are they?
 
 ![Published CI values](./charts/national_ci_lines.png)
 
-The above figure shows the evolution of 12 hours' worth of time windows' national forecasts. The more recent time windows are darker blue. Each window is forecasted about 96 times in the preceeding 48 hours (left of the dashed line, from the `fw48h` endpoint). Right of the dashed line are a further 48 post-hoc "forecasts" and "actual" values (`pt24h` endpoint).
+The above figure shows the evolution of 24 hours' worth of time windows' national forecasts. The more recent time windows are darker blue. Each window is forecasted about 96 times in the preceeding 48 hours (left of the dashed line, from the `fw48h` endpoint). Right of the dashed line are a further 48 post-hoc "forecasts" and "actual" values (`pt24h` endpoint).
 
 ## Basic idea
 
 - [Git scrape](https://simonwillison.net/2020/Oct/9/git-scraping/) the National Grid Carbon Intensity API using GitHub Actions, as inspired by [food-scraper](https://github.com/codeinthehole/food-scraper).
 - Scraping occurs twice per hour on a [cron schedule](https://github.com/nmpowell/carbon-intensity-forecast-tracking/blob/main/.github/workflows/scrape_data.yaml) ([docs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)).
 - Download JSON data from the [various endpoints](https://carbon-intensity.github.io/api-definitions/#intensity), and save to `data/`.
-- Once per day, data is converted to CSV, and parsed into a Pandas dataframe for summarising, plotting and analysis.
-- With summary statistics and plots, we can attempt to estimate the accuracy of the forecasts.
+- Once per day, data is converted to CSV, and parsed into a Pandas dataframe for summarising, plotting and analysis. The plots on this page are updated daily.
+- With summary statistics and plots, we can attempt to estimate the accuracy of the forecasts, and predict the likelihood of errors.
 
-- To see a brief investigation of past data, see [./investigation.ipynb](./investigation.ipynb).
-- To follow the plot generation, see the [./notebook.ipynb](./notebook.ipynb).
-- To run yourself, see **Usage** below.
+### Notebooks
+
+- To follow plot generation, see the [./notebook.ipynb](./notebook.ipynb).
+- An [./investigation.ipynb](./investigation.ipynb) of past data.
+- To run this yourself, see **Usage** below.
 
 ## Prior work
 
