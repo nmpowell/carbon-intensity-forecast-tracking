@@ -23,7 +23,8 @@ def get_csv_path(output_directory: str, filepath: str) -> str:
 def move_to_subdirectory(filepath: str, subdirectory_name: str = "_archive") -> None:
     target_directory = os.path.join(os.path.dirname(filepath), subdirectory_name)
     _ = check_create_directory(target_directory)
-    shutil.move(filepath, target_directory)
+    # provide the full target path to force overwriting
+    shutil.move(filepath, os.path.join(target_directory, os.path.basename(filepath)))
 
 
 def check_create_directory(directory: str = ""):
