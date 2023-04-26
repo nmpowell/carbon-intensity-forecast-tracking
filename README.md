@@ -170,10 +170,14 @@ Run `make test` or `pytest -v tests`
 
 ## TODOs & future work
 
+- [ ] plots are broken - or, missing data
+- [ ] summary files are too big and impractical
 - [ ] separate scrape and wrangle steps (again)
+- [ ] add plot with CI index colours
+- [ ] add updating chart showing calculation of error probabilities
 - [x] combine get_dates and get_dates_days fns.
-- [ ] dates in plots are 1h off
-- [ ] figure out mean absolute error, CI and stdev
+- [ ] dates in plots are 1h off due to timezoning
+- [x] figure out mean absolute error, CI and stdev
 - [ ] factor out scipy entirely; use numpy
 - [ ] summaries up to 10 days to make the files smaller (regional)
 - [ ] split summaries into smaller files, or only generate for a small date range, or on the fly.
