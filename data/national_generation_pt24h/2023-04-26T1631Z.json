@@ -1,0 +1,2020 @@
+{
+    "data": [
+        {
+            "from": "2023-04-25T16:30Z",
+            "to": "2023-04-25T17:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.2
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.2
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 15.6
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 47.5
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12.1
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 3.8
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 7.8
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 8.9
+                }
+            ]
+        },
+        {
+            "from": "2023-04-25T17:00Z",
+            "to": "2023-04-25T17:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.2
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.4
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 16.3
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 49.6
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 4.3
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 5.7
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 7.6
+                }
+            ]
+        },
+        {
+            "from": "2023-04-25T17:30Z",
+            "to": "2023-04-25T18:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.3
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.6
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 14.4
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 52.3
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12.5
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 5
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 3.8
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 7.2
+                }
+            ]
+        },
+        {
+            "from": "2023-04-25T18:00Z",
+            "to": "2023-04-25T18:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.4
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.8
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 15.4
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 52.5
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12.6
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 5.8
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 2.1
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 6.5
+                }
+            ]
+        },
+        {
+            "from": "2023-04-25T18:30Z",
+            "to": "2023-04-25T19:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.4
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 1.1
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 16.9
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 53.1
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12.7
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 5.9
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0.6
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.2
+                }
+            ]
+        },
+        {
+            "from": "2023-04-25T19:00Z",
+            "to": "2023-04-25T19:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.5
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 1.1
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 17.2
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 54.9
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12.9
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 4.9
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.5
+                }
+            ]
+        },
+        {
+            "from": "2023-04-25T19:30Z",
+            "to": "2023-04-25T20:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.5
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.9
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 17
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 56.4
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 13.3
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 3.4
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.4
+                }
+            ]
+        },
+        {
+            "from": "2023-04-25T20:00Z",
+            "to": "2023-04-25T20:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.6
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.8
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 17
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 57.1
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 13.6
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 2.1
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.7
+                }
+            ]
+        },
+        {
+            "from": "2023-04-25T20:30Z",
+            "to": "2023-04-25T21:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.8
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.5
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 15.2
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 58.5
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 14.3
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 1.6
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.1
+                }
+            ]
+        },
+        {
+            "from": "2023-04-25T21:00Z",
+            "to": "2023-04-25T21:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.2
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.1
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 14.3
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 58
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 15.2
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 1.4
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.8
+                }
+            ]
+        },
+        {
+            "from": "2023-04-25T21:30Z",
+            "to": "2023-04-25T22:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.5
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 9.2
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 62.6
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 15.9
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 1
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.7
+                }
+            ]
+        },
+        {
+            "from": "2023-04-25T22:00Z",
+            "to": "2023-04-25T22:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.7
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 9.3
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 62.3
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 16.4
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.7
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.6
+                }
+            ]
+        },
+        {
+            "from": "2023-04-25T22:30Z",
+            "to": "2023-04-25T23:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.7
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 7.7
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 63.8
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 16.6
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.6
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.5
+                }
+            ]
+        },
+        {
+            "from": "2023-04-25T23:00Z",
+            "to": "2023-04-25T23:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.7
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 8.3
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 63.7
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 16.3
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.5
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.4
+                }
+            ]
+        },
+        {
+            "from": "2023-04-25T23:30Z",
+            "to": "2023-04-26T00:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.7
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 8.4
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 63.8
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 16.4
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.5
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.2
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T00:00Z",
+            "to": "2023-04-26T00:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.7
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 7.8
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 64.6
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 16.4
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.5
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.9
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T00:30Z",
+            "to": "2023-04-26T01:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.6
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 8.7
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 63.5
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 16.4
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.5
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.2
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T01:00Z",
+            "to": "2023-04-26T01:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.8
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 8.4
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 63.1
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 16.8
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.5
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.4
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T01:30Z",
+            "to": "2023-04-26T02:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.9
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 6.4
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 65.3
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 16.9
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.6
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T02:00Z",
+            "to": "2023-04-26T02:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.9
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.1
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 6.3
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 64.7
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 17
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.6
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0.2
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.4
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T02:30Z",
+            "to": "2023-04-26T03:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.9
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.1
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 5.1
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 66
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 17
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.6
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.5
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T03:00Z",
+            "to": "2023-04-26T03:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.8
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 5.1
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 65.9
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 17
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.7
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.5
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T03:30Z",
+            "to": "2023-04-26T04:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.6
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 5.6
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 66.8
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 16.2
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.9
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.9
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T04:00Z",
+            "to": "2023-04-26T04:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.5
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 5.3
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 66.7
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 16
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 1.4
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0.2
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.8
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T04:30Z",
+            "to": "2023-04-26T05:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.5
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 5.8
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 65.4
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 16
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 2.2
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0.2
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.9
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T05:00Z",
+            "to": "2023-04-26T05:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5.3
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 6.1
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 64.7
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 15.5
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 3.4
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 0.2
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.7
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T05:30Z",
+            "to": "2023-04-26T06:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 5
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 8.6
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 62.2
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 14.8
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 3.1
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 1.1
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.1
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T06:00Z",
+            "to": "2023-04-26T06:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.9
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 9.7
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 60.8
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 14.3
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 3.1
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 2.4
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.9
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T06:30Z",
+            "to": "2023-04-26T07:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.5
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.1
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 15.5
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 55.8
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 13.3
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 2.5
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 3.7
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.6
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T07:00Z",
+            "to": "2023-04-26T07:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.4
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.3
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 16.8
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 54.2
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12.9
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 1.6
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 5.5
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.3
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T07:30Z",
+            "to": "2023-04-26T08:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.3
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 1
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 16.4
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 53.5
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12.6
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.9
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 7.1
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.2
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T08:00Z",
+            "to": "2023-04-26T08:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.2
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 1.7
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 15.8
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 52.3
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12.3
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.8
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 8.8
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.1
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T08:30Z",
+            "to": "2023-04-26T09:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.2
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 1.5
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 16.5
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 50.7
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12.1
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.7
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 10.3
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.1
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T09:00Z",
+            "to": "2023-04-26T09:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.2
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.9
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 15.7
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 49.5
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12.2
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.7
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 12.5
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.2
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T09:30Z",
+            "to": "2023-04-26T10:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.2
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.8
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 17.3
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 47.3
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 11.9
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.7
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 13.7
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T10:00Z",
+            "to": "2023-04-26T10:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.1
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.7
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 17.7
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 47.1
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 11.9
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.7
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 14.3
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 3.5
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T10:30Z",
+            "to": "2023-04-26T11:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.1
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.6
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 17.8
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 47.6
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 11.7
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.5
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 14.2
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 3.4
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T11:00Z",
+            "to": "2023-04-26T11:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.1
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.7
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 17.9
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 47.3
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 11.8
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.4
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 14.1
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 3.7
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T11:30Z",
+            "to": "2023-04-26T12:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.2
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.7
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 16.8
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 48.2
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 11.9
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.6
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 13.9
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 3.8
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T12:00Z",
+            "to": "2023-04-26T12:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.2
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.7
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 16.9
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 48.1
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.6
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 13.9
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 3.7
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T12:30Z",
+            "to": "2023-04-26T13:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.2
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.5
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 17.7
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 47.5
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.6
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 13.3
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.2
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T13:00Z",
+            "to": "2023-04-26T13:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.2
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.3
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 17.9
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 47.2
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12.1
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.4
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 12.9
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T13:30Z",
+            "to": "2023-04-26T14:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.2
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0.1
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 18.8
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 46.6
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12.4
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.5
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 12.2
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.4
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T14:00Z",
+            "to": "2023-04-26T14:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.3
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 18.5
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 48.3
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12.5
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.5
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 11.1
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 4.8
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T14:30Z",
+            "to": "2023-04-26T15:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4.2
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 18.5
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 48.9
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 12.1
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 0.8
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 9.6
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 5.9
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T15:00Z",
+            "to": "2023-04-26T15:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 3.9
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 18
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 48.7
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 11.8
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 1
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 8
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 8.6
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T15:30Z",
+            "to": "2023-04-26T16:00Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 3.9
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 17.9
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 48.5
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 11.8
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 1.4
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 8
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 8.6
+                }
+            ]
+        },
+        {
+            "from": "2023-04-26T16:00Z",
+            "to": "2023-04-26T16:30Z",
+            "generationmix": [
+                {
+                    "fuel": "biomass",
+                    "perc": 4
+                },
+                {
+                    "fuel": "coal",
+                    "perc": 0
+                },
+                {
+                    "fuel": "imports",
+                    "perc": 18.8
+                },
+                {
+                    "fuel": "gas",
+                    "perc": 48.3
+                },
+                {
+                    "fuel": "nuclear",
+                    "perc": 11.8
+                },
+                {
+                    "fuel": "other",
+                    "perc": 0
+                },
+                {
+                    "fuel": "hydro",
+                    "perc": 1.6
+                },
+                {
+                    "fuel": "solar",
+                    "perc": 6.8
+                },
+                {
+                    "fuel": "wind",
+                    "perc": 8.6
+                }
+            ]
+        }
+    ]
+}
