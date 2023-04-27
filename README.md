@@ -175,6 +175,7 @@ Run `make test` or `pytest -v tests`
 - [ ] separate scrape and wrangle steps (again)
 - [ ] add plot with CI index colours
 - [ ] add updating chart showing calculation of error probabilities
+- [ ] concat forecasting CSVs into daily files
 - [x] combine get_dates and get_dates_days fns.
 - [ ] dates in plots are 1h off due to timezoning
 - [x] figure out mean absolute error, CI and stdev
