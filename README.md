@@ -87,7 +87,7 @@ The above plot shows forecast percentage error (compared with "actual" values, i
 ## Limitations
 
 - Because Github's Actions runners are shared (and free), the cronjobs aren't 100% reliable. Expect occasional missing data.
-- Unclear what the difference between the 18th DNO region, "GB", and the "National" forecasts are. [National](https://api.carbonintensity.org.uk/intensity/2023-03-11T22:31Z). [Regional](https://api.carbonintensity.org.uk/regional/intensity/2023-03-11T22:31Z/fw48h): at timepoint 0, regionid 18. Slightly different.
+- Unclear what the difference between the 18th DNO region, "GB", and the "National" forecasts are. [National](https://api.carbonintensity.org.uk/intensity/2023-03-11T22:31Z). [Regional](https://api.carbonintensity.org.uk/regional/intensity/2023-03-11T22:31Z/fw48h): at timepoint 0, regionid 18.
 - There could be many contributing factors to broad error standard deviation, including missing data (not scraped successfully).
 
 ### Actual intensity and generation mix
@@ -115,6 +115,8 @@ The carbon intensity of electricity is a measure of the CO2 emissions produced p
 - The earliest regional forecast data is from [May 2018](https://api.carbonintensity.org.uk/regional/intensity/2018-05-10T23:30Z/fw48h).
 
 ## Usage
+
+Requires Python 3.10+.
 
 ### Install
 

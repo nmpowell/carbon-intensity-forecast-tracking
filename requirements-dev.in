@@ -1,12 +1,4 @@
-# Application
-matplotlib
-numpy
-pandas
-python-dateutil
-python-json-logger
-requests
-scipy
-tabulate
+-r requirements.txt
 
 # Notebooks only
 jupyter

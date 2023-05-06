@@ -1,9 +1,8 @@
+-r requirements-minimal.txt
+
 # Application
 matplotlib
 numpy
 pandas
-python-dateutil
-python-json-logger
-requests
 scipy
 tabulate
