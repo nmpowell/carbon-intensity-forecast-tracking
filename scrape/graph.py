@@ -14,6 +14,7 @@ import scipy.stats as st
 
 from scrape.colourmap import add_colourmap
 from scrape.files import get_data_files
+from scrape.investigation import distribution_parameters
 
 log = logging.getLogger(__name__)
 
@@ -769,6 +770,212 @@ def update_stats_history(
 
     df_stats.to_csv(filepath, index=True)
     log.info("Saved stats history to: {}".format(filepath))
+
+
+# def plot_distributions(
+#     data: np.array,
+#     n_bins: int,
+#     x_label: str,
+#     density: bool = True,
+#     extreme_values: list = [],
+# ) -> None:
+#     """Generate plots of the frequency and cumulative probability, with fitted distributions.
+
+#     Student's t distribution closely approximates the Normal with this many degrees of freedom.
+#     """
+#     # Mean, standard deviation, degrees of freedom
+#     mu = np.mean(data)
+#     sigma = np.std(data)
+#     nu = len(data) - 1
+
+#     hist, bin_edges, bin_centers, bin_width = histogram(data, n_bins, density)
+
+#     # Fit the normal distribution
+#     popt_norm, _ = curve_fit(normal_distribution, bin_centers, hist, p0=[mu, sigma])
+
+#     # Print the optimised parameters
+#     print("Normal distribution parameters:")
+#     print(f"Mean: {popt_norm[0]}, Standard deviation: {popt_norm[1]}")
+
+#     # Fit Student's t-distribution
+#     popt_t, _ = curve_fit(t_distribution, bin_centers, hist, p0=[mu, sigma, nu])
+
+#     # Print the optimised parameters
+#     print("Student's t-distribution parameters:")
+#     print(
+#         f"Mean: {popt_t[0]}, Standard deviation: {popt_t[1]}, Degrees of freedom: {popt_t[2]}"
+#     )
+
+#     # Fit the Laplace distribution
+#     popt_laplace, _ = curve_fit(laplace_distribution, bin_centers, hist, p0=[mu, sigma])
+
+#     # Print the optimised parameters
+#     print("Laplace distribution parameters:")
+#     print(f"Mean: {popt_laplace[0]}, Scale: {popt_laplace[1]}")
+
+#     # If true, give a density plots where the total area under the histogram equals 1.
+#     density: bool = True
+
+#     x_min, x_max = -100, 100
+#     x = np.linspace(x_min, x_max, 1000)
+
+#     fig, axes = plt.subplots(1, 2)
+
+#     ax = axes[0]
+#     ax.hist(data, bins=n_bins, density=density, alpha=0.6, label="error data")
+
+#     if density:
+#         ax.plot(x, t_distribution(x, *popt_t), label="Student's t", lw=2)
+#         ax.plot(x, laplace_distribution(x, *popt_laplace), label="Laplace", lw=2)
+#     #         ax.plot(x, normal_distribution(x, *popt_norm), label="Normal distribution", lw=2)
+#     else:
+#         # Plot the fitted distributions scaled by the number of data points and bin width
+#         ax.plot(
+#             x,
+#             t_distribution(x, *popt_t) * len(data) * bin_width,
+#             label="Student's t-distribution",
+#             lw=2,
+#         )
+#         ax.plot(
+#             x,
+#             laplace_distribution(x, *popt_laplace) * len(data) * bin_width,
+#             label="Laplace distribution",
+#             lw=2,
+#         )
+#     #         ax.plot(x, normal_distribution(x, *popt_norm) * len(data) * bin_width, label="Normal distrubution", lw=2)
+
+#     ax.legend()
+#     ax.set_title("frequency distribution")
+#     ax.grid("on", linestyle="--", alpha=0.33)
+#     ax.set_xlim(x_min, x_max)
+#     ylims = ax.get_ylim()
+#     ax.vlines(
+#         0.0,
+#         ylims[0],
+#         ylims[-1],
+#         color="k",
+#         linestyle="--",
+#         linewidth=0.5,
+#     )
+
+#     # Plot the CDFs to read off probabilities of extreme values
+#     ax = axes[1]
+
+#     # Student's t-distribution CDF
+#     t_cdf_values = stats.t.cdf(x, df=popt_t[2], loc=popt_t[0], scale=popt_t[1])
+
+#     # Laplace distribution CDF
+#     laplace_cdf_values = stats.laplace.cdf(
+#         x, loc=popt_laplace[0], scale=popt_laplace[1]
+#     )
+#     normal_cdf_values = stats.norm.cdf(x, loc=popt_norm[0], scale=popt_norm[1])
+
+#     ax.plot(x, t_cdf_values, label="Student's t CDF", lw=2, c="tab:orange")
+#     ax.plot(x, laplace_cdf_values, label="Laplace CDF", lw=2, c="tab:green")
+
+#     #     ax.set_xlabel("")
+#     fig.supxlabel(x_label)
+#     ax.set_title("cumulative probability")
+#     ax.legend()
+#     ax.grid("on", linestyle="--", alpha=0.33)
+#     ax.set_xlim(x_min, x_max)
+
+#     #     save_figure(fig, "./charts", "ci_forecast_distribution_{x_label}.png")
+
+
+# def get_extreme_probabilities():
+#     prob_t_list = []
+#     prob_laplace_list = []
+
+#     # Step 3: Modify the loop to append the values to the lists
+#     for extval in extreme_values:
+#         prob_t = prob_extreme_t(extval, popt_t)
+#         prob_laplace = prob_extreme_laplace(extval, popt_laplace)
+#         prob_t_list.append(sum(prob_t))
+#         prob_laplace_list.append(sum(prob_laplace))
+#         print(
+#             f"Total probability of extreme value {extval} (Student's t-distribution): {sum(prob_t)}"
+#         )
+#         print(
+#             f"Total probability of extreme value {extval} (Laplace distribution): {sum(prob_laplace)}"
+#         )
+
+#     # Step 4: Create the DataFrame from the lists
+#     data = {
+#         "Extreme Value": extreme_values,
+#         "Student's t-distribution Probability": prob_t_list,
+#         "Laplace Distribution Probability": prob_laplace_list,
+#     }
+
+#     df_probs = pd.DataFrame(data)
+#     print("")
+#     print(df_probs.to_markdown())
+#     return df_probs
+
+
+def _get_colour_iter():
+    return iter(("tab:orange", "tab:green", "tab:purple"))
+
+
+def generate_distribution_plots(
+    data,
+    x_label: str,
+    hist_label: str,
+    n_bins: int = 100,
+    density: bool = True,
+    x_min: int = -100,
+    x_max: int = 100,
+    lookup_extreme_values: list = [],
+):
+    """ """
+
+    plt.rcParams["figure.figsize"] = [12, 6]
+    plt.rcParams["figure.dpi"] = DPI
+
+    x, distn_results, cdf_results, df_extreme_prob = distribution_parameters(
+        data,
+        n_bins,
+        density,
+        lookup_extreme_values,
+    )
+
+    fig, axes = plt.subplots(1, 2)
+    ax = axes[0]
+    ax.hist(data, bins=n_bins, density=density, alpha=0.6, label=hist_label)
+
+    colours = _get_colour_iter()
+    for k, v in distn_results.items():
+        ax.plot(x, v, label=k, lw=2, c=next(colours))
+
+    ax.legend()
+    ax.set_title("frequency distribution")
+    ax.grid("on", linestyle="--", alpha=0.33)
+    ax.set_xlim(x_min, x_max)
+    ylims = ax.get_ylim()
+    ax.vlines(
+        0.0,
+        ylims[0],
+        ylims[-1],
+        color="k",
+        linestyle="--",
+        linewidth=0.5,
+    )
+
+    # Plot the CDFs to read off probabilities of extreme values
+    ax = axes[1]
+
+    # reset iter
+    colours = _get_colour_iter()
+    for k, v in cdf_results.items():
+        ax.plot(x, v, label=k + " CDF", lw=2, c=next(colours))
+
+    ax.set_title("cumulative probability")
+    ax.legend()
+    ax.grid("on", linestyle="--", alpha=0.33)
+    ax.set_xlim(x_min, x_max)
+    fig.supxlabel(x_label)
+
+    return fig, df_extreme_prob
 
 
 def create_graph_images(
