@@ -514,7 +514,10 @@ def generate_boxplot_ci_error_for_days(
     result = _aggregate_per(df_pc_err, "date")
 
     fig, ax = plt.subplots(1, 1)
-    _ = result.T.boxplot(sym="r.")
+    _ = result.T.boxplot(
+        sym="r.",
+        rot=90,
+    )
     ax.set_title(f"Percentage forecast error, all time windows, past {days+1} days")
     ax.set_ylabel("forecast % error")
     ax.grid("on", linestyle="--", alpha=0.33)
@@ -807,6 +810,13 @@ def create_graph_images(
 
     fig = generate_boxplot_ci_error(df, dates=dates)
     save_figure(fig, output_directory, filter + "_ci_error_boxplot.png")
+
+    # Boxplots summarising days at a time
+    # dates = get_dates(
+    #     summaries_merged_df,
+    #     num_hours=24 * days,
+    #     start_date=start_date,
+    # )
 
     fig = generate_boxplot_ci_error_for_days(summaries_merged_df, days)
     save_figure(fig, output_directory, filter + "_ci_error_boxplot_days.png")
