@@ -10,7 +10,7 @@ The forecasts are updated every half hour, but the API does not keep historical 
 
 ![Published CI values](./charts/national_ci_lines.png)
 
-The above figure shows the evolution of 24 hours' worth of time windows' national forecasts. The more recent time windows are darker blue. Each window is forecasted about 96 times in the preceeding 48 hours (left of the dashed line, from the `fw48h` endpoint). Right of the dashed line are a further 48 post-hoc "forecasts" and "actual" values (`pt24h` endpoint).
+The above figure shows the evolution of 24 hours' worth of time windows' national forecasts. The more recent time windows are darker blue. Each window is forecasted about 96 times in the preceeding 48 hours, from the `fw48h` endpoint (left of the dashed line). A further 48 post-hoc "forecasts" and "actual" values, from the `pt24h` endpoint, are also shown (right of the dashed line).
 
 ## Basic idea
 
@@ -18,7 +18,7 @@ The above figure shows the evolution of 24 hours' worth of time windows' nationa
 - Scraping occurs twice per hour on a [cron schedule](https://github.com/nmpowell/carbon-intensity-forecast-tracking/blob/main/.github/workflows/scrape_data.yaml) ([docs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)).
 - Download JSON data from the [various endpoints](https://carbon-intensity.github.io/api-definitions/#intensity), and save to `data/`.
 - Once per day, data is converted to CSV, and parsed into a Pandas dataframe for summarising, plotting and analysis. The plots on this page are updated daily.
-- With summary statistics and plots, we can attempt to estimate the accuracy of the forecasts, and predict the likelihood of errors.
+- With summary statistics and plots, we can attempt to estimate the accuracy and reliability of the forecasts, and predict the likelihood of errors.
 
 ### Notebooks
 
@@ -34,9 +34,24 @@ Kate Rose Morley [created the canonincal great design](https://grid.iamkate.com/
 
 The API site shows [a graph](https://carbonintensity.org.uk/#graphs) of the forecast and "actual" values. You can create plots of a custom time range using [NGESO datasets](https://data.nationalgrideso.com/data-groups/carbon-intensity1): go to Regional/National "Carbon Intensity Forecast", click "Explore", choose "Chart", deselect "datetime" and add the regions. The "National" dataset includes the "actual" CI. But these are the final/latest values. This project aims to track the accuracy of the forecasts as they are published.
 
+## Data and APIs
+
+### National
+
+1. For each actual 30-minute period defined by its "from" datetime, capture published forecasts for that period.
+2. Forecasts are published up to 48 hours ahead, so we should expect about 96 future forecasts for one real period, and 48 more from the "past" 24 hours.
+3. Also capture "actual" values by choosing the latest available "actual" value (national data only) up to 24 hours after the window has passed.
+- We can do this for each of the published regions and the National data.
+
+### Regional
+
+To do!
+
+- For the regional data, absent "actual" values we should choose the final available forecast 24h after the window has passed (usually, this does not change).
+
 ## Forecast Accuracy
 
-- For the complete history, see [./charts/stats_history_national.csv](./charts/stats_history_national.csv).
+For the complete history since the start of this project, see [./charts/stats_history_national.csv](./charts/stats_history_national.csv).
 
 ### 7-day summary
 
@@ -72,13 +87,7 @@ These are daily summaries of forecast error from all 48 half-hour windows on eac
 
 ![Published CI values](./charts/national_ci_boxplot.png)
 
-The above boxplot shows the range of all published forecast values for each 30-minute time window.
-
-- For each actual 30-minute period defined by its "from" datetime, capture published forecasts for that period.
-- Forecasts are published up to 48 hours ahead, so we should expect about 96 future forecasts for one real period, and 48 more from the "past" 24 hours.
-- Also capture "actual" values by choosing the latest available "actual" value (national data only) up to 24 hours after the window has passed.
-- For the regional data, absent "actual" values we choose the final available forecast 24h after the window has passed (usually, this does not change).
-- We can do this for each of the published regions and the National data.
+The above boxplot shows the range of all published forecast values for each 30-minute time window, defined by its "from" datetime in the API.
 
 ![Published CI values](./charts/national_ci_error_boxplot.png)
 
@@ -94,7 +103,7 @@ The above plot shows forecast percentage error (compared with "actual" values, i
 
 To measure regional forecast accuracy it would be preferable to have a retrospective `actual` CI value for each region, but the API only provides this [at the national level](https://api.carbonintensity.org.uk/intensity).
 
-From tracking the [pt24h](https://carbon-intensity.github.io/api-definitions/#get-intensity-from-pt24h) data, these "actual" values, as well as forecasts, are sometimes adjusted post-hoc, i.e. several hours after the relevant time window has passed. This is because some renewable generation data becomes available after the fact, and NGESO update their numbers. We could continue monitoring this, but we have to stop sometime. For the purposes of this project, to give an anchor against which we can measure forecast accuracy, I choose the "actual" and "final forecast" values as the latest ones accessible up to 24 hours after the start of the time window.
+From tracking the [pt24h](https://carbon-intensity.github.io/api-definitions/#get-intensity-from-pt24h) data, these "actual" values are sometimes adjusted post-hoc, i.e. several hours after the relevant time window has passed. This is because some renewable generation data becomes available after the fact, and NGESO update their numbers. We could continue monitoring this, but we have to stop sometime. For the purposes of this project, to give an anchor against which to measure forecast accuracy, I choose the "actual" and "final forecast" values as the latest ones accessible up to 24 hours after the start of the time window, from the `pt24h` endpoint.
 
 ## Data notes
 
@@ -116,7 +125,7 @@ The carbon intensity of electricity is a measure of the $CO_2$ emissions produce
 
 ## Usage
 
-Requires Python 3.10+.
+Expects Python 3.10+.
 
 ### Install
 
@@ -168,19 +177,19 @@ To copy the scraping functionality of this repo, enable GitHub Actions within yo
 
 Run `make test` or `pytest -v tests`
 
+(To do.)
+
 ---
 
 ## TODOs & future work
 
-- [ ] plots are broken - or, missing data
+- [ ] delete old CSVs once their data is definitely incorporated into summaries.
 - [ ] summary files are too big and impractical
 - [ ] separate scrape and wrangle steps (again)
 - [ ] add plot with CI index colours
 - [ ] add updating chart showing calculation of error probabilities
 - [ ] concat forecasting CSVs into daily files
-- [x] combine get_dates and get_dates_days fns.
 - [ ] dates in plots are 1h off due to timezoning
-- [x] figure out mean absolute error, CI and stdev
 - [ ] factor out scipy entirely; use numpy
 - [ ] summaries up to 10 days to make the files smaller (regional)
 - [ ] split summaries into smaller files, or only generate for a small date range, or on the fly.
