@@ -4,7 +4,7 @@ Tracking differences between the [UK National Grid's Carbon Intensity forecast](
 
 ## What is this?
 
-The UK's National Grid Electricity System Operator (NGESO) publishes [an API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) showing half-hourly carbon intensity (gCO2/kWh), together with a 48-hour forecast. The national data is based upon real and estimated metered generation statistics and values representing the relative carbon intensity of different energy sources. Regional data is based upon forecasted generation, consumption, and a model describing inter-region interaction.
+The UK's National Grid Electricity System Operator (NGESO) publishes [an API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) showing half-hourly carbon intensity ($gCO_2/kWh$), together with a 48-hour forecast. The national data is based upon real and estimated metered generation statistics and values representing the relative carbon intensity of different energy sources. Regional data is based upon forecasted generation, consumption, and a model describing inter-region interaction.
 
 The forecasts are updated every half hour, but the API does not keep historical forecasts; they're unavailable or overwritten. How reliable are they?
 
@@ -98,7 +98,7 @@ From tracking the [pt24h](https://carbon-intensity.github.io/api-definitions/#ge
 
 ## Data notes
 
-The carbon intensity of electricity is a measure of the CO2 emissions produced per kilowatt hour of electricity consumed. Units, including forecast values, are usually gCO2/kWh.
+The carbon intensity of electricity is a measure of the $CO_2$ emissions produced per kilowatt hour of electricity consumed. Units, including forecast values, are usually gCO2/kWh.
 
 - The JSON format isn't great for parsing and plotting, and the files are huge. So here they're wrangled (`wrangle.py`) to CSV.
 

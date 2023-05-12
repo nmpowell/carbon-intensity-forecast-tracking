@@ -1,7 +1,21 @@
+import os
+
 import numpy as np
 import pandas as pd
 from scipy import stats
 from scipy.optimize import curve_fit
+
+INDEX_BANDS_PATH = "../data/artifacts/ci_index_numerical_bands.csv"
+INDEX_BANDS_ERROR_SCALES_PATH = (
+    "../data/artifacts/ci_index_numerical_band_error_scales.csv"
+)
+
+
+# This .csv is created in the Investigations Notebook.
+def problem_magnitudes(year: int = 2023, column_name: str = "difference"):
+    path = os.path.join(os.path.dirname(__file__), INDEX_BANDS_ERROR_SCALES_PATH)
+    df = pd.read_csv(path, index_col=0, header=[0, 1])
+    return df.loc[year, pd.IndexSlice[:, [column_name]]].values.tolist()
 
 
 def cleanup(df: pd.DataFrame, column_name: str, max_cutoff: int = 200) -> np.array:
@@ -62,6 +76,7 @@ def distribution_parameters(
             "cdf_fn": stats.norm.cdf,
             "cdf_params": ["loc", "scale"],
             "curve_params": [mu, sigma],
+            "ppf_fn": stats.norm.ppf,
         },
         "Student's t": {
             "distn_fn": t_distribution,
@@ -69,6 +84,7 @@ def distribution_parameters(
             "cdf_fn": stats.t.cdf,
             "cdf_params": ["loc", "scale", "df"],
             "curve_params": [mu, sigma, nu],
+            "ppf_fn": stats.t.ppf,
         },
         "Laplace": {
             "distn_fn": laplace_distribution,
@@ -76,10 +92,11 @@ def distribution_parameters(
             "cdf_fn": stats.laplace.cdf,
             "cdf_params": ["loc", "scale"],
             "curve_params": [mu, sigma],
+            "ppf_fn": stats.laplace.ppf,
         },
     }
 
-    distn_results, cdf_results, extreme_data = {}, {}, {}
+    distn_results, cdf_results, ppf_results, extreme_data = {}, {}, {}, {}
     extreme_data["values"] = lookup_values
 
     for name, data in distribution_data.items():
@@ -97,6 +114,7 @@ def distribution_parameters(
         )
         params = dict(zip(data.get("cdf_params"), popt))
         cdf_results[name] = data.get("cdf_fn")(x_bin_centres, **params)
+        ppf_results[name] = data.get("ppf_fn")([0.025, 0.975], **params)
 
         # Get the total probability of specific extreme values (positive and negative)
         total_extreme_probs = []
@@ -112,7 +130,12 @@ def distribution_parameters(
             )
         extreme_data[name + " probability"] = total_extreme_probs
 
-    return x_bin_centres, distn_results, cdf_results, pd.DataFrame(extreme_data)
+    return (
+        x_bin_centres,
+        distn_results,
+        cdf_results,
+        pd.DataFrame(extreme_data),
+    )
 
 
 def prob_extreme_t(extreme_value, popt_t):
