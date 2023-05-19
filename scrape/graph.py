@@ -2,6 +2,7 @@
 
 import logging
 import os
+from collections import defaultdict
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
@@ -772,145 +773,73 @@ def update_stats_history(
     log.info("Saved stats history to: {}".format(filepath))
 
 
-# def plot_distributions(
-#     data: np.array,
-#     n_bins: int,
-#     x_label: str,
-#     density: bool = True,
-#     extreme_values: list = [],
-# ) -> None:
-#     """Generate plots of the frequency and cumulative probability, with fitted distributions.
+def generate_ci_error_relationship(
+    df: pd.DataFrame,
+):
+    """Generate a scatter plot of CI error versus actual recorded intensity.
 
-#     Student's t distribution closely approximates the Normal with this many degrees of freedom.
-#     """
-#     # Mean, standard deviation, degrees of freedom
-#     mu = np.mean(data)
-#     sigma = np.std(data)
-#     nu = len(data) - 1
+    Includes all data.
 
-#     hist, bin_edges, bin_centers, bin_width = histogram(data, n_bins, density)
+    Returns the figure and Pearson's r."""
 
-#     # Fit the normal distribution
-#     popt_norm, _ = curve_fit(normal_distribution, bin_centers, hist, p0=[mu, sigma])
+    plt.rcParams["figure.figsize"] = [12, 6]
+    plt.rcParams["figure.dpi"] = DPI
 
-#     # Print the optimised parameters
-#     print("Normal distribution parameters:")
-#     print(f"Mean: {popt_norm[0]}, Standard deviation: {popt_norm[1]}")
+    df_err, _ = _error_and_percentage_error(df)
 
-#     # Fit Student's t-distribution
-#     popt_t, _ = curve_fit(t_distribution, bin_centers, hist, p0=[mu, sigma, nu])
+    # only pre-timepoint forecasts
+    df_err = df_err[[c for c in df_err.columns if float(c) >= 0.0]]
 
-#     # Print the optimised parameters
-#     print("Student's t-distribution parameters:")
-#     print(
-#         f"Mean: {popt_t[0]}, Standard deviation: {popt_t[1]}, Degrees of freedom: {popt_t[2]}"
-#     )
+    # Need to re-add the actual intensity column
+    x_col_name = "intensity.actual.final"
 
-#     # Fit the Laplace distribution
-#     popt_laplace, _ = curve_fit(laplace_distribution, bin_centers, hist, p0=[mu, sigma])
+    df_actual = df[[x_col_name]]
+    cols = df_actual.columns
+    df_actual.columns = cols.droplevel(1)
+    data = pd.concat([df_actual, df_err], axis=1)
 
-#     # Print the optimised parameters
-#     print("Laplace distribution parameters:")
-#     print(f"Mean: {popt_laplace[0]}, Scale: {popt_laplace[1]}")
+    marker_properties_raw_data = {
+        "color": "tab:blue",
+        "marker": "o",
+        "s": 0.5,  # size
+    }
 
-#     # If true, give a density plots where the total area under the histogram equals 1.
-#     density: bool = True
+    # Set up means
+    data_dict = defaultdict(list)
 
-#     x_min, x_max = -100, 100
-#     x = np.linspace(x_min, x_max, 1000)
+    # Gather all the data from the other columns for each key
+    for ix, row in data.iterrows():
+        key = row[x_col_name]
+        data_dict[key].append(row[1:].mean())
 
-#     fig, axes = plt.subplots(1, 2)
+    # Calculate the overall mean for each key
+    mean_dict = {key: np.mean(values) for key, values in data_dict.items()}
 
-#     ax = axes[0]
-#     ax.hist(data, bins=n_bins, density=density, alpha=0.6, label="error data")
+    # Plot both raw data and means
 
-#     if density:
-#         ax.plot(x, t_distribution(x, *popt_t), label="Student's t", lw=2)
-#         ax.plot(x, laplace_distribution(x, *popt_laplace), label="Laplace", lw=2)
-#     #         ax.plot(x, normal_distribution(x, *popt_norm), label="Normal distribution", lw=2)
-#     else:
-#         # Plot the fitted distributions scaled by the number of data points and bin width
-#         ax.plot(
-#             x,
-#             t_distribution(x, *popt_t) * len(data) * bin_width,
-#             label="Student's t-distribution",
-#             lw=2,
-#         )
-#         ax.plot(
-#             x,
-#             laplace_distribution(x, *popt_laplace) * len(data) * bin_width,
-#             label="Laplace distribution",
-#             lw=2,
-#         )
-#     #         ax.plot(x, normal_distribution(x, *popt_norm) * len(data) * bin_width, label="Normal distrubution", lw=2)
+    fig, ax = plt.subplots()
+    for column in data.columns[1:]:
+        ax.scatter(data[x_col_name], data[column], **marker_properties_raw_data)
 
-#     ax.legend()
-#     ax.set_title("frequency distribution")
-#     ax.grid("on", linestyle="--", alpha=0.33)
-#     ax.set_xlim(x_min, x_max)
-#     ylims = ax.get_ylim()
-#     ax.vlines(
-#         0.0,
-#         ylims[0],
-#         ylims[-1],
-#         color="k",
-#         linestyle="--",
-#         linewidth=0.5,
-#     )
+    ax.scatter(
+        list(mean_dict.keys()), list(mean_dict.values()), color="tab:red", label="mean"
+    )
 
-#     # Plot the CDFs to read off probabilities of extreme values
-#     ax = axes[1]
+    ax.hlines(
+        0.0,
+        ax.get_xlim()[0],
+        ax.get_xlim()[-1],
+        color="k",
+        linestyle="--",
+        linewidth=0.5,
+    )
+    ax.set_title("Forecast error compared with the final actual intensity")
+    ax.legend()
+    ax.set_xlabel("final actual intensity")
+    ax.set_ylabel("forecast errors")
 
-#     # Student's t-distribution CDF
-#     t_cdf_values = stats.t.cdf(x, df=popt_t[2], loc=popt_t[0], scale=popt_t[1])
-
-#     # Laplace distribution CDF
-#     laplace_cdf_values = stats.laplace.cdf(
-#         x, loc=popt_laplace[0], scale=popt_laplace[1]
-#     )
-#     normal_cdf_values = stats.norm.cdf(x, loc=popt_norm[0], scale=popt_norm[1])
-
-#     ax.plot(x, t_cdf_values, label="Student's t CDF", lw=2, c="tab:orange")
-#     ax.plot(x, laplace_cdf_values, label="Laplace CDF", lw=2, c="tab:green")
-
-#     #     ax.set_xlabel("")
-#     fig.supxlabel(x_label)
-#     ax.set_title("cumulative probability")
-#     ax.legend()
-#     ax.grid("on", linestyle="--", alpha=0.33)
-#     ax.set_xlim(x_min, x_max)
-
-#     #     save_figure(fig, "./charts", "ci_forecast_distribution_{x_label}.png")
-
-
-# def get_extreme_probabilities():
-#     prob_t_list = []
-#     prob_laplace_list = []
-
-#     # Step 3: Modify the loop to append the values to the lists
-#     for extval in extreme_values:
-#         prob_t = prob_extreme_t(extval, popt_t)
-#         prob_laplace = prob_extreme_laplace(extval, popt_laplace)
-#         prob_t_list.append(sum(prob_t))
-#         prob_laplace_list.append(sum(prob_laplace))
-#         print(
-#             f"Total probability of extreme value {extval} (Student's t-distribution): {sum(prob_t)}"
-#         )
-#         print(
-#             f"Total probability of extreme value {extval} (Laplace distribution): {sum(prob_laplace)}"
-#         )
-
-#     # Step 4: Create the DataFrame from the lists
-#     data = {
-#         "Extreme Value": extreme_values,
-#         "Student's t-distribution Probability": prob_t_list,
-#         "Laplace Distribution Probability": prob_laplace_list,
-#     }
-
-#     df_probs = pd.DataFrame(data)
-#     print("")
-#     print(df_probs.to_markdown())
-#     return df_probs
+    pearson_r = data[x_col_name].corr(data[column])
+    return fig, pearson_r
 
 
 def _get_colour_iter():
@@ -1030,6 +959,9 @@ def create_graph_images(
 
     fig = generate_boxplot_ci_error_per_hour(summaries_merged_df, days)
     save_figure(fig, output_directory, filter + "_ci_error_boxplot_per_hour.png")
+
+    fig, pearson_r = generate_ci_error_relationship(summaries_merged_df)
+    save_figure(fig, output_directory, filter + "_ci_vs_error_scatter_relationship.png")
 
     # fig = generate_text_boxes(summaries_merged_df, hours_of_data)
     # save_figure(fig, output_directory, "text_boxes.png")
