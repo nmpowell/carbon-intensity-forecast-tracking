@@ -941,7 +941,7 @@ def create_graph_images(
     fig = generate_plot_ci_lines(df, dates=dates)
     save_figure(fig, output_directory, filter + "_ci_lines.png")
 
-    fig = generate_boxplot_ci(df, dates=dates)
+    fig = generate_boxplot_ci(df, dates=dates, colourmap=True)
     save_figure(fig, output_directory, filter + "_ci_boxplot.png")
 
     fig = generate_boxplot_ci_error(df, dates=dates)
