@@ -416,7 +416,7 @@ def generate_boxplot_ci(
         df["intensity.actual.final"].loc[dates],
         "tab:orange",
         linestyle="-",
-        linewidth=0.5,
+        linewidth=1.0,
         label="actual",
     )
 
