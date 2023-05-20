@@ -8,11 +8,6 @@ from scrape.api import DATETIME_FMT_STR
 from scrape.api import EARLIEST_DATE_STR
 from scrape.api import TEMPLATE_URLS
 
-# from scrape.download import run_download
-# from scrape.graph import create_graph_images
-# from scrape.summary import run_summary
-# from scrape.wrangle import run_wrangle
-
 log = logging.getLogger(__name__)
 
 

@@ -4,7 +4,7 @@ Tracking differences between the [UK National Grid's Carbon Intensity forecast](
 
 ## What is this?
 
-The carbon intensity of electricity is a measure of the $CO_2$ emissions produced per kilowatt hour of electricity consumed. Units are usually $grams of CO_2 per kWh$.
+The carbon intensity of electricity is a measure of the $CO_2$ emissions produced per kilowatt hour of electricity consumed. Units are usually grams of $CO_2$ per kilowatt-hour (kWh).
 
 The UK's National Grid Electricity System Operator (NGESO) publishes [an API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) showing half-hourly carbon intensity (CI), together with a 48-hour forecast. Its national data is based upon recorded and estimated generation statistics and values representing the relative CI of different energy sources. Regional data is based upon forecasted generation, consumption, and a model describing inter-region interaction.
 
@@ -36,7 +36,9 @@ Kate Rose Morley created the [canonincal great design](https://grid.iamkate.com/
 
 The API site shows [a graph](https://carbonintensity.org.uk/#graphs) of the forecast and "actual" values. You can create plots of a custom time range using [NGESO datasets](https://data.nationalgrideso.com/data-groups/carbon-intensity1): go to Regional/National "Carbon Intensity Forecast", click "Explore", choose "Chart", deselect "datetime" and add the regions. The "National" dataset includes the "actual" CI. But these are the final/latest values, and as far as I know they're not statistically compared. This project aims to track the accuracy of the forecasts _as they are published_.
 
-## APIs
+## APIs and Data
+
+- The JSON format isn't great for parsing and plotting, and the files are huge. So here they're wrangled (`wrangle.py`) to CSV.
 
 ### National
 
@@ -53,20 +55,12 @@ To do!
 - There are [17 DNO regions including national](https://carbon-intensity.github.io/api-definitions/#region-list). In the 48 hour forecasts, there's an 18th region which is "GB", which may approximate the "national" forecast but doesn't match it exactly. (Unclear what this is.)
 - The earliest regional forecast data is from [May 2018](https://api.carbonintensity.org.uk/regional/intensity/2018-05-10T23:30Z/fw48h).
 
-## Data and APIs
+### Dates and times
 
-### National
-
-1. For each actual 30-minute period defined by its "from" datetime, capture published forecasts for that period.
-2. Forecasts are published up to 48 hours ahead, so we should expect about 96 future forecasts for one real period, and 48 more from the "past" 24 hours.
-3. Also capture "actual" values by choosing the latest available "actual" value (national data only) up to 24 hours after the window has passed.
-- We can do this for each of the published regions and the National data.
-
-### Regional
-
-To do!
-
-- For the regional data, absent "actual" values we should choose the final available forecast 24h after the window has passed (usually, this does not change).
+- All times are UTC. Seconds are ignored.
+- Throughout, I represent the 30-minute time window defined by a "from" and "to" timestamp in the API using just the "from" datetime. Thus a forecasted datetime given here represents a 30-minute window beginning at that time.
+- If we query the 48h forecast API at a given time e.g. 18:45, the earliest time window (the 0th entry in the data) begins at the current time rounded down to the nearest half hour, i.e. the "from" timepoint 0 will be 18:30 and represents the window covering the time requested. A wrinkle is that if you request 18:30, you'll get the window beginning 18:00, i.e. `(2023-03-10T18:00Z, 2023-03-10T18:30Z]`, so the code here always requests +1 minute from the rounded-down half-hour.
+- Dates don't seem to wrap around years, [31st December - 1st Jan](https://api.carbonintensity.org.uk/regional/intensity/2022-12-31T21:31Z/fw48h).
 
 ## Forecast Accuracy
 
@@ -123,17 +117,6 @@ To measure regional forecast accuracy it would be preferable to have a retrospec
 
 From tracking the [pt24h](https://carbon-intensity.github.io/api-definitions/#get-intensity-from-pt24h) data, these "actual" values are sometimes adjusted post-hoc, i.e. several hours after the relevant time window has passed. This is because some renewable generation data becomes available after the fact, and NGESO update their numbers. We could continue monitoring this, but we have to stop sometime. For the purposes of this project, to give an anchor against which to measure forecast accuracy, I choose the "actual" and "final forecast" values as the latest ones accessible up to 24 hours after the start of the time window, from the `pt24h` endpoint.
 
-## Data notes
-
-- The JSON format isn't great for parsing and plotting, and the files are huge. So here they're wrangled (`wrangle.py`) to CSV.
-
-### Dates and times
-
-- All times are UTC. Seconds are ignored.
-- Throughout, I represent the 30-minute time window defined by a "from" and "to" timestamp in the API using just the "from" datetime. Thus a forecasted datetime given here represents a 30-minute window beginning at that time.
-- If we query the 48h forecast API at a given time e.g. 18:45, the earliest time window (the 0th entry in the data) begins at the current time rounded down to the nearest half hour, i.e. the "from" timepoint 0 will be 18:30 and represents the window covering the time requested. A wrinkle is that if you request 18:30, you'll get the window beginning 18:00, i.e. `(2023-03-10T18:00Z, 2023-03-10T18:30Z]`, so the code here always requests +1 minute from the rounded-down half-hour.
-- Dates don't seem to wrap around years, [31st December - 1st Jan](https://api.carbonintensity.org.uk/regional/intensity/2022-12-31T21:31Z/fw48h).
-
 ## Usage
 
 Expects Python 3.10+.
@@ -161,17 +144,13 @@ Expects Python 3.10+.
 
 ### Run
 
-There are examples of downloading and parsing data in the `.github/workflows/scrape_data.yaml` and `.github/workflows/wrangle.yaml` files. For more details, see the [./notebook.ipynb](./notebook.ipynb).
+There are examples of downloading and parsing data in the `.github/workflows/scrape_data.yaml` and `.github/workflows/wrangle.yaml` files. For more details, see [./notebook.ipynb](./notebook.ipynb).
 
 1. Activate the venv: `source venv/bin/activate`
 2. Download JSON files. Examples:
     ``` sh
-    # 48-hour forward forecast from the current window, default (regional) endpoint
-    python3 run.py download --output_dir "data" --now --endpoint regional_fw48h
-    # Same, for national data
+    # 48-hour forward forecast from the current window, national data
     python3 run.py download --output_dir "data" --now --endpoint national_fw48h
-    # 24-hour past "forecasts" from the current window
-    python3 run.py download --output_dir "data" --now --endpoint regional_pt24h
     # national intensity for a given time
     python3 run.py download --start_date "2023-03-13T12:01Z" -n 1 --endpoint national --unique_names
     # individual regions

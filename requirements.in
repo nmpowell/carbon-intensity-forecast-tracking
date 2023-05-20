@@ -1,4 +1,7 @@
--r requirements-minimal.txt
+# These are the minimal requirements for downloading data
+python-dateutil
+python-json-logger
+requests
 
 # Application
 matplotlib
