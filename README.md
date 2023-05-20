@@ -74,27 +74,27 @@ These are daily summaries of forecast error from all 48 half-hour windows on eac
 
 |            |   count |   mean |   sem | 95% confidence interval   |
 |:-----------|--------:|-------:|------:|:--------------------------|
-| 2023-05-12 |    3730 |  17.3  |  0.24 | (16.83, 17.76)            |
+| 2023-05-12 |    1374 |  16.72 |  0.37 | (15.99, 17.45)            |
 | 2023-05-13 |    4197 |  17.18 |  0.18 | (16.83, 17.54)            |
 | 2023-05-14 |    4224 |  15.85 |  0.2  | (15.45, 16.24)            |
 | 2023-05-15 |    4202 |  17.66 |  0.17 | (17.33, 17.99)            |
 | 2023-05-16 |    4170 |  15.84 |  0.18 | (15.49, 16.18)            |
 | 2023-05-17 |    4150 |  15.3  |  0.2  | (14.92, 15.69)            |
 | 2023-05-18 |    4182 |  15.99 |  0.25 | (15.5, 16.47)             |
-| 2023-05-19 |     264 |  23.63 |  0.69 | (22.26, 24.99)            |
+| 2023-05-19 |    2816 |  17.8  |  0.25 | (17.31, 18.29)            |
 
 #### Absolute percentage error
 
 |            |   mean |   sem | 95% confidence interval   |
 |:-----------|-------:|------:|:--------------------------|
-| 2023-05-12 |  12.62 |  0.19 | (12.24, 13.0)             |
+| 2023-05-12 |  12.59 |  0.32 | (11.96, 13.22)            |
 | 2023-05-13 |  12.85 |  0.16 | (12.54, 13.17)            |
 | 2023-05-14 |  10.51 |  0.15 | (10.23, 10.8)             |
 | 2023-05-15 |  13.91 |  0.13 | (13.65, 14.17)            |
 | 2023-05-16 |  10.79 |  0.12 | (10.56, 11.02)            |
 | 2023-05-17 |   7.65 |  0.1  | (7.47, 7.84)              |
 | 2023-05-18 |   8.95 |  0.14 | (8.66, 9.23)              |
-| 2023-05-19 |  11.82 |  0.34 | (11.14, 12.49)            |
+| 2023-05-19 |   9.33 |  0.13 | (9.08, 9.59)              |
 
 ### 24 hours
 
@@ -147,21 +147,15 @@ Expects Python 3.10+.
 There are examples of downloading and parsing data in the `.github/workflows/scrape_data.yaml` and `.github/workflows/wrangle.yaml` files. For more details, see [./notebook.ipynb](./notebook.ipynb).
 
 1. Activate the venv: `source venv/bin/activate`
-2. Download JSON files. Examples:
+2. Download JSON files. Example:
     ``` sh
     # 48-hour forward forecast from the current window, national data
     python3 run.py download --output_dir "data" --now --endpoint national_fw48h
-    # national intensity for a given time
-    python3 run.py download --start_date "2023-03-13T12:01Z" -n 1 --endpoint national --unique_names
-    # individual regions
-    python3 run.py download_regional -o "data" --start_date "2023-03-13T12:01Z" -n 1 --endpoint one_region_fw48h
-    # You can download data from many timepoints (-n 24 for 12 hours' worth), but this will be the fixed, historical data which is available forever anyway.
-    python3 run.py download --output_dir "temp" --start_date "2023-03-01T12:01Z" -n 24 --endpoint national
     ```
     Output JSON files are named for the `{from}` time given: `data/<endpoint>/<from-datetime>.json`.
 3. Parse the data and produce CSV files: `python3 run.py wrangle --input_directory "data/national_fw48h"`
-4. Summarise the CSVs: `python3 run.py summarise --input_directory "data/national_fw48h"`. Old CSVs are moved to an `_archive` subdirectory.
-5. Generate plots: `python3 run.py plot --input_directory "data/national_fw48h"`
+4. Summarise the CSVs: `python3 run.py summary --input_directory "data/national_fw48h" --output_directory "data" --endpoint "national_fw48h"`. Old CSVs are moved to an `_archive` subdirectory.
+5. Generate plots: `python3 run.py graph --input_directory "data" --output_directory "charts"`
 
 To copy the scraping functionality of this repo, enable GitHub Actions within your repo `Settings > Actions > General > Workflow permissions > Read and write permissions`.
 
