@@ -66,6 +66,16 @@ To do!
 
 For the complete history since the start of this project, see [./charts/stats_history_national.csv](./charts/stats_history_national.csv).
 
+### 24 hours
+
+![Published CI values](./charts/national_ci_boxplot.png)
+
+The above boxplot shows the range of all published forecast values for each 30-minute time window, defined by its "from" datetime in the API.
+
+![Published CI values](./charts/national_ci_error_boxplot.png)
+
+The above plot shows forecast percentage error (compared with "actual" values, i.e. $100\times(forecast-actual)/actual$) for the same times.
+
 ### 7-day summary
 
 These are daily summaries of forecast error from all 48 half-hour windows on each day.
@@ -95,16 +105,6 @@ These are daily summaries of forecast error from all 48 half-hour windows on eac
 | 2023-05-17 |   7.65 |  0.1  | (7.47, 7.84)              |
 | 2023-05-18 |   8.95 |  0.14 | (8.66, 9.23)              |
 | 2023-05-19 |   9.33 |  0.13 | (9.08, 9.59)              |
-
-### 24 hours
-
-![Published CI values](./charts/national_ci_boxplot.png)
-
-The above boxplot shows the range of all published forecast values for each 30-minute time window, defined by its "from" datetime in the API.
-
-![Published CI values](./charts/national_ci_error_boxplot.png)
-
-The above plot shows forecast percentage error (compared with "actual" values, i.e. $100\times(forecast-actual)/actual$) for the same times.
 
 ## Limitations
 
