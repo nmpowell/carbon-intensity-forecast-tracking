@@ -25,7 +25,7 @@ The above figure shows the evolution of 24 hours' worth of time windows' nationa
 ### Notebooks
 
 - To follow plot generation, see [./notebook.ipynb](./notebook.ipynb).
-- An [./investigation.ipynb](./investigation.ipynb) of past data.
+- An [./investigation.ipynb](./investigation.ipynb) of past and present data.
 - To run this yourself, see **Usage** below.
 
 ## Forecast Accuracy - National
@@ -34,13 +34,13 @@ For the complete history since the start of this project, see [./charts/stats_hi
 
 ### 24 hours
 
+This boxplot shows the range of all published forecast values for each 30-minute time window, defined by its "from" datetime in the API.
+
 ![Published CI values](./charts/national_ci_boxplot.png)
 
-The above boxplot shows the range of all published forecast values for each 30-minute time window, defined by its "from" datetime in the API.
+The plot below shows forecast percentage error (compared with "actual" values, i.e. $100\times(forecast-actual)/actual$) for the same times.
 
 ![Published CI values](./charts/national_ci_error_boxplot.png)
-
-The above plot shows forecast percentage error (compared with "actual" values, i.e. $100\times(forecast-actual)/actual$) for the same times.
 
 ### 7-day summary
 
