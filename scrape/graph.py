@@ -452,6 +452,10 @@ def _error_and_percentage_error(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame
     # Percentage error
     df_pc_err = 100.0 * df_err.div(dff["intensity.actual.final"], axis=0)
 
+    # Only pre-timepoint forecasts (exclude post-hoc)
+    df_err = df_err[[c for c in df_err.columns if float(c) >= 0.0]]
+    df_pc_err = df_pc_err[[c for c in df_pc_err.columns if float(c) >= 0.0]]
+
     return df_err, df_pc_err
 
 
@@ -469,9 +473,6 @@ def generate_boxplot_ci_error(
     plt.rcParams["figure.dpi"] = DPI
 
     _, df_pc_err = _error_and_percentage_error(df)
-
-    # only pre-timepoint forecasts
-    df_pc_err = df_pc_err[[c for c in df_pc_err.columns if float(c) >= 0.0]]
 
     # reformat x-axis for display
     df = df_pc_err.loc[dates]
@@ -556,13 +557,10 @@ def generate_boxplot_ci_error_per_hour(
 
     _, df_pc_err = _error_and_percentage_error(df)
 
-    # only pre-timepoint forecasts
-    dfferr = df_pc_err[[c for c in df_pc_err.columns if float(c) >= 0.0]]
-
-    dates = dfferr.index
+    dates = df_pc_err.index
 
     fig, ax = plt.subplots(1, 1)
-    _ = dfferr.boxplot(rot=90, sym="r.")
+    _ = df_pc_err.boxplot(rot=90, sym="r.")
     ax.set_title(f"{_ftime(dates[0])} - {_ftime(dates[-1])} UTC")
     ax.set_ylabel("forecast % error")
     ax.grid("on", linestyle="--", alpha=0.33)
@@ -580,16 +578,6 @@ def generate_boxplot_ci_error_per_hour(
     return fig
 
 
-# def generate_text_boxes(df: pd.DataFrame, hours_of_data: int = 24):
-#     """ """
-#     plt.rcParams["figure.figsize"] = [9, 3]
-#     plt.rcParams["figure.dpi"] = DPI
-
-#     fig, axs = plt.subplots(nrows=1, ncols=3, squeeze=0)
-#     for ax in axs.reshape(-1):
-#         ax.text(2, 6, r'an equation: $E=mc^2$', fontsize=15)
-
-
 def _aggregate_per(df: pd.DataFrame, aggregate_by: str = "date") -> pd.DataFrame:
     """..."""
 
@@ -604,9 +592,6 @@ def _aggregate_per(df: pd.DataFrame, aggregate_by: str = "date") -> pd.DataFrame
             raise ValueError(f"aggregate_by must be one of 'date', 'month', 'year'")
 
     df_err = df.copy()
-
-    # Only pre-timepoint forecasts
-    df_err = df_err[[c for c in df_err.columns if float(c) >= 0.0]]
 
     # Replace all index values by their date (day)
     df_err.index = group_by_dates(df_err, aggregate_by)
@@ -787,9 +772,6 @@ def generate_ci_error_relationship(
 
     df_err, _ = _error_and_percentage_error(df)
 
-    # only pre-timepoint forecasts
-    df_err = df_err[[c for c in df_err.columns if float(c) >= 0.0]]
-
     # Need to re-add the actual intensity column
     x_col_name = "intensity.actual.final"
 
@@ -850,7 +832,7 @@ def generate_distribution_plots(
     data,
     x_label: str,
     hist_label: str,
-    n_bins: int = 100,
+    n_bins: int = None,
     density: bool = True,
     x_min: int = -100,
     x_max: int = 100,
@@ -860,6 +842,14 @@ def generate_distribution_plots(
 
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
+
+    if n_bins is None:
+        # Because the errors are integers, the histogram here can be ugly, with random gaps.
+        # Using this helpful answer to fix that: https://stackoverflow.com/a/30121210/3329384
+        # Where 1 is the smallest difference in the data
+        left_of_first_bin = data.min() - 1./2
+        right_of_last_bin = data.max() + 1./2
+        n_bins = len(np.arange(left_of_first_bin, right_of_last_bin + 1, 1)) - 1
 
     x, distn_results, cdf_results, df_extreme_prob = distribution_parameters(
         data,
@@ -938,6 +928,7 @@ def create_graph_images(
     )
     df = summaries_merged_df.loc[dates].copy()
 
+    # Plots summarising forecasts for individual time windows
     fig = generate_plot_ci_lines(df, dates=dates)
     save_figure(fig, output_directory, filter + "_ci_lines.png")
 
@@ -948,23 +939,14 @@ def create_graph_images(
     save_figure(fig, output_directory, filter + "_ci_error_boxplot.png")
 
     # Boxplots summarising days at a time
-    # dates = get_dates(
-    #     summaries_merged_df,
-    #     num_hours=24 * days,
-    #     start_date=start_date,
-    # )
-
-    fig = generate_boxplot_ci_error_for_days(summaries_merged_df, days)
-    save_figure(fig, output_directory, filter + "_ci_error_boxplot_days.png")
+    fig = generate_boxplot_ci_error_for_days(summaries_merged_df, days=30)
+    save_figure(fig, output_directory, filter + f"_ci_error_boxplot_{days}days.png")
 
     fig = generate_boxplot_ci_error_per_hour(summaries_merged_df, days)
     save_figure(fig, output_directory, filter + "_ci_error_boxplot_per_hour.png")
 
     fig, pearson_r = generate_ci_error_relationship(summaries_merged_df)
     save_figure(fig, output_directory, filter + "_ci_vs_error_scatter_relationship.png")
-
-    # fig = generate_text_boxes(summaries_merged_df, hours_of_data)
-    # save_figure(fig, output_directory, "text_boxes.png")
 
     # TODO: avoid all this repetition
     md_stats, md_stats_pc = generate_markdown_table(summaries_merged_df, days=days)
@@ -973,6 +955,11 @@ def create_graph_images(
     replace_markdown_section(
         readme_filepath, "#### Absolute percentage error", md_stats_pc
     )
+
+    # Distribution plots
+    data = aggregate_all_data(summaries_merged_df)
+    df_err, df_pc_err = _error_and_percentage_error(summaries_merged_df)
+    fig, df_probabilities = generate_distribution_plots()
 
     # Save stats to a single combined CSV
     stats_combined_df = generate_combined_stats_dataframe(

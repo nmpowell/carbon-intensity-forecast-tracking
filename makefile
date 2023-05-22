@@ -5,6 +5,11 @@ install:
 	pip install pip==23.0 pip-tools==6.12.3
 	pip-sync
 
+# Minimum requirements for scraping only
+install-minimal:
+	pip install pip==23.0 pip-tools==6.12.3
+	pip-sync requirements-minimal.txt
+
 # Requirements for development and testing
 install-dev:
 	pip install pip==23.0 pip-tools==6.12.3

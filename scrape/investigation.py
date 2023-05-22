@@ -97,7 +97,7 @@ def distribution_parameters(
     }
 
     distn_results, cdf_results, ppf_results, extreme_data = {}, {}, {}, {}
-    extreme_data["values"] = lookup_values
+    extreme_data["error value"] = lookup_values
 
     for name, data in distribution_data.items():
         # fit the distribution

@@ -4,7 +4,7 @@ Tracking differences between the [UK National Grid's Carbon Intensity forecast](
 
 ## What is this?
 
-The carbon intensity of electricity is a measure of the $CO_2$ emissions produced per kilowatt hour of electricity consumed. Units are usually grams of $CO_2$ per kilowatt-hour (kWh).
+The carbon intensity of electricity is a measure of the $CO_2$ emissions produced per kilowatt-hour (kWh) of electricity consumed. Units are usually grams of $CO_2$ per kWh.
 
 The UK's National Grid Electricity System Operator (NGESO) publishes [an API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) showing half-hourly carbon intensity (CI), together with a 48-hour forecast. Its national data is based upon recorded and estimated generation statistics and values representing the relative CI of different energy sources. Regional data is based upon forecasted generation, consumption, and a model describing inter-region interaction.
 
@@ -36,11 +36,11 @@ For the complete history since the start of this project, see [./charts/stats_hi
 
 This boxplot shows the range of all published forecast values for each 30-minute time window, defined by its "from" datetime in the API.
 
-![Published CI values](./charts/national_ci_boxplot.png)
+![Published CI values 24h](./charts/national_ci_boxplot.png)
 
 The plot below shows forecast percentage error (compared with "actual" values, i.e. $100\times(forecast-actual)/actual$) for the same times.
 
-![Published CI values](./charts/national_ci_error_boxplot.png)
+![CI error 24h](./charts/national_ci_error_boxplot.png)
 
 ### 7-day summary
 
@@ -71,6 +71,18 @@ These are daily summaries of forecast error from all 48 half-hour windows on eac
 | 2023-05-19 |  14.13 |  0.2  | (13.74, 14.51)            |
 | 2023-05-20 |  55.71 |  0.51 | (54.71, 56.71)            |
 | 2023-05-21 |  51.48 |  0.57 | (50.37, 52.6)             |
+
+### 30 days
+
+![CI error 30d](./charts/national_ci_error_boxplot_30days.png)
+
+## Forecast reliability
+
+The next plot shows the frequency of all errors to date with respect to their size. By fitting a distribution, we can estimate the probability of future forecast errors of a certain magnitude, and hence decide whether to rely upon a given forecast.
+
+By comparing with the [published numerical bands](./data/artifacts/ci_index_numerical_bands.csv) representing the CI index, we can decide the magnitude of acceptable error. For example, [to cross two bands (from low to high)](.data/artifacts/ci_index_numerical_band_error_scales.csv) in 2023 requires an error of at least 81 $gCO_2/kWh$. Note that the bands narrow and their upper bounds reduce, year on year, to 2030.
+
+This shows that, if we check the CI forecast at a given time (from an app or the API directly), the chances of seeing 
 
 ## Prior work
 
@@ -177,7 +189,7 @@ Run `make test` or `pytest -v tests`
 - [ ] concat forecasting CSVs into daily files
 - [ ] dates in plots are 1h off due to timezoning
 - [ ] factor out scipy entirely; use numpy
-- [ ] summaries up to 10 days to make the files smaller (regional)
+- [ ] split summaries to make them smaller
 - [ ] split summaries into smaller files, or only generate for a small date range, or on the fly.
 - [ ] Summaries and plots for each region and DNO region
 - [ ] track regions' performance i.e. lower CI
