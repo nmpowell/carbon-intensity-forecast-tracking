@@ -1,3 +1,9 @@
+#### Summary stats - all data
+
+|    |   count |    mean |   median |    std |     sem |
+|---:|--------:|--------:|---------:|-------:|--------:|
+|  0 |       5 | 46526.8 |       19 | 104003 | 46511.6 |
+
 # Carbon Intensity Forecast Tracking
 
 Tracking differences between the [UK National Grid's Carbon Intensity forecast](https://carbonintensity.org.uk/) and its eventual recorded value.
@@ -78,11 +84,29 @@ These are daily summaries of forecast error from all 48 half-hour windows on eac
 
 ## Forecast reliability
 
-The next plot shows the frequency of all errors to date with respect to their size. By fitting a distribution, we can estimate the probability of future forecast errors of a certain magnitude, and hence decide whether to rely upon a given forecast.
+The next plot shows the relative frequency of all errors to date with respect to their size. By fitting a distribution, we can estimate the probability of future forecast errors of a certain magnitude, and hence decide whether to rely upon a given forecast.
+
+![CI forecast error distribution](./charts/national_ci_forecast_error_distribution.png)
+
+
 
 By comparing with the [published numerical bands](./data/artifacts/ci_index_numerical_bands.csv) representing the CI index, we can decide the magnitude of acceptable error. For example, [to cross two bands (from low to high)](.data/artifacts/ci_index_numerical_band_error_scales.csv) in 2023 requires an error of at least 81 $gCO_2/kWh$. Note that the bands narrow and their upper bounds reduce, year on year, to 2030.
 
-This shows that, if we check the CI forecast at a given time (from an app or the API directly), the chances of seeing 
+
+
+If we check the CI forecast at a given time (via an app or the API directly), and making some assumptions about the independence of the forecasts, the chances of seeing a large enough error to cross two bands (in either direction) is reasonably small.
+
+#### Error magnitudes and their probabilities
+
+|          |   count |    mean |   median |     std |       sem |
+|:---------|--------:|--------:|---------:|--------:|----------:|
+| all data |  232573 | 23.0593 |       19 | 18.7907 | 0.0389639 |
+
+#### Summary statistics - absolute error, all data
+
+|          |   count |    mean |   median |     std |       sem |
+|:---------|--------:|--------:|---------:|--------:|----------:|
+| all data |  232573 | 23.0593 |       19 | 18.7907 | 0.0389639 |
 
 ## Prior work
 

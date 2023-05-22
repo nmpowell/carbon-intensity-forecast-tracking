@@ -11,6 +11,21 @@ INDEX_BANDS_ERROR_SCALES_PATH = (
 )
 
 
+def _combine(df: pd.DataFrame) -> pd.DataFrame:
+    return pd.DataFrame(df.stack().reset_index()[0])
+
+
+def _aggregate_all(df: pd.DataFrame, absolute: bool = False) -> pd.DataFrame:
+    """Aggregate a dataframe over all rows and columns."""
+    agg_fns = ["count", "mean", "median", "std", "sem"]
+
+    df_stacked = _combine(df)
+
+    if absolute:
+        return df_stacked.abs().agg(agg_fns, axis=0)
+    return df_stacked.agg(agg_fns, axis=0)
+
+
 # This .csv is created in the Investigations Notebook.
 def problem_magnitudes(year: int = 2023, column_name: str = "difference"):
     path = os.path.join(os.path.dirname(__file__), INDEX_BANDS_ERROR_SCALES_PATH)
@@ -134,7 +149,7 @@ def distribution_parameters(
         x_bin_centres,
         distn_results,
         cdf_results,
-        pd.DataFrame(extreme_data),
+        pd.DataFrame(extreme_data).set_index("error value"),
     )
 
 

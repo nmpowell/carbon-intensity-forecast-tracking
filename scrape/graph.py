@@ -15,7 +15,7 @@ import scipy.stats as st
 
 from scrape.colourmap import add_colourmap
 from scrape.files import get_data_files
-from scrape.investigation import distribution_parameters
+from scrape.investigation import _aggregate_all, _combine, cleanup, distribution_parameters
 
 log = logging.getLogger(__name__)
 
@@ -330,7 +330,7 @@ def generate_plots_ci_lines_with_boxplots(
                 _ftime(dt) + " UTC ",
                 horizontalalignment="right",
                 verticalalignment="top",
-                # This transform uses x:data and y: axes
+                # This transform uses x:data and y:axes
                 transform=ax.get_xaxis_transform(),
             )
 
@@ -430,17 +430,6 @@ def generate_boxplot_ci(
     if colourmap:
         add_colourmap(ax, dates[0].year)
     return fig
-
-
-# def generate_boxplot_ci_future(
-#     input_directory: str, hours_of_data: int = HOURS_OF_DATA
-# ):
-#     """Generate boxplot of future CI forecasts. This data will be less complete than the past data."""
-
-#     plt.rcParams["figure.figsize"] = [12, 6]
-#     plt.rcParams["figure.dpi"] = DPI
-
-#     df = _load_forward_summary(input_directory)
 
 
 def _error_and_percentage_error(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
@@ -579,9 +568,9 @@ def generate_boxplot_ci_error_per_hour(
 
 
 def _aggregate_per(df: pd.DataFrame, aggregate_by: str = "date") -> pd.DataFrame:
-    """..."""
+    """Aggregate a datagrame by date groupings (year, month, day)"""
 
-    def group_by_dates(df: pd.DataFrame, aggregate_by: str):
+    def index_by_dates(df: pd.DataFrame, aggregate_by: str):
         if aggregate_by == "date" or aggregate_by == "day":
             return df.index.date
         elif aggregate_by == "month":
@@ -593,17 +582,17 @@ def _aggregate_per(df: pd.DataFrame, aggregate_by: str = "date") -> pd.DataFrame
 
     df_err = df.copy()
 
-    # Replace all index values by their date (day)
-    df_err.index = group_by_dates(df_err, aggregate_by)
+    # Replace all index values by their date (day) or aggregation grouping
+    df_err.index = index_by_dates(df_err, aggregate_by)
     forecast_cols = df_err.columns
 
     # Add a helper column to count occurrences of each label
-    df_err["count_per_day"] = df_err.groupby(df_err.index).cumcount()
+    df_err[f"count_per_{aggregate_by}"] = df_err.groupby(df_err.index).cumcount()
 
     # pivot into a multiindex
     result = df_err.pivot_table(
         index=df_err.index,
-        columns="count_per_day",
+        columns=f"count_per_{aggregate_by}",
         values=list(forecast_cols),
         aggfunc="first",
     )
@@ -613,11 +602,11 @@ def _aggregate_per(df: pd.DataFrame, aggregate_by: str = "date") -> pd.DataFrame
     return result
 
 
-def _get_stats_per_day(df: pd.DataFrame, split_ci: bool = False) -> pd.DataFrame:
+def _get_stats_per(df: pd.DataFrame, split_ci: bool = False, aggregate_by: str = "date") -> pd.DataFrame:
     """Generate summary statistics for each day.
     Note that we should take the mean absolute error, as errors can be +/-.
     """
-    result = _aggregate_per(df, "date")
+    result = _aggregate_per(df, aggregate_by=aggregate_by)
 
     # Get the absolute error values
     result = result.abs()
@@ -664,8 +653,8 @@ def generate_stats_dataframes(
 
     df_err, df_pc_err = _error_and_percentage_error(df)
 
-    stats = _get_stats_per_day(df_err)
-    stats_pc = _get_stats_per_day(df_pc_err)
+    stats = _get_stats_per(df_err)
+    stats_pc = _get_stats_per(df_pc_err)
 
     # Drop some columns to clean up.
     # Standard deviation on these absolute errors is not that helpful.
@@ -821,6 +810,16 @@ def generate_ci_error_relationship(
     ax.set_ylabel("forecast errors")
 
     pearson_r = data[x_col_name].corr(data[column])
+    ax.text(
+        10.0,
+        0.95,
+        f"$r={pearson_r.round(3)}$",
+        horizontalalignment="left",
+        verticalalignment="top",
+        # This transform uses x:data and y:axes
+        transform=ax.get_xaxis_transform(),
+    )
+
     return fig, pearson_r
 
 
@@ -832,7 +831,7 @@ def generate_distribution_plots(
     data,
     x_label: str,
     hist_label: str,
-    n_bins: int = None,
+    n_bins: int = 0,
     density: bool = True,
     x_min: int = -100,
     x_max: int = 100,
@@ -843,7 +842,7 @@ def generate_distribution_plots(
     plt.rcParams["figure.figsize"] = [12, 6]
     plt.rcParams["figure.dpi"] = DPI
 
-    if n_bins is None:
+    if not n_bins:
         # Because the errors are integers, the histogram here can be ugly, with random gaps.
         # Using this helpful answer to fix that: https://stackoverflow.com/a/30121210/3329384
         # Where 1 is the smallest difference in the data
@@ -957,9 +956,21 @@ def create_graph_images(
     )
 
     # Distribution plots
-    data = aggregate_all_data(summaries_merged_df)
-    df_err, df_pc_err = _error_and_percentage_error(summaries_merged_df)
-    fig, df_probabilities = generate_distribution_plots()
+    df_err, _ = _error_and_percentage_error(summaries_merged_df)
+    cleaned_err_data = cleanup(_combine(df_err), 0, max_cutoff=300)
+    fig, df_probabilities = generate_distribution_plots(cleaned_err_data,
+                                  x_label="error, $gCO_2/kWh$",
+                                  hist_label="error data",
+                                  x_min=-150,
+                                  x_max=150,
+                                  lookup_extreme_values=list(range(100,0,-10)),
+                                 )
+    save_figure(fig, output_directory, filter + "_ci_forecast_error_distribution.png")
+    df_err_agg = _aggregate_all(df_err, absolute=True)
+    df_err_agg.columns = ["absolute error"]
+    md_err_stats = df_err_agg.T.to_markdown()
+    replace_markdown_section(readme_filepath, "#### Error magnitudes and their probabilities", df_probabilities.to_markdown())
+    replace_markdown_section(readme_filepath, "#### Summary statistics - absolute error, all data", md_err_stats)
 
     # Save stats to a single combined CSV
     stats_combined_df = generate_combined_stats_dataframe(
