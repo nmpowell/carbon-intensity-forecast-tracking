@@ -939,7 +939,7 @@ def create_graph_images(
 
     # Boxplots summarising days at a time
     fig = generate_boxplot_ci_error_for_days(summaries_merged_df, days=30)
-    save_figure(fig, output_directory, filter + f"_ci_error_boxplot_{days}days.png")
+    save_figure(fig, output_directory, filter + f"_ci_error_boxplot_30days.png")
 
     fig = generate_boxplot_ci_error_per_hour(summaries_merged_df, days)
     save_figure(fig, output_directory, filter + "_ci_error_boxplot_per_hour.png")
