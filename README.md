@@ -1,9 +1,3 @@
-#### Summary stats - all data
-
-|    |   count |    mean |   median |    std |     sem |
-|---:|--------:|--------:|---------:|-------:|--------:|
-|  0 |       5 | 46526.8 |       19 | 104003 | 46511.6 |
-
 # Carbon Intensity Forecast Tracking
 
 Tracking differences between the [UK National Grid's Carbon Intensity forecast](https://carbonintensity.org.uk/) and its eventual recorded value.
