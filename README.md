@@ -88,11 +88,7 @@ The next plot shows the relative frequency of all errors to date with respect to
 
 ![CI forecast error distribution](./charts/national_ci_forecast_error_distribution.png)
 
-
-
 By comparing with the [published numerical bands](./data/artifacts/ci_index_numerical_bands.csv) representing the CI index, we can decide the magnitude of acceptable error. For example, [to cross two bands (from low to high)](.data/artifacts/ci_index_numerical_band_error_scales.csv) in 2023 requires an error of at least 81 $gCO_2/kWh$. Note that the bands narrow and their upper bounds reduce, year on year, to 2030.
-
-
 
 If we check the CI forecast at a given time (via an app or the API directly), and making some assumptions about the independence of the forecasts, the chances of seeing a large enough error to cross two bands (in either direction) is reasonably small.
 
@@ -204,25 +200,15 @@ There are examples of downloading and parsing data in the `.github/workflows/scr
 
 To copy the scraping functionality of this repo, enable GitHub Actions within your repo `Settings > Actions > General > Workflow permissions > Read and write permissions`.
 
-### Test
-
-Run `make test` or `pytest -v tests`
-
-(To do.)
-
 ---
 
 ## TODOs & future work
 
 - [ ] delete old CSVs once their data is definitely incorporated into summaries.
 - [ ] summary files are too big and impractical
-- [ ] separate scrape and wrangle steps (again)
-- [ ] add plot with CI index colours
-- [ ] add updating chart showing calculation of error probabilities
 - [ ] concat forecasting CSVs into daily files
 - [ ] dates in plots are 1h off due to timezoning
 - [ ] factor out scipy entirely; use numpy
-- [ ] split summaries to make them smaller
 - [ ] split summaries into smaller files, or only generate for a small date range, or on the fly.
 - [ ] Summaries and plots for each region and DNO region
 - [ ] track regions' performance i.e. lower CI
