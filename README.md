@@ -88,9 +88,11 @@ The next plot shows the relative frequency of all errors to date with respect to
 
 ![CI forecast error distribution](./charts/national_ci_forecast_error_distribution.png)
 
-By comparing with the [published numerical bands](./data/artifacts/ci_index_numerical_bands.csv) representing the CI index, we can decide the magnitude of acceptable error. For example, [to cross two bands (from low to high)](.data/artifacts/ci_index_numerical_band_error_scales.csv) in 2023 requires an error of at least 81 $gCO_2/kWh$. Note that the bands narrow and their upper bounds reduce, year on year, to 2030.
+By comparing with the [published numerical bands](./data/artifacts/ci_index_numerical_bands.csv) representing the CI index, we can decide the magnitude of acceptable error. For example, [to cross two bands (from low to high)](.data/artifacts/ci_index_numerical_band_error_scales.csv) in 2023 requires an error of at least 81 $gCO_2/kWh$. Given the Normal distribution fits the data quite well, the chance of seeing an error this large is (as of this writing) around 0.34%.
 
 If we check the CI forecast at a given time (via an app or the API directly), and making some assumptions about the independence of the forecasts, the chances of seeing a large enough error to cross two bands (in either direction) is reasonably small.
+
+Note that the bands narrow and their upper bounds reduce, year on year, to 2030. To cross from the middle of one band to the adjacent band naturally requires a smaller error, and this is correspondingly more likely. In 2023, to cross from mid-low to moderate, or mid-moderate to high, would require an error of only about 40 $gCO_2/kWh$, with a probability of about 14%.
 
 #### Error magnitudes and their probabilities
 
