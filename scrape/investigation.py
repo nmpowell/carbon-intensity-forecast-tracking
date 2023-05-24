@@ -85,14 +85,6 @@ def distribution_parameters(
     x_bin_centres = np.linspace(bin_edges[0], bin_edges[-1], 1000)
 
     distribution_data = {
-        "Normal": {
-            "distn_fn": normal_distribution,
-            "distn_params": ["mean", "standard deviation"],
-            "cdf_fn": stats.norm.cdf,
-            "cdf_params": ["loc", "scale"],
-            "curve_params": [mu, sigma],
-            "ppf_fn": stats.norm.ppf,
-        },
         "Student's t": {
             "distn_fn": t_distribution,
             "distn_params": ["mean", "standard deviation", "degrees of freedom"],
@@ -100,6 +92,14 @@ def distribution_parameters(
             "cdf_params": ["loc", "scale", "df"],
             "curve_params": [mu, sigma, nu],
             "ppf_fn": stats.t.ppf,
+        },
+        "Normal": {
+            "distn_fn": normal_distribution,
+            "distn_params": ["mean", "standard deviation"],
+            "cdf_fn": stats.norm.cdf,
+            "cdf_params": ["loc", "scale"],
+            "curve_params": [mu, sigma],
+            "ppf_fn": stats.norm.ppf,
         },
         "Laplace": {
             "distn_fn": laplace_distribution,
