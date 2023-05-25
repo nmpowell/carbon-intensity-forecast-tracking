@@ -84,9 +84,11 @@ The next plot shows the relative frequency of all errors to date with respect to
 
 By comparing with the [published numerical bands](./data/artifacts/ci_index_numerical_bands.csv) representing the CI index, we can decide the magnitude of acceptable error. For example, [to cross two bands (from low to high)](./data/artifacts/ci_index_numerical_band_error_scales.csv) in 2023 requires an error of at least 81 $gCO_2/kWh$. Given the Normal distribution fits the data quite well[^1], the chance of seeing an error this large is (as of this writing) around 0.34%.
 
-If we check the CI forecast at a given time (via an app or the API directly), and making some assumptions about the independence of the forecasts, the chances of seeing a large enough error to cross two bands (in either direction) is reasonably small.
+If we check the CI forecast at a given time (via an app or the API directly), making some assumptions about the independence of the forecasts, the chances of seeing a large enough error to cross two bands (in either direction) is currently reasonably small. To cross from the middle of one band to the adjacent band naturally requires a smaller error, and this is correspondingly more likely.
 
-Note that the bands narrow and their upper bounds reduce, year on year, to 2030. To cross from the middle of one band to the adjacent band naturally requires a smaller error, and this is correspondingly more likely. In 2023, to cross from mid-low to moderate, or mid-moderate to high, would require an error of only about 40 $gCO_2/kWh$, with a probability of about 14%.
+Note that the bands narrow and their upper bounds reduce, year on year, to 2030. In 2023, to cross from mid-low to moderate, or mid-moderate to high, would require an error of only about 40 $gCO_2/kWh$, with a probability of about 14%. In 2025, these figures will be 32.5 $gCO_2/kWh$ and around 23%, respectively. In 2030, they will be around 17.5 $gCO_2/kWh$ and 52% (assuming current error rates). To cross two bands in 2030, e.g. from very low to moderate, will require an error of about 46 $gCO_2/kWh$, with a 9% probability.
+
+These rates suggest we should hope to see some improvement in forecast accuracy if it is to continue to be reliable.
 
 #### Error magnitudes and their probabilities
 
