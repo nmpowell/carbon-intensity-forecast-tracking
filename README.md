@@ -76,6 +76,12 @@ These are daily summaries of forecast error from all 48 half-hour windows on eac
 
 ![CI error 30d](./charts/national_ci_error_boxplot_30days.png)
 
+### All data summary - absolute error
+
+|                |   count |    mean |   median |     std |       sem |
+|:---------------|--------:|--------:|---------:|--------:|----------:|
+| absolute error |  251442 | 22.7471 |       19 | 18.4172 | 0.0367286 |
+
 ## Forecast reliability
 
 The next plot shows the relative frequency of all errors to date with respect to their size. By fitting a distribution, we can estimate the probability of future forecast errors of a certain magnitude, and hence decide whether to rely upon a given forecast.
@@ -104,12 +110,6 @@ These rates suggest we should hope to see some improvement in forecast accuracy 
 |            30 |               0.269033    |          0.269053    |             0.338901  |
 |            20 |               0.46123     |          0.461249    |             0.489778  |
 |            10 |               0.712575    |          0.712587    |             0.707825  |
-
-#### Summary statistics - absolute error, all data
-
-|                |   count |    mean |   median |     std |       sem |
-|:---------------|--------:|--------:|---------:|--------:|----------:|
-| absolute error |  251442 | 22.7471 |       19 | 18.4172 | 0.0367286 |
 
 ## Prior work
 

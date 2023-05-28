@@ -970,7 +970,7 @@ def create_graph_images(
     df_err_agg.columns = ["absolute error"]
     md_err_stats = df_err_agg.T.to_markdown()
     replace_markdown_section(readme_filepath, "#### Error magnitudes and their probabilities", df_probabilities.to_markdown())
-    replace_markdown_section(readme_filepath, "#### Summary statistics - absolute error, all data", md_err_stats)
+    replace_markdown_section(readme_filepath, "### All data summary - absolute error", md_err_stats)
 
     # Save stats to a single combined CSV
     stats_combined_df = generate_combined_stats_dataframe(
