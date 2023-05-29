@@ -4,6 +4,8 @@ Tracking differences between the [UK National Grid's Carbon Intensity forecast](
 
 ## What is this?
 
+See accompanying [blog post](https://nickmp.com/posts/carbon-intensity-forecast-tracking).
+
 The carbon intensity of electricity is a measure of the $CO_2$ emissions produced per kilowatt-hour (kWh) of electricity consumed. Units are usually grams of $CO_2$ per kWh.
 
 The UK's National Grid Electricity System Operator (NGESO) publishes [an API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) showing half-hourly carbon intensity (CI), together with a 48-hour forecast. Its national data is based upon recorded and estimated generation statistics and values representing the relative CI of different energy sources. Regional data is based upon forecasted generation, consumption, and a model describing inter-region interaction.
@@ -48,29 +50,29 @@ These are daily summaries of forecast error from all 48 half-hour windows on eac
 
 #### Absolute error, gCO2/kWh
 
-|            |   count |   mean |   sem | 95% confidence interval   |
-|:-----------|--------:|-------:|------:|:--------------------------|
-| 2023-05-21 |    2217 |  35.25 |  0.45 | (34.37, 36.13)            |
-| 2023-05-22 |     716 |  16.3  |  0.38 | (15.56, 17.04)            |
-| 2023-05-23 |    1687 |  16.56 |  0.25 | (16.06, 17.06)            |
-| 2023-05-24 |    3661 |  20.52 |  0.21 | (20.12, 20.93)            |
-| 2023-05-25 |    4223 |  16.53 |  0.15 | (16.23, 16.82)            |
-| 2023-05-26 |    4224 |  16.68 |  0.18 | (16.32, 17.04)            |
-| 2023-05-27 |    4217 |  23.22 |  0.22 | (22.79, 23.65)            |
-| 2023-05-28 |     352 |  24.65 |  0.33 | (24.0, 25.3)              |
+|            | count |  mean |  sem | 95% confidence interval |
+| :--------- | ----: | ----: | ---: | :---------------------- |
+| 2023-05-21 |  2217 | 35.25 | 0.45 | (34.37, 36.13)          |
+| 2023-05-22 |   716 |  16.3 | 0.38 | (15.56, 17.04)          |
+| 2023-05-23 |  1687 | 16.56 | 0.25 | (16.06, 17.06)          |
+| 2023-05-24 |  3661 | 20.52 | 0.21 | (20.12, 20.93)          |
+| 2023-05-25 |  4223 | 16.53 | 0.15 | (16.23, 16.82)          |
+| 2023-05-26 |  4224 | 16.68 | 0.18 | (16.32, 17.04)          |
+| 2023-05-27 |  4217 | 23.22 | 0.22 | (22.79, 23.65)          |
+| 2023-05-28 |   352 | 24.65 | 0.33 | (24.0, 25.3)            |
 
 #### Absolute percentage error
 
-|            |   mean |   sem | 95% confidence interval   |
-|:-----------|-------:|------:|:--------------------------|
-| 2023-05-21 |  38.43 |  0.54 | (37.37, 39.48)            |
-| 2023-05-22 |  14.44 |  0.41 | (13.65, 15.24)            |
-| 2023-05-23 |  11.45 |  0.18 | (11.09, 11.8)             |
-| 2023-05-24 |  13.56 |  0.14 | (13.28, 13.84)            |
-| 2023-05-25 |  10.96 |  0.1  | (10.76, 11.17)            |
-| 2023-05-26 |  11.44 |  0.13 | (11.18, 11.69)            |
-| 2023-05-27 |  25.65 |  0.26 | (25.13, 26.16)            |
-| 2023-05-28 |  22.41 |  0.32 | (21.78, 23.04)            |
+|            |  mean |  sem | 95% confidence interval |
+| :--------- | ----: | ---: | :---------------------- |
+| 2023-05-21 | 38.43 | 0.54 | (37.37, 39.48)          |
+| 2023-05-22 | 14.44 | 0.41 | (13.65, 15.24)          |
+| 2023-05-23 | 11.45 | 0.18 | (11.09, 11.8)           |
+| 2023-05-24 | 13.56 | 0.14 | (13.28, 13.84)          |
+| 2023-05-25 | 10.96 |  0.1 | (10.76, 11.17)          |
+| 2023-05-26 | 11.44 | 0.13 | (11.18, 11.69)          |
+| 2023-05-27 | 25.65 | 0.26 | (25.13, 26.16)          |
+| 2023-05-28 | 22.41 | 0.32 | (21.78, 23.04)          |
 
 ### 30 days
 
@@ -78,9 +80,9 @@ These are daily summaries of forecast error from all 48 half-hour windows on eac
 
 ### All data summary - absolute error
 
-|                |   count |    mean |   median |     std |       sem |
-|:---------------|--------:|--------:|---------:|--------:|----------:|
-| absolute error |  255733 | 22.7725 |       19 | 18.3786 | 0.0363429 |
+|                |  count |    mean | median |     std |       sem |
+| :------------- | -----: | ------: | -----: | ------: | --------: |
+| absolute error | 255733 | 22.7725 |     19 | 18.3786 | 0.0363429 |
 
 ## Forecast reliability
 
@@ -98,18 +100,18 @@ These rates suggest we should hope to see some improvement in forecast accuracy 
 
 #### Error magnitudes and their probabilities
 
-|   error value |   Student's t probability |   Normal probability |   Laplace probability |
-|--------------:|--------------------------:|---------------------:|----------------------:|
-|           100 |               0.000243591 |          0.000243864 |             0.0265802 |
-|            90 |               0.000961019 |          0.000961916 |             0.0382788 |
-|            80 |               0.00333998  |          0.00334252  |             0.0551264 |
-|            70 |               0.0102419   |          0.0102481   |             0.079389  |
-|            60 |               0.0277641   |          0.0277769   |             0.11433   |
-|            50 |               0.066695    |          0.0667176   |             0.16465   |
-|            40 |               0.142402    |          0.142435    |             0.237117  |
-|            30 |               0.271274    |          0.271314    |             0.341479  |
-|            20 |               0.463314    |          0.463351    |             0.491773  |
-|            10 |               0.713847    |          0.71387     |             0.708215  |
+| error value | Student's t probability | Normal probability | Laplace probability |
+| ----------: | ----------------------: | -----------------: | ------------------: |
+|         100 |             0.000243591 |        0.000243864 |           0.0265802 |
+|          90 |             0.000961019 |        0.000961916 |           0.0382788 |
+|          80 |              0.00333998 |         0.00334252 |           0.0551264 |
+|          70 |               0.0102419 |          0.0102481 |            0.079389 |
+|          60 |               0.0277641 |          0.0277769 |             0.11433 |
+|          50 |                0.066695 |          0.0667176 |             0.16465 |
+|          40 |                0.142402 |           0.142435 |            0.237117 |
+|          30 |                0.271274 |           0.271314 |            0.341479 |
+|          20 |                0.463314 |           0.463351 |            0.491773 |
+|          10 |                0.713847 |            0.71387 |            0.708215 |
 
 ## Prior work
 
