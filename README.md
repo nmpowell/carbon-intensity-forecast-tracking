@@ -1,6 +1,6 @@
 # Carbon Intensity Forecast Tracking
 
-Tracking differences between the [UK National Grid's Carbon Intensity forecast](https://carbonintensity.org.uk/) and its eventual recorded value.
+Tracking differences between the [UK National Grid's Carbon Intensity forecast](https://carbonintensity.org.uk/) and its eventual recorded value. See also my [blog post](https://nickmp.com/posts/carbon-intensity-forecast-tracking).
 
 ## What is this?
 
