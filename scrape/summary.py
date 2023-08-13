@@ -117,6 +117,7 @@ def run_summary(
     start_date: str = EARLIEST_DATE_STR,
     end_date: str = None,
     num_files: int = 0,
+    delete_old_files: bool = False,
     *args,
     **kwargs,
 ) -> None:
@@ -126,7 +127,12 @@ def run_summary(
 
     Learn about new future datetimes from each CSV and add them to a universal list in the summary.
     To normalise datetimes, calculate the difference between the "now" datetime, from the filepath, and each forecasted/past datetime (the "from" column in each CSV).
+
+    delete_old_files (bool, optional): Delete CSV files (rather than archiving) once they have been added to summary. Defaults to False.
     """
+
+    if delete_old_files:
+        log.warning("CSV files will be deleted after being added to the summary.")
 
     abbreviated_endpoint = endpoint.split("_")[0]
 
@@ -149,7 +155,6 @@ def run_summary(
     file_count = 0
     forecast_files = get_data_files(input_directory, extension=".csv")
     for fp in forecast_files:
-
         # The datetime of the filepath is the approximate time the forecast was made
         fp_dt = round_down_datetime(datetime_from_filepath(fp))
 
@@ -186,7 +191,7 @@ def run_summary(
 
         # TODO: do this with a limit on the number of files to load, instead.
         # Archive the CSV to speed up future runs
-        if "_archive" not in fp:
+        if "_archive" not in fp and not delete_old_files:
             move_to_subdirectory(fp, "_archive")
 
         file_count += 1
@@ -195,8 +200,16 @@ def run_summary(
 
     summary.to_csv(summary_fp)
 
+    if os.path.isfile(summary_fp) and delete_old_files:
+        log.info("Deleting old files which were added to the summary")
+        # Delete old files
+        for fp in forecast_files:
+            if "summary" not in fp:
+                os.remove(fp)
+                log.debug("Deleted CSV file: %s", fp)
 
-# Pandas function to
+
+# Pandas function
 def get_rows_on_date(dataframe, target_dt):
     """
     Get all rows of a pandas DataFrame whose datetimes are on a specific date.
