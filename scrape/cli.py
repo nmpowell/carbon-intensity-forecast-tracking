@@ -106,6 +106,11 @@ def get_parser():
         action="store_true",
         help="Delete source JSON files once CSV is saved.",
     )
+    parser_wrangle.add_argument(
+        "--delete_old_files",
+        action="store_true",
+        help="Delete CSV files once summarised.",
+    )
 
     parser_summary = subparsers.add_parser(
         "summary",

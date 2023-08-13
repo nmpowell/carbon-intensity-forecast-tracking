@@ -1,6 +1,5 @@
 # TODOs
 
-- [ ] delete old CSVs once their data is definitely incorporated into summaries.
 - [ ] summary files are too big and impractical
 - [ ] concat forecasting CSVs into daily files
 - [ ] when plotting, dates in plots are 1h off due to timezoning
