@@ -106,11 +106,6 @@ def get_parser():
         action="store_true",
         help="Delete source JSON files once CSV is saved.",
     )
-    parser_wrangle.add_argument(
-        "--delete_old_files",
-        action="store_true",
-        help="Delete CSV files once summarised.",
-    )
 
     parser_summary = subparsers.add_parser(
         "summary",
@@ -136,6 +131,11 @@ def get_parser():
         default=None,
         type=str,
         help="End date in format {}".format(DATETIME_FMT_STR),
+    )
+    parser_summary.add_argument(
+        "--delete_old_files",
+        action="store_true",
+        help="Delete CSV files once summarised.",
     )
 
     parser_graph = subparsers.add_parser(
