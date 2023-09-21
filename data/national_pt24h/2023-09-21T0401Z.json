@@ -1,0 +1,436 @@
+{
+    "data": [
+        {
+            "from": "2023-09-20T04:00Z",
+            "to": "2023-09-20T04:30Z",
+            "intensity": {
+                "forecast": 87,
+                "actual": 61,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T04:30Z",
+            "to": "2023-09-20T05:00Z",
+            "intensity": {
+                "forecast": 93,
+                "actual": 64,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T05:00Z",
+            "to": "2023-09-20T05:30Z",
+            "intensity": {
+                "forecast": 98,
+                "actual": 71,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T05:30Z",
+            "to": "2023-09-20T06:00Z",
+            "intensity": {
+                "forecast": 104,
+                "actual": 59,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T06:00Z",
+            "to": "2023-09-20T06:30Z",
+            "intensity": {
+                "forecast": 109,
+                "actual": 63,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T06:30Z",
+            "to": "2023-09-20T07:00Z",
+            "intensity": {
+                "forecast": 113,
+                "actual": 54,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T07:00Z",
+            "to": "2023-09-20T07:30Z",
+            "intensity": {
+                "forecast": 114,
+                "actual": 51,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T07:30Z",
+            "to": "2023-09-20T08:00Z",
+            "intensity": {
+                "forecast": 114,
+                "actual": 49,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T08:00Z",
+            "to": "2023-09-20T08:30Z",
+            "intensity": {
+                "forecast": 45,
+                "actual": 51,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T08:30Z",
+            "to": "2023-09-20T09:00Z",
+            "intensity": {
+                "forecast": 45,
+                "actual": 56,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T09:00Z",
+            "to": "2023-09-20T09:30Z",
+            "intensity": {
+                "forecast": 47,
+                "actual": 56,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T09:30Z",
+            "to": "2023-09-20T10:00Z",
+            "intensity": {
+                "forecast": 53,
+                "actual": 57,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T10:00Z",
+            "to": "2023-09-20T10:30Z",
+            "intensity": {
+                "forecast": 51,
+                "actual": 58,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T10:30Z",
+            "to": "2023-09-20T11:00Z",
+            "intensity": {
+                "forecast": 52,
+                "actual": 61,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T11:00Z",
+            "to": "2023-09-20T11:30Z",
+            "intensity": {
+                "forecast": 52,
+                "actual": 64,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T11:30Z",
+            "to": "2023-09-20T12:00Z",
+            "intensity": {
+                "forecast": 54,
+                "actual": 59,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T12:00Z",
+            "to": "2023-09-20T12:30Z",
+            "intensity": {
+                "forecast": 59,
+                "actual": 55,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T12:30Z",
+            "to": "2023-09-20T13:00Z",
+            "intensity": {
+                "forecast": 54,
+                "actual": 59,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T13:00Z",
+            "to": "2023-09-20T13:30Z",
+            "intensity": {
+                "forecast": 52,
+                "actual": 60,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T13:30Z",
+            "to": "2023-09-20T14:00Z",
+            "intensity": {
+                "forecast": 55,
+                "actual": 62,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T14:00Z",
+            "to": "2023-09-20T14:30Z",
+            "intensity": {
+                "forecast": 56,
+                "actual": 64,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T14:30Z",
+            "to": "2023-09-20T15:00Z",
+            "intensity": {
+                "forecast": 59,
+                "actual": 63,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T15:00Z",
+            "to": "2023-09-20T15:30Z",
+            "intensity": {
+                "forecast": 61,
+                "actual": 72,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T15:30Z",
+            "to": "2023-09-20T16:00Z",
+            "intensity": {
+                "forecast": 58,
+                "actual": 81,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T16:00Z",
+            "to": "2023-09-20T16:30Z",
+            "intensity": {
+                "forecast": 70,
+                "actual": 90,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T16:30Z",
+            "to": "2023-09-20T17:00Z",
+            "intensity": {
+                "forecast": 78,
+                "actual": 96,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T17:00Z",
+            "to": "2023-09-20T17:30Z",
+            "intensity": {
+                "forecast": 91,
+                "actual": 105,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T17:30Z",
+            "to": "2023-09-20T18:00Z",
+            "intensity": {
+                "forecast": 92,
+                "actual": 111,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T18:00Z",
+            "to": "2023-09-20T18:30Z",
+            "intensity": {
+                "forecast": 104,
+                "actual": 110,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T18:30Z",
+            "to": "2023-09-20T19:00Z",
+            "intensity": {
+                "forecast": 112,
+                "actual": 103,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T19:00Z",
+            "to": "2023-09-20T19:30Z",
+            "intensity": {
+                "forecast": 104,
+                "actual": 99,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T19:30Z",
+            "to": "2023-09-20T20:00Z",
+            "intensity": {
+                "forecast": 101,
+                "actual": 99,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T20:00Z",
+            "to": "2023-09-20T20:30Z",
+            "intensity": {
+                "forecast": 95,
+                "actual": 95,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T20:30Z",
+            "to": "2023-09-20T21:00Z",
+            "intensity": {
+                "forecast": 100,
+                "actual": 84,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T21:00Z",
+            "to": "2023-09-20T21:30Z",
+            "intensity": {
+                "forecast": 109,
+                "actual": 77,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T21:30Z",
+            "to": "2023-09-20T22:00Z",
+            "intensity": {
+                "forecast": 97,
+                "actual": 90,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T22:00Z",
+            "to": "2023-09-20T22:30Z",
+            "intensity": {
+                "forecast": 80,
+                "actual": 83,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T22:30Z",
+            "to": "2023-09-20T23:00Z",
+            "intensity": {
+                "forecast": 107,
+                "actual": 79,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T23:00Z",
+            "to": "2023-09-20T23:30Z",
+            "intensity": {
+                "forecast": 81,
+                "actual": 79,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-20T23:30Z",
+            "to": "2023-09-21T00:00Z",
+            "intensity": {
+                "forecast": 112,
+                "actual": 84,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-21T00:00Z",
+            "to": "2023-09-21T00:30Z",
+            "intensity": {
+                "forecast": 78,
+                "actual": 94,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-21T00:30Z",
+            "to": "2023-09-21T01:00Z",
+            "intensity": {
+                "forecast": 86,
+                "actual": 94,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-21T01:00Z",
+            "to": "2023-09-21T01:30Z",
+            "intensity": {
+                "forecast": 96,
+                "actual": 82,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-21T01:30Z",
+            "to": "2023-09-21T02:00Z",
+            "intensity": {
+                "forecast": 97,
+                "actual": 70,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-21T02:00Z",
+            "to": "2023-09-21T02:30Z",
+            "intensity": {
+                "forecast": 88,
+                "actual": 73,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-21T02:30Z",
+            "to": "2023-09-21T03:00Z",
+            "intensity": {
+                "forecast": 75,
+                "actual": 84,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-21T03:00Z",
+            "to": "2023-09-21T03:30Z",
+            "intensity": {
+                "forecast": 78,
+                "actual": 90,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-09-21T03:30Z",
+            "to": "2023-09-21T04:00Z",
+            "intensity": {
+                "forecast": 87,
+                "actual": 92,
+                "index": "low"
+            }
+        }
+    ]
+}
