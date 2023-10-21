@@ -1,0 +1,13 @@
+{
+    "data": [
+        {
+            "from": "2023-10-20T21:30Z",
+            "to": "2023-10-20T22:00Z",
+            "intensity": {
+                "forecast": 65,
+                "actual": 98,
+                "index": "low"
+            }
+        }
+    ]
+}
