@@ -1,0 +1,436 @@
+{
+    "data": [
+        {
+            "from": "2023-12-26T14:00Z",
+            "to": "2023-12-26T14:30Z",
+            "intensity": {
+                "forecast": 147,
+                "actual": 141,
+                "index": "moderate"
+            }
+        },
+        {
+            "from": "2023-12-26T14:30Z",
+            "to": "2023-12-26T15:00Z",
+            "intensity": {
+                "forecast": 166,
+                "actual": 156,
+                "index": "moderate"
+            }
+        },
+        {
+            "from": "2023-12-26T15:00Z",
+            "to": "2023-12-26T15:30Z",
+            "intensity": {
+                "forecast": 163,
+                "actual": 167,
+                "index": "moderate"
+            }
+        },
+        {
+            "from": "2023-12-26T15:30Z",
+            "to": "2023-12-26T16:00Z",
+            "intensity": {
+                "forecast": 173,
+                "actual": 180,
+                "index": "moderate"
+            }
+        },
+        {
+            "from": "2023-12-26T16:00Z",
+            "to": "2023-12-26T16:30Z",
+            "intensity": {
+                "forecast": 178,
+                "actual": 189,
+                "index": "moderate"
+            }
+        },
+        {
+            "from": "2023-12-26T16:30Z",
+            "to": "2023-12-26T17:00Z",
+            "intensity": {
+                "forecast": 189,
+                "actual": 183,
+                "index": "moderate"
+            }
+        },
+        {
+            "from": "2023-12-26T17:00Z",
+            "to": "2023-12-26T17:30Z",
+            "intensity": {
+                "forecast": 198,
+                "actual": 183,
+                "index": "moderate"
+            }
+        },
+        {
+            "from": "2023-12-26T17:30Z",
+            "to": "2023-12-26T18:00Z",
+            "intensity": {
+                "forecast": 182,
+                "actual": 182,
+                "index": "moderate"
+            }
+        },
+        {
+            "from": "2023-12-26T18:00Z",
+            "to": "2023-12-26T18:30Z",
+            "intensity": {
+                "forecast": 193,
+                "actual": 182,
+                "index": "moderate"
+            }
+        },
+        {
+            "from": "2023-12-26T18:30Z",
+            "to": "2023-12-26T19:00Z",
+            "intensity": {
+                "forecast": 192,
+                "actual": 186,
+                "index": "moderate"
+            }
+        },
+        {
+            "from": "2023-12-26T19:00Z",
+            "to": "2023-12-26T19:30Z",
+            "intensity": {
+                "forecast": 195,
+                "actual": 182,
+                "index": "moderate"
+            }
+        },
+        {
+            "from": "2023-12-26T19:30Z",
+            "to": "2023-12-26T20:00Z",
+            "intensity": {
+                "forecast": 193,
+                "actual": 180,
+                "index": "moderate"
+            }
+        },
+        {
+            "from": "2023-12-26T20:00Z",
+            "to": "2023-12-26T20:30Z",
+            "intensity": {
+                "forecast": 196,
+                "actual": 168,
+                "index": "moderate"
+            }
+        },
+        {
+            "from": "2023-12-26T20:30Z",
+            "to": "2023-12-26T21:00Z",
+            "intensity": {
+                "forecast": 184,
+                "actual": 152,
+                "index": "moderate"
+            }
+        },
+        {
+            "from": "2023-12-26T21:00Z",
+            "to": "2023-12-26T21:30Z",
+            "intensity": {
+                "forecast": 168,
+                "actual": 136,
+                "index": "moderate"
+            }
+        },
+        {
+            "from": "2023-12-26T21:30Z",
+            "to": "2023-12-26T22:00Z",
+            "intensity": {
+                "forecast": 145,
+                "actual": 116,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-26T22:00Z",
+            "to": "2023-12-26T22:30Z",
+            "intensity": {
+                "forecast": 136,
+                "actual": 94,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-26T22:30Z",
+            "to": "2023-12-26T23:00Z",
+            "intensity": {
+                "forecast": 113,
+                "actual": 79,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-26T23:00Z",
+            "to": "2023-12-26T23:30Z",
+            "intensity": {
+                "forecast": 107,
+                "actual": 69,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-26T23:30Z",
+            "to": "2023-12-27T00:00Z",
+            "intensity": {
+                "forecast": 81,
+                "actual": 65,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T00:00Z",
+            "to": "2023-12-27T00:30Z",
+            "intensity": {
+                "forecast": 75,
+                "actual": 68,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T00:30Z",
+            "to": "2023-12-27T01:00Z",
+            "intensity": {
+                "forecast": 68,
+                "actual": 73,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T01:00Z",
+            "to": "2023-12-27T01:30Z",
+            "intensity": {
+                "forecast": 75,
+                "actual": 67,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T01:30Z",
+            "to": "2023-12-27T02:00Z",
+            "intensity": {
+                "forecast": 78,
+                "actual": 70,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T02:00Z",
+            "to": "2023-12-27T02:30Z",
+            "intensity": {
+                "forecast": 75,
+                "actual": 62,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T02:30Z",
+            "to": "2023-12-27T03:00Z",
+            "intensity": {
+                "forecast": 76,
+                "actual": 65,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T03:00Z",
+            "to": "2023-12-27T03:30Z",
+            "intensity": {
+                "forecast": 70,
+                "actual": 59,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T03:30Z",
+            "to": "2023-12-27T04:00Z",
+            "intensity": {
+                "forecast": 67,
+                "actual": 59,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T04:00Z",
+            "to": "2023-12-27T04:30Z",
+            "intensity": {
+                "forecast": 63,
+                "actual": 56,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T04:30Z",
+            "to": "2023-12-27T05:00Z",
+            "intensity": {
+                "forecast": 61,
+                "actual": 57,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T05:00Z",
+            "to": "2023-12-27T05:30Z",
+            "intensity": {
+                "forecast": 56,
+                "actual": 55,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T05:30Z",
+            "to": "2023-12-27T06:00Z",
+            "intensity": {
+                "forecast": 57,
+                "actual": 59,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T06:00Z",
+            "to": "2023-12-27T06:30Z",
+            "intensity": {
+                "forecast": 58,
+                "actual": 64,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T06:30Z",
+            "to": "2023-12-27T07:00Z",
+            "intensity": {
+                "forecast": 61,
+                "actual": 61,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T07:00Z",
+            "to": "2023-12-27T07:30Z",
+            "intensity": {
+                "forecast": 65,
+                "actual": 59,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T07:30Z",
+            "to": "2023-12-27T08:00Z",
+            "intensity": {
+                "forecast": 59,
+                "actual": 49,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T08:00Z",
+            "to": "2023-12-27T08:30Z",
+            "intensity": {
+                "forecast": 53,
+                "actual": 52,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T08:30Z",
+            "to": "2023-12-27T09:00Z",
+            "intensity": {
+                "forecast": 41,
+                "actual": 50,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T09:00Z",
+            "to": "2023-12-27T09:30Z",
+            "intensity": {
+                "forecast": 46,
+                "actual": 51,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T09:30Z",
+            "to": "2023-12-27T10:00Z",
+            "intensity": {
+                "forecast": 44,
+                "actual": 46,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T10:00Z",
+            "to": "2023-12-27T10:30Z",
+            "intensity": {
+                "forecast": 45,
+                "actual": 47,
+                "index": "low"
+            }
+        },
+        {
+            "from": "2023-12-27T10:30Z",
+            "to": "2023-12-27T11:00Z",
+            "intensity": {
+                "forecast": 44,
+                "actual": 37,
+                "index": "very low"
+            }
+        },
+        {
+            "from": "2023-12-27T11:00Z",
+            "to": "2023-12-27T11:30Z",
+            "intensity": {
+                "forecast": 40,
+                "actual": 37,
+                "index": "very low"
+            }
+        },
+        {
+            "from": "2023-12-27T11:30Z",
+            "to": "2023-12-27T12:00Z",
+            "intensity": {
+                "forecast": 42,
+                "actual": 37,
+                "index": "very low"
+            }
+        },
+        {
+            "from": "2023-12-27T12:00Z",
+            "to": "2023-12-27T12:30Z",
+            "intensity": {
+                "forecast": 34,
+                "actual": 37,
+                "index": "very low"
+            }
+        },
+        {
+            "from": "2023-12-27T12:30Z",
+            "to": "2023-12-27T13:00Z",
+            "intensity": {
+                "forecast": 31,
+                "actual": 33,
+                "index": "very low"
+            }
+        },
+        {
+            "from": "2023-12-27T13:00Z",
+            "to": "2023-12-27T13:30Z",
+            "intensity": {
+                "forecast": 30,
+                "actual": 33,
+                "index": "very low"
+            }
+        },
+        {
+            "from": "2023-12-27T13:30Z",
+            "to": "2023-12-27T14:00Z",
+            "intensity": {
+                "forecast": 29,
+                "actual": 33,
+                "index": "very low"
+            }
+        }
+    ]
+}
