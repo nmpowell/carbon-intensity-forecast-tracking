@@ -1,0 +1,132 @@
+// Workspace for use on OE Mac laptop for personal folders
+{
+  "folders": [
+    {
+        "path": ".."
+    },
+],
+  "settings": {
+    "editor.fontFamily": "Hack, Menlo, Monaco, 'Courier New', monospace",
+    "editor.lineHeight": 30,
+    "editor.fontSize": 15,
+    "editor.wordWrap": "on",
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "notebook.formatOnSave.enabled": true,
+    "notebook.codeActionsOnSave": {
+      "notebook.source.fixAll": true,
+      "notebook.source.organizeImports": true
+    },
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 60000,
+    "vscodeMarkdownNotes.workspaceFilenameConvention": "relativePaths",
+    "[python]": {
+      "editor.formatOnPaste": false,
+      "editor.formatOnSaveMode": "file",
+      "editor.formatOnSave": true,
+      "editor.defaultFormatter": "charliermarsh.ruff",
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit",
+        "source.fixAll": "explicit"
+      }
+    },
+    "markdown-checkbox.withBulletPoint": true,
+    "markdown-checkbox.dateFormat": "YYYY-MM-DD, dddd, HH:mm",
+    "markdown-checkbox.dateTemplate": "(completed: {date})",
+    "markdown-checkbox.italicWhenChecked": false,
+    "markdown-checkbox.checkmark": "x",
+    "markdown-checkbox.strikeThroughWhenChecked": false,
+    "[markdown]": {
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": false,
+        "editor.defaultFormatter": "yzhang.markdown-all-in-one",
+    },
+    "markdown.extension.list.indentationSize": "inherit",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.terminal.activateEnvironment": true,
+    "python.analysis.gotoDefinitionInStringLiteral": true,
+    "[javascript]": {
+      "editor.formatOnSave": true,
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.tabSize": 2,
+      "editor.insertSpaces": true,
+      "editor.detectIndentation": false,
+    },
+    "[javascriptreact]": {
+      "editor.formatOnSave": true,
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+        "editor.formatOnSave": false
+    },
+    "[django-html]": {
+      "editor.quickSuggestions": {
+        "other": true,
+        "comments": true,
+        "strings": true
+      },
+      "editor.formatOnSave": false,
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "debug.allowBreakpointsEverywhere": true,
+    "css.validate": false,
+    "scss.validate": true,
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "git.inputValidationSubjectLength": 70,
+    "python.analysis.completeFunctionParens": true,
+    "search.quickOpen.history.filterSortOrder": "recency",
+    // End OE recs
+    "search.exclude": {
+        "**/.mypy_cache": true,
+        "**/.git": true,
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/tmp": true,
+        "**/.pytest_cache": true,
+    },
+    "workbench.colorTheme": "One Dark Pro",
+    "gitlens.defaultDateStyle": "absolute",
+    "gitlens.codeLens.authors.enabled": false,
+    "gitlens.codeLens.enabled": false,
+    "explorer.confirmDragAndDrop": false,
+    "window.zoomLevel": -1.4,
+    "workbench.iconTheme": "vscode-icons",
+    "editor.tokenColorCustomizations": {
+      "textMateRules": [
+        {
+          "scope": "heading.1.markdown entity.name.section.markdown, heading.1.markdown punctuation.definition.heading.markdown",
+          "settings": {
+            // "#CD4158",
+            "foreground": "#00bd7e",
+            "fontStyle": "bold"
+          }
+        },
+        {
+          "scope": "heading.2.markdown entity.name.section.markdown, heading.2.markdown punctuation.definition.heading.markdown",
+          "settings": {
+            "foreground": "#e6a645",
+            "fontStyle": "bold"
+          }
+        },
+        {
+          "scope": "heading.3.markdown entity.name.section.markdown, heading.3.markdown punctuation.definition.heading.markdown",
+          "settings": {
+            "foreground": "#DE755E",
+            "fontStyle": "bold"
+          }
+        },
+        {
+          "scope": "heading.4.markdown entity.name.section.markdown, heading.4.markdown punctuation.definition.heading.markdown",
+          "settings": {
+            "foreground": "#8775fc",
+            "fontStyle": "italic"
+          }
+        }
+      ]
+    }
+  }
+}

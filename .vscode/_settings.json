@@ -1,0 +1,86 @@
+{
+    "update.mode": "none",
+    "workbench.colorTheme": "One Dark Pro",
+    "editor.wordWrap": "on",
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false,
+    "html.format.wrapLineLength": 0,
+    "go.useLanguageServer": true,
+    "gitlens.defaultDateStyle": "absolute",
+    "gitlens.codeLens.authors.enabled": false,
+    "gitlens.codeLens.enabled": false,
+    "python.linting.enabled": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "markdown.extension.list.indentationSize": "inherit",
+    "markdown.preview.fontSize": 18,
+    "markdown.preview.lineHeight": 1.4,
+    "python.linting.flake8Enabled": true,
+    "[html]": {
+        "editor.formatOnSave": false,
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2
+    },
+    "[python]": {
+        "editor.formatOnPaste": false,
+        "editor.formatOnSaveMode": "file",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    },
+    "python.linting.flake8Args": [
+        "--max-line-length=100",
+        "--ignore=E402,F841,F401,E302,E305"
+    ],
+    "python.formatting.provider": "black",
+    "python.formatting.yapfArgs": [
+        "--style={ based_on_style: pep8, column_limit: 100 }"
+    ],
+    "python.analysis.extraPaths": [
+        "./plz-out/gen"
+    ],
+    "editor.fontFamily": "Hack, SF Mono, 'Segoe UI Emoji', 'Segoe UI Symbol', 'Ubuntu Mono', 'Droid Sans Mono', 'Courier New', monospace",
+    "editor.formatOnType": true,
+    "editor.formatOnSave": true,
+    "explorer.confirmDragAndDrop": false,
+    "editor.lineHeight": 30,
+    "editor.fontSize": 15.0,
+    "window.zoomLevel": -1,
+    "python.venvPath": "~/venvs",
+    "editor.tabCompletion": "on",
+    "workbench.iconTheme": "vscode-icons",
+    "remote.SSH.remotePlatform": {
+        "192.168.1.68": "linux"
+    },
+    "gopls": {
+        "directoryFilters": [
+            "-plz-out"
+        ]
+    },
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "heading.1.markdown entity.name.section.markdown, heading.1.markdown punctuation.definition.heading.markdown",
+                "settings": {
+                    "foreground": "#CD4158",
+                    "fontStyle": "bold"
+                }
+            },
+            {
+                "scope": "heading.2.markdown entity.name.section.markdown, heading.2.markdown punctuation.definition.heading.markdown",
+                "settings": {
+                    "foreground": "#e6a645",
+                    "fontStyle": "bold"
+                }
+            },
+            {
+                "scope": "heading.3.markdown entity.name.section.markdown, heading.3.markdown punctuation.definition.heading.markdown",
+                "settings": {
+                    "foreground": "#DE755E",
+                    "fontStyle": "bold"
+                }
+            }
+        ]
+    }
+}

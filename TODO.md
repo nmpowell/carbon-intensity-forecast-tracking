@@ -1,5 +1,7 @@
 # TODOs
 
+- [ ] Convert everything to SQLite.
+- [ ] Automatically update plots in README.md
 - [ ] summary files are too big and impractical
 - [ ] concat forecasting CSVs into daily files
 - [ ] when plotting, dates in plots are 1h off due to timezoning
