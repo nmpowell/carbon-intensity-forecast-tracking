@@ -1,0 +1,52 @@
+---
+name: Ingest data
+
+on:
+  # Manual button in GitHub.
+  workflow_dispatch:
+  # Offset from the congested :00/:30 minutes; GitHub documents delays and
+  # dropped runs at busy times, and a missed slot is permanently lost.
+  schedule:
+    - cron: '12,42 * * * *'
+
+# Shared with the daily workflow so repo writers queue instead of racing.
+concurrency:
+  group: ci-data-writers
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    name: Snapshot the API into an inbox database
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: |
+            cift
+            data/db/inbox
+
+      - uses: actions/setup-python@v6
+        # python-version comes from .python-version
+        with:
+          cache: pip
+
+      - name: Install minimal dependencies
+        run: make install-minimal
+
+      - name: Ingest all endpoints
+        run: python run.py ingest --db_root data/db
+
+      - name: Commit and push
+        run: |
+          git config user.name "Automated"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/db/inbox
+          git commit -m "data: snapshot $(date -u +%Y-%m-%dT%H:%MZ)" || exit 0
+          for attempt in 1 2 3; do
+            git pull --rebase && git push && exit 0
+            sleep $((attempt * 15))
+          done
+          exit 1

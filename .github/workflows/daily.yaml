@@ -1,0 +1,92 @@
+---
+name: Compact, analyse and publish
+
+on:
+  workflow_dispatch:
+  schedule:
+    # After the 02:12 ingest slot; offset from busy minutes.
+    - cron: '20 2 * * *'
+
+concurrency:
+  group: ci-data-writers
+  cancel-in-progress: false
+
+jobs:
+  daily:
+    name: Fold inboxes, rebuild charts and README
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          cache: pip
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Ingest the current slot
+        run: python run.py ingest --db_root data/db
+
+      - name: Compact complete days into partitions
+        run: python run.py compact --db_root data/db --max_inboxes 600 | tee compact.txt
+
+      - name: Rebuild charts, README tables and statistics
+        run: |
+          python run.py analyse --db_root data/db --charts charts --readme README.md \
+            | tee analyse.txt
+
+      - name: Guard against SQLite sidecar files
+        run: |
+          if git status --porcelain | grep -E '\.sqlite-(wal|shm|journal)'; then
+            echo "sidecar files staged; refusing to commit" && exit 1
+          fi
+
+      - name: Job summary
+        run: |
+          {
+            echo '## Daily pipeline'
+            cat compact.txt analyse.txt
+            echo '### Partition sizes'
+            du -h data/db/*/*.sqlite data/db/*.sqlite | sort -k2
+            echo '### Repository objects'
+            git count-objects -vH
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit and push
+        run: |
+          git config user.name "Automated"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/db charts README.md
+          git commit -m "data: compact and analyse $(date -u +%Y-%m-%d)" || exit 0
+          for attempt in 1 2 3; do
+            git pull --rebase && git push && exit 0
+            sleep $((attempt * 15))
+          done
+          exit 1
+
+      - name: Raise health alerts as an issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ job.status }}" = "failure" ]; then
+            title="Daily pipeline failed"
+            body="Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          elif grep -q '^HEALTH-ALERT' analyse.txt 2>/dev/null; then
+            title="Data health alert"
+            body="$(grep '^HEALTH-ALERT' analyse.txt)"
+          else
+            exit 0
+          fi
+          existing=$(gh issue list --state open --search "$title in:title" \
+            --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body"
+          fi

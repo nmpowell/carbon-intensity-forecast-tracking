@@ -1,0 +1,2 @@
+# SQLite databases are binary; never let text/eol handling touch them.
+*.sqlite binary

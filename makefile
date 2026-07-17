@@ -1,0 +1,37 @@
+# Virtualenv
+
+# Requirements for scraping and analysis
+install:
+	pip install pip==26.1.2 pip-tools==7.5.3
+	pip-sync
+
+# Minimum requirements for scraping only
+install-minimal:
+	pip install pip==26.1.2 pip-tools==7.5.3
+	pip-sync requirements-minimal.txt
+
+# Requirements for development and testing
+install-dev:
+	pip install pip==26.1.2 pip-tools==7.5.3
+	pip-sync requirements-dev.txt
+
+# Static analysis
+
+check: black isort flake8 mypy test
+
+mypy:
+	mypy .
+
+black:
+	black --check .
+
+isort:
+	isort --check .
+
+flake8:
+	flake8
+
+# Testing
+
+test:
+	pytest -v tests

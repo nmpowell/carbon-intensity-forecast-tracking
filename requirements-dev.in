@@ -1,0 +1,17 @@
+-r requirements.txt
+
+# Testing
+pytest
+
+# Notebooks only
+jupyter
+
+# Linting
+black
+isort
+flake8
+flake8-bugbear
+flake8-docstrings
+
+# Type hints
+mypy

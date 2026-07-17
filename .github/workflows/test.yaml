@@ -1,0 +1,27 @@
+---
+name: Tests
+
+on:
+  push:
+    branches: [main, cift-sqlite-migration]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Tests and linters
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        # python-version is read from .python-version
+        with:
+          cache: pip
+
+      - name: Install dependencies
+        run: make install-dev
+
+      - name: Tests and static analysis
+        run: make check
