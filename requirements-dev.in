@@ -3,9 +3,6 @@
 # Testing
 pytest
 
-# Notebooks only
-jupyter
-
 # Linting
 black
 isort
