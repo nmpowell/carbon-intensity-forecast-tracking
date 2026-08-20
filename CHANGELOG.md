@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/nmpowell/carbon-intensity-forecast-tracking/compare/v2.0.0...v2.0.1) (2026-08-20)
+
+
+### Bug Fixes
+
+* stop read paths rewriting SQLite partition headers ([38a9854](https://github.com/nmpowell/carbon-intensity-forecast-tracking/commit/38a985439e051d56978d69bf9c1af82ff1de1681))
+
 ## [1.0.1](https://github.com/nmpowell/carbon-intensity-forecast-tracking/compare/v1.0.0...v1.0.1) (2023-08-23)
 
 
