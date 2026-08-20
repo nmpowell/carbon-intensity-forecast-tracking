@@ -40,12 +40,15 @@ class CompactReport:
     quarantined: tuple[str, ...] = ()
 
 
+_APPLICATION_ID = 0x43494654
+
+# Connection- and creation-time settings only: all of these are no-ops on a file
+# that already carries them, so they never dirty an existing partition.
 _PRAGMAS = """
 PRAGMA page_size = 4096;
 PRAGMA journal_mode = DELETE;
 PRAGMA auto_vacuum = NONE;
 PRAGMA synchronous = NORMAL;
-PRAGMA application_id = 0x43494654;
 """
 
 _FUEL_COLUMNS = (
@@ -239,7 +242,14 @@ def _open(path: Path, ddl: str = _DDL) -> sqlite3.Connection:
             f"{path.name} has schema version {version}; this code supports {SCHEMA_VERSION}"
         )
     connection.executescript(_PRAGMAS + ddl)
-    connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
+    # Writing a header pragma bumps SQLite's change counter even when the value is
+    # unchanged, which rewrites the file and re-adds the whole partition to git on
+    # every read. Only write when the stored value is actually wrong.
+    if version != SCHEMA_VERSION:
+        connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
+    (application_id,) = connection.execute("PRAGMA application_id").fetchone()
+    if application_id != _APPLICATION_ID:
+        connection.execute(f"PRAGMA application_id = {_APPLICATION_ID}")
     return connection
 
 

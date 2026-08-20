@@ -62,6 +62,23 @@ class TestSchema:
             "application_id": 0x43494654,
         }
 
+    def test_reading_a_partition_leaves_its_bytes_untouched(
+        self, tmp_path: Path
+    ) -> None:
+        """Reads must not dirty partitions: a bumped SQLite change counter rewrites
+        the file and re-adds the whole partition to git on every analysis run."""
+        ingest_national(tmp_path, "2023-03-22T11:31Z", ("2023-03-22T11:30Z", 41, 39))
+        store = Store(tmp_path)
+        store.compact(now=utc("2023-03-24T02:12Z"))
+        partition = tmp_path / "2023" / "national_2023-03.sqlite"
+        before = partition.read_bytes()
+
+        store.capture_records()
+        store.national_rows()
+        store.national_trajectory(utc("2023-03-22T11:30Z"))
+
+        assert partition.read_bytes() == before
+
     def test_opening_a_newer_schema_version_raises_a_descriptive_error(
         self, tmp_path: Path
     ) -> None:

@@ -61,8 +61,11 @@ jobs:
         run: |
           git config user.name "Automated"
           git config user.email "actions@users.noreply.github.com"
-          git add data/db charts README.md
-          git commit -m "data: compact and analyse $(date -u +%Y-%m-%d)" || exit 0
+          git add -- data/db/inbox data/db/[0-9][0-9][0-9][0-9] \
+            data/db/analysis.sqlite data/db/reference.sqlite charts README.md
+          python .github/scripts/unstage_header_only.py
+          git diff --cached --quiet && echo "nothing but churn; not committing" && exit 0
+          git commit -m "data: compact and analyse $(date -u +%Y-%m-%d)"
           for attempt in 1 2 3; do
             git pull --rebase && git push && exit 0
             sleep $((attempt * 15))
